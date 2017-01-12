@@ -28,4 +28,7 @@ dependencies {
     testCompile 'junit:junit:4.12'
     // timber
     compile 'com.jakewharton.timber:timber:4.5.0'
+    // butterknife
+    compile 'com.jakewharton:butterknife:8.4.0'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:8.4.0'
 }
