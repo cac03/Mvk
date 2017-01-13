@@ -12,6 +12,7 @@
         android:name=".MvkApplication">
 
         <activity android:name=".login.LogInActivity" />
+        <activity android:name=".audios.AudiosActivity" />
     </application>
 
 </manifest>
