@@ -9,6 +9,7 @@
         android:theme="@style/AppTheme"
         android:name=".MvkApplication">
 
+        <activity android:name=".login.LogInActivity" />
     </application>
 
 </manifest>
