@@ -9,6 +9,11 @@ public class AppUser implements Serializable {
   private UserToken userToken;
   private String username;
 
+  public AppUser(UserToken userToken, String username) {
+    this.userToken = userToken;
+    this.username = username;
+  }
+
   public UserToken getUserToken() {
     return userToken;
   }
