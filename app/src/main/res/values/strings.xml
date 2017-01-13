@@ -4,9 +4,16 @@
     <!-- Strings related to navigation drawer -->
     <string name="nav_drawer_open">Open navigation drawer</string>
     <string name="nav_drawer_close">Close navigation drawer</string>
-    
+
+    <!-- General errors string -->
+    <string name="network_is_unavailable">Network is unavailable. Check your connection</string>
+    <string name="network_error_occurred">A network error occurred. Try again later</string>
+
     <!-- Strings related to log in fragment -->
     <string name="phone_or_email">Phone or email</string>
     <string name="password">Password</string>
     <string name="log_in">Log in</string>
+    <string name="this_field_required">This field required</string>
+    <string name="username_or_password_incorrect">Login or password incorrect</string>
+    <string name="logging_in">Logging in</string>
 </resources>
