@@ -12,7 +12,7 @@ public class LogInActivity extends BaseActivity {
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    setContentView(R.layout.activity_base);
+    setContentView(R.layout.log_in_activity);
 
     Fragment fragment = findFragment();
     if (fragment == null) {
