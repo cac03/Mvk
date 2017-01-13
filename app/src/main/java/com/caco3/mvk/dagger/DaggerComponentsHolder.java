@@ -5,6 +5,7 @@ import android.content.Context;
 import com.caco3.mvk.ApplicationComponent;
 import com.caco3.mvk.ApplicationModule;
 import com.caco3.mvk.DaggerApplicationComponent;
+import com.caco3.mvk.data.DataModule;
 
 import static com.caco3.mvk.util.Preconditions.checkState;
 
@@ -23,6 +24,7 @@ public class DaggerComponentsHolder {
     checkState(applicationComponent == null, "Application component is already initialized");
     applicationComponent = DaggerApplicationComponent.builder()
             .applicationModule(new ApplicationModule(context))
+            .dataModule(new DataModule(context))
             .build();
   }
 }
