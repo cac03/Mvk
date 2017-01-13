@@ -42,4 +42,7 @@ dependencies {
     annotationProcessor 'com.google.dagger:dagger-compiler:2.8'
     testCompile 'com.google.dagger:dagger:2.8'
     testAnnotationProcessor 'com.google.dagger:dagger-compiler:2.8'
+    // Retrofit
+    compile 'com.squareup.retrofit2:retrofit:2.1.0'
+    compile 'com.squareup.retrofit2:converter-gson:2.1.0'
 }
