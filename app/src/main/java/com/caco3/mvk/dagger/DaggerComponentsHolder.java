@@ -8,6 +8,8 @@ import com.caco3.mvk.DaggerApplicationComponent;
 import com.caco3.mvk.data.DataModule;
 import com.caco3.mvk.login.LogInComponent;
 import com.caco3.mvk.login.LogInModule;
+import com.caco3.mvk.splash.SplashComponent;
+import com.caco3.mvk.splash.SplashModule;
 
 import static com.caco3.mvk.util.Preconditions.checkState;
 
@@ -15,6 +17,7 @@ public class DaggerComponentsHolder {
   private static final DaggerComponentsHolder INSTANCE = new DaggerComponentsHolder();
   private ApplicationComponent applicationComponent;
   private LogInComponent logInComponent;
+  private SplashComponent splashComponent;
 
   public static DaggerComponentsHolder getInstance() {
     return INSTANCE;
@@ -45,5 +48,21 @@ public class DaggerComponentsHolder {
 
   public void releaseLogInComponent() {
     logInComponent = null;
+  }
+
+  public boolean hasSplashComponent() {
+    return splashComponent != null;
+  }
+
+  public SplashComponent getSplashComponent() {
+    return splashComponent;
+  }
+
+  public void createSplashComponent() {
+    splashComponent = applicationComponent.plus(new SplashModule());
+  }
+
+  public void releaseSplashComponent() {
+    splashComponent = null;
   }
 }
