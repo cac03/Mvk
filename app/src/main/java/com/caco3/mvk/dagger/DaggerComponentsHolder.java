@@ -6,12 +6,15 @@ import com.caco3.mvk.ApplicationComponent;
 import com.caco3.mvk.ApplicationModule;
 import com.caco3.mvk.DaggerApplicationComponent;
 import com.caco3.mvk.data.DataModule;
+import com.caco3.mvk.login.LogInComponent;
+import com.caco3.mvk.login.LogInModule;
 
 import static com.caco3.mvk.util.Preconditions.checkState;
 
 public class DaggerComponentsHolder {
   private static final DaggerComponentsHolder INSTANCE = new DaggerComponentsHolder();
   private ApplicationComponent applicationComponent;
+  private LogInComponent logInComponent;
 
   public static DaggerComponentsHolder getInstance() {
     return INSTANCE;
@@ -26,5 +29,21 @@ public class DaggerComponentsHolder {
             .applicationModule(new ApplicationModule(context))
             .dataModule(new DataModule(context))
             .build();
+  }
+
+  public boolean hasLogInComponent() {
+    return logInComponent != null;
+  }
+
+  public LogInComponent getLogInComponent() {
+    return logInComponent;
+  }
+
+  public void createLogInComponent() {
+    logInComponent = applicationComponent.plus(new LogInModule());
+  }
+
+  public void releaseLogInComponent() {
+    logInComponent = null;
   }
 }

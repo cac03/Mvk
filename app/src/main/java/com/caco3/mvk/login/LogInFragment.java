@@ -15,6 +15,9 @@ import android.widget.Toast;
 
 import com.caco3.mvk.R;
 import com.caco3.mvk.audios.AudiosActivity;
+import com.caco3.mvk.dagger.DaggerComponentsHolder;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -24,6 +27,7 @@ import static com.caco3.mvk.util.Preconditions.checkState;
 
 
 public class LogInFragment extends Fragment implements LogInView {
+  @Inject
   LogInPresenter presenter;
   @BindView(R.id.log_in_frag_login)
   EditText usernameEditText;
@@ -52,7 +56,11 @@ public class LogInFragment extends Fragment implements LogInView {
   }
 
   private void injectPresenter() {
-    // TODO: 1/12/17 implement
+    DaggerComponentsHolder componentsHolder = DaggerComponentsHolder.getInstance();
+    if (!componentsHolder.hasLogInComponent()) {
+      componentsHolder.createLogInComponent();
+    }
+    componentsHolder.getLogInComponent().inject(this);
   }
 
   @Override
