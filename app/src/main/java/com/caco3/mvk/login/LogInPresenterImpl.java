@@ -78,6 +78,9 @@ import timber.log.Timber;
     if (cancel) {
       return;
     }
+    if (isViewAttached()) {
+      view.showLogInProgress();
+    }
     userTokenSubscriber = new UserTokenSubscriber(username);
     final Credentials credentials = new Credentials(username, password);
     Observable.fromCallable(new Callable<UserToken>() {
