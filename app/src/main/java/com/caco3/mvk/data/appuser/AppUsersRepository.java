@@ -13,4 +13,5 @@ public interface AppUsersRepository {
   /** Call {@link AppUsersRepository#save(AppUser)} first */
   void setAsActive(AppUser appUser);
   AppUser getActive();
+  boolean hasActiveAppUser();
 }
