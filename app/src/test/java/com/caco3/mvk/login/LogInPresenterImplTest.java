@@ -4,9 +4,11 @@ package com.caco3.mvk.login;
 import com.caco3.mvk.Rxs;
 import com.caco3.mvk.data.appuser.AppUser;
 import com.caco3.mvk.data.appuser.AppUsersRepository;
+import com.caco3.mvk.data.usertoken.UserTokenRepository;
 import com.caco3.mvk.timber.SystemOutTree;
 import com.caco3.mvk.vk.Vk;
 import com.caco3.mvk.vk.auth.Credentials;
+import com.caco3.mvk.vk.auth.UserToken;
 import com.caco3.mvk.vk.auth.UsernameOrPasswordIncorrectException;
 import com.caco3.mvk.vk.auth.VkAuthService;
 
@@ -42,6 +44,8 @@ public class LogInPresenterImplTest {
   @Mock
   private AppUsersRepository repository;
   @Mock
+  private UserTokenRepository userTokenRepository;
+  @Mock
   private LogInView view;
   private LogInPresenter presenter;
 
@@ -49,7 +53,7 @@ public class LogInPresenterImplTest {
   public void setUp() {
     MockitoAnnotations.initMocks(this);
     when(vk.auth()).thenReturn(authService);
-    presenter = new LogInPresenterImpl(vk, repository);
+    presenter = new LogInPresenterImpl(vk, repository, userTokenRepository);
     Timber.plant(new SystemOutTree());
     Rxs.setUpRx();
   }
@@ -111,6 +115,7 @@ public class LogInPresenterImplTest {
 
   @Test
   public void everythingIsOk_accountCreatedAndSaved() throws Exception {
+    when(authService.getUserToken(any(Credentials.class))).thenReturn(new UserToken("asdfasdf"));
     final AtomicBoolean accountSaved = new AtomicBoolean(false);
     doAnswer(new Answer() {
       @Override
@@ -127,6 +132,14 @@ public class LogInPresenterImplTest {
         return null;
       }
     }).when(repository).setAsActive(any(AppUser.class));
+    final AtomicBoolean userTokenSaved = new AtomicBoolean(false);
+    doAnswer(new Answer() {
+      @Override
+      public Object answer(InvocationOnMock invocation) throws Throwable {
+        userTokenSaved.set(true);
+        return null;
+      }
+    }).when(userTokenRepository).save(any(UserToken.class));
 
     presenter.onViewAttached(view);
     presenter.attemptToLogIn(USERNAME_VALID, PASSWORD_VALID);
@@ -134,6 +147,7 @@ public class LogInPresenterImplTest {
 
     assertTrue(accountSaved.get());
     assertTrue(accountSetAsActive.get());
+    assertTrue(userTokenSaved.get());
   }
 
   @Test

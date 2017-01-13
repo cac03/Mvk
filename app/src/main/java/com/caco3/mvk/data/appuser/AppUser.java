@@ -9,8 +9,10 @@ import org.greenrobot.greendao.annotation.Keep;
 import org.greenrobot.greendao.annotation.ToOne;
 
 import java.io.Serializable;
+
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.DaoException;
+
 import com.caco3.mvk.vk.auth.DaoSession;
 import com.caco3.mvk.vk.auth.UserTokenDao;
 
@@ -18,19 +20,24 @@ import com.caco3.mvk.vk.auth.UserTokenDao;
 public class AppUser implements Serializable {
   @Id
   private Long id;
-  @ToOne
+  private Long userTokenId;
+  @ToOne(joinProperty = "userTokenId")
   private UserToken userToken;
   private String username;
 
   private static final long serialVersionUID = 797454612133L;
-  /** Used to resolve relations */
+  /**
+   * Used to resolve relations
+   */
   @Generated(hash = 2040040024)
   private transient DaoSession daoSession;
-  /** Used for active entity operations. */
+  /**
+   * Used for active entity operations.
+   */
   @Generated(hash = 1682778229)
   private transient AppUserDao myDao;
-  @Generated(hash = 349085159)
-  private transient boolean userToken__refreshed;
+  @Generated(hash = 371602608)
+  private transient Long userToken__resolvedKey;
 
   @Keep
   public AppUser(UserToken userToken, String username) {
@@ -39,17 +46,18 @@ public class AppUser implements Serializable {
   }
 
 
-  @Generated(hash = 716408921)
-  public AppUser(Long id, String username) {
-      this.id = id;
-      this.username = username;
+  @Generated(hash = 118919436)
+  public AppUser(Long id, Long userTokenId, String username) {
+    this.id = id;
+    this.userTokenId = userTokenId;
+    this.username = username;
   }
 
 
   @Generated(hash = 70494256)
   public AppUser() {
   }
-  
+
 
   public String getUsername() {
     return username;
@@ -57,49 +65,52 @@ public class AppUser implements Serializable {
 
 
   public Long getId() {
-      return this.id;
+    return this.id;
   }
 
 
   public void setId(Long id) {
-      this.id = id;
+    this.id = id;
   }
 
 
   public void setUsername(String username) {
-      this.username = username;
+    this.username = username;
   }
 
 
-  /** To-one relationship, resolved on first access. */
-  @Generated(hash = 1329153652)
+  /**
+   * To-one relationship, resolved on first access.
+   */
+  @Generated(hash = 1797125263)
   public UserToken getUserToken() {
-      if (userToken != null || !userToken__refreshed) {
-          if (daoSession == null) {
-              throw new DaoException("Entity is detached from DAO context");
-          }
-          UserTokenDao targetDao = daoSession.getUserTokenDao();
-          targetDao.refresh(userToken);
-          userToken__refreshed = true;
+    Long __key = this.userTokenId;
+    if (userToken__resolvedKey == null || !userToken__resolvedKey.equals(__key)) {
+      final DaoSession daoSession = this.daoSession;
+      if (daoSession == null) {
+        throw new DaoException("Entity is detached from DAO context");
       }
-      return userToken;
-  }
-
-
-  /** To-one relationship, returned entity is not refreshed and may carry only the PK property. */
-  @Generated(hash = 1534830427)
-  public UserToken peakUserToken() {
-      return userToken;
-  }
-
-
-  /** called by internal mechanisms, do not call yourself. */
-  @Generated(hash = 1947692991)
-  public void setUserToken(UserToken userToken) {
+      UserTokenDao targetDao = daoSession.getUserTokenDao();
+      UserToken userTokenNew = targetDao.load(__key);
       synchronized (this) {
-          this.userToken = userToken;
-          userToken__refreshed = true;
+        userToken = userTokenNew;
+        userToken__resolvedKey = __key;
       }
+    }
+    return userToken;
+  }
+
+
+  /**
+   * called by internal mechanisms, do not call yourself.
+   */
+  @Generated(hash = 1603107129)
+  public void setUserToken(UserToken userToken) {
+    synchronized (this) {
+      this.userToken = userToken;
+      userTokenId = userToken == null ? null : userToken.getId();
+      userToken__resolvedKey = userTokenId;
+    }
   }
 
 
@@ -109,10 +120,10 @@ public class AppUser implements Serializable {
    */
   @Generated(hash = 128553479)
   public void delete() {
-      if (myDao == null) {
-          throw new DaoException("Entity is detached from DAO context");
-      }
-      myDao.delete(this);
+    if (myDao == null) {
+      throw new DaoException("Entity is detached from DAO context");
+    }
+    myDao.delete(this);
   }
 
 
@@ -122,10 +133,10 @@ public class AppUser implements Serializable {
    */
   @Generated(hash = 1942392019)
   public void refresh() {
-      if (myDao == null) {
-          throw new DaoException("Entity is detached from DAO context");
-      }
-      myDao.refresh(this);
+    if (myDao == null) {
+      throw new DaoException("Entity is detached from DAO context");
+    }
+    myDao.refresh(this);
   }
 
 
@@ -135,17 +146,29 @@ public class AppUser implements Serializable {
    */
   @Generated(hash = 713229351)
   public void update() {
-      if (myDao == null) {
-          throw new DaoException("Entity is detached from DAO context");
-      }
-      myDao.update(this);
+    if (myDao == null) {
+      throw new DaoException("Entity is detached from DAO context");
+    }
+    myDao.update(this);
   }
 
 
-  /** called by internal mechanisms, do not call yourself. */
+  /**
+   * called by internal mechanisms, do not call yourself.
+   */
   @Generated(hash = 34658731)
   public void __setDaoSession(DaoSession daoSession) {
-      this.daoSession = daoSession;
-      myDao = daoSession != null ? daoSession.getAppUserDao() : null;
+    this.daoSession = daoSession;
+    myDao = daoSession != null ? daoSession.getAppUserDao() : null;
+  }
+
+
+  public Long getUserTokenId() {
+    return this.userTokenId;
+  }
+
+
+  public void setUserTokenId(Long userTokenId) {
+    this.userTokenId = userTokenId;
   }
 }

@@ -2,6 +2,7 @@ package com.caco3.mvk.login;
 
 import com.caco3.mvk.data.appuser.AppUser;
 import com.caco3.mvk.data.appuser.AppUsersRepository;
+import com.caco3.mvk.data.usertoken.UserTokenRepository;
 import com.caco3.mvk.vk.Vk;
 import com.caco3.mvk.vk.VkException;
 import com.caco3.mvk.vk.auth.Credentials;
@@ -24,11 +25,14 @@ import timber.log.Timber;
   private LogInView view;
   private Vk vk;
   private AppUsersRepository appUsersRepository;
+  private UserTokenRepository userTokenRepository;
   private Subscriber<UserToken> userTokenSubscriber = null;
 
-  /*package*/LogInPresenterImpl(Vk vk, AppUsersRepository appUsersRepository) {
+  /*package*/LogInPresenterImpl(Vk vk, AppUsersRepository appUsersRepository,
+                                UserTokenRepository userTokenRepository) {
     this.vk = vk;
     this.appUsersRepository = appUsersRepository;
+    this.userTokenRepository = userTokenRepository;
   }
 
   @Override
@@ -136,7 +140,9 @@ import timber.log.Timber;
     public void onNext(UserToken userToken) {
       userTokenSubscriber = null;
       Timber.i("Successfully received userToken (username = '%s')", username);
+      userTokenRepository.save(userToken);
       AppUser appUser = new AppUser(userToken, username);
+      appUser.setUserTokenId(userToken.getId());
       appUsersRepository.save(appUser);
       appUsersRepository.setAsActive(appUser);
       if (isViewAttached()) {
