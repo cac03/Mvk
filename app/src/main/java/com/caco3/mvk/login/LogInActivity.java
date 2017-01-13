@@ -33,7 +33,9 @@ public class LogInActivity extends BaseActivity {
   }
 
   private Fragment createFragment() {
-    return new LogInFragment();
+    Fragment fragment = new LogInFragment();
+    fragment.setRetainInstance(true);
+    return fragment;
   }
 
   @Override
