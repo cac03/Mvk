@@ -8,7 +8,7 @@ public interface LogInView extends BaseView<LogInPresenter> {
   void hideLogInProgress();
   void showUsernameIsEmptyStringError();
   void showPasswordIsEmptyStringError();
-  void showAuthFailedError();
+  void showUsernameOrPasswordIncorrectError();
   void showNetworkIsUnavailableError();
   void showNetworkErrorOccurredError();
   void navigateToAudiosActivity();
