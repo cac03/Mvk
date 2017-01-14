@@ -10,6 +10,7 @@ import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.DaoException;
 import com.caco3.mvk.vk.auth.DaoSession;
 import com.caco3.mvk.data.appuser.AppUserDao;
+import org.greenrobot.greendao.annotation.NotNull;
 
 /**
  * @see <a href="https://vk.com/dev/objects/audio">Audio object</a>
@@ -18,7 +19,8 @@ import com.caco3.mvk.data.appuser.AppUserDao;
 public class Audio {
   @Id
   private Long id;
-  @ToOne
+  private long appUserId;
+  @ToOne(joinProperty = "appUserId")
   private AppUser appUser;
   @SerializedName("artist")
   private String artist;
@@ -36,25 +38,26 @@ public class Audio {
   @Generated(hash = 226033729)
   private transient AudioDao myDao;
 
-  @Generated(hash = 1560625128)
-  public Audio(Long id, String artist, String title, int durationSeconds,
-          String downloadUrl, boolean downloaded) {
-      this.id = id;
-      this.artist = artist;
-      this.title = title;
-      this.durationSeconds = durationSeconds;
-      this.downloadUrl = downloadUrl;
-      this.downloaded = downloaded;
-  }
+  @Generated(hash = 839876211)
+public Audio(Long id, long appUserId, String artist, String title, int durationSeconds,
+        String downloadUrl, boolean downloaded) {
+    this.id = id;
+    this.appUserId = appUserId;
+    this.artist = artist;
+    this.title = title;
+    this.durationSeconds = durationSeconds;
+    this.downloadUrl = downloadUrl;
+    this.downloaded = downloaded;
+}
 
-  @Generated(hash = 1642629471)
+@Generated(hash = 1642629471)
   public Audio() {
   }
 
-  @Generated(hash = 1660794392)
-  private transient boolean appUser__refreshed;
+  @Generated(hash = 1545085567)
+private transient Long appUser__resolvedKey;
 
-  public String getArtist() {
+public String getArtist() {
     return artist;
   }
 
@@ -107,35 +110,39 @@ public class Audio {
   }
 
   /** To-one relationship, resolved on first access. */
-  @Generated(hash = 1234809772)
-  public AppUser getAppUser() {
-      if (appUser != null || !appUser__refreshed) {
-          if (daoSession == null) {
-              throw new DaoException("Entity is detached from DAO context");
-          }
-          AppUserDao targetDao = daoSession.getAppUserDao();
-          targetDao.refresh(appUser);
-          appUser__refreshed = true;
-      }
-      return appUser;
-  }
+@Generated(hash = 243680710)
+public AppUser getAppUser() {
+    long __key = this.appUserId;
+    if (appUser__resolvedKey == null || !appUser__resolvedKey.equals(__key)) {
+        final DaoSession daoSession = this.daoSession;
+        if (daoSession == null) {
+            throw new DaoException("Entity is detached from DAO context");
+        }
+        AppUserDao targetDao = daoSession.getAppUserDao();
+        AppUser appUserNew = targetDao.load(__key);
+        synchronized (this) {
+            appUser = appUserNew;
+            appUser__resolvedKey = __key;
+        }
+    }
+    return appUser;
+}
 
-  /** To-one relationship, returned entity is not refreshed and may carry only the PK property. */
-  @Generated(hash = 1922394157)
-  public AppUser peakAppUser() {
-      return appUser;
-  }
+/** called by internal mechanisms, do not call yourself. */
+@Generated(hash = 1485078859)
+public void setAppUser(@NotNull AppUser appUser) {
+    if (appUser == null) {
+        throw new DaoException(
+                "To-one property 'appUserId' has not-null constraint; cannot set to-one to null");
+    }
+    synchronized (this) {
+        this.appUser = appUser;
+        appUserId = appUser.getId();
+        appUser__resolvedKey = appUserId;
+    }
+}
 
-  /** called by internal mechanisms, do not call yourself. */
-  @Generated(hash = 1104270068)
-  public void setAppUser(AppUser appUser) {
-      synchronized (this) {
-          this.appUser = appUser;
-          appUser__refreshed = true;
-      }
-  }
-
-  /**
+/**
    * Convenient call for {@link org.greenrobot.greendao.AbstractDao#delete(Object)}.
    * Entity must attached to an entity context.
    */
@@ -202,4 +209,12 @@ public class Audio {
     result = 31 * result + (downloaded ? 1 : 0);
     return result;
   }
+
+public long getAppUserId() {
+    return this.appUserId;
+}
+
+public void setAppUserId(long appUserId) {
+    this.appUserId = appUserId;
+}
 }

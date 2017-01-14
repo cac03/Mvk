@@ -28,7 +28,7 @@ public class AudiosRepositoryImpl implements AudiosRepository {
 
   @Override
   public List<Audio> getAllByAppUser(AppUser appUser) {
-    return dao.queryBuilder().where(AudioDao.Properties.AppUser.eq(appUser)).build().list();
+    return dao.queryBuilder().where(AudioDao.Properties.AppUserId.eq(appUser.getId())).build().list();
   }
 
   @Override

@@ -91,6 +91,10 @@ import timber.log.Timber;
       @Override
       public List<Audio> call() throws Exception {
         List<Audio> audios = vk.audios().get(currentAppUser.getUserToken());
+        for(Audio audio : audios) {
+          audio.setAppUser(currentAppUser);
+
+        }
         audiosRepository.deleteAllByAppUser(currentAppUser);
         audiosRepository.saveAll(audios);
         return audios;
