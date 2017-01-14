@@ -6,6 +6,8 @@ import com.caco3.mvk.ApplicationComponent;
 import com.caco3.mvk.ApplicationModule;
 import com.caco3.mvk.DaggerApplicationComponent;
 import com.caco3.mvk.data.DataModule;
+import com.caco3.mvk.loggedin.LoggedInComponent;
+import com.caco3.mvk.loggedin.LoggedInModule;
 import com.caco3.mvk.login.LogInComponent;
 import com.caco3.mvk.login.LogInModule;
 import com.caco3.mvk.splash.SplashComponent;
@@ -18,6 +20,7 @@ public class DaggerComponentsHolder {
   private ApplicationComponent applicationComponent;
   private LogInComponent logInComponent;
   private SplashComponent splashComponent;
+  private LoggedInComponent loggedInComponent;
 
   public static DaggerComponentsHolder getInstance() {
     return INSTANCE;
@@ -64,5 +67,21 @@ public class DaggerComponentsHolder {
 
   public void releaseSplashComponent() {
     splashComponent = null;
+  }
+
+  public boolean hasLoggedInComponent() {
+    return loggedInComponent != null;
+  }
+
+  public LoggedInComponent getLoggedInComponent() {
+    return loggedInComponent;
+  }
+
+  public void createLoggedInComponent() {
+    loggedInComponent = applicationComponent.plus(new LoggedInModule());
+  }
+
+  public void releaseLoggedInComponent() {
+    loggedInComponent = null;
   }
 }
