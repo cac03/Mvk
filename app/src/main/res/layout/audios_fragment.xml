@@ -7,7 +7,6 @@
 
     <!-- main content -->
     <android.support.v4.widget.SwipeRefreshLayout
-        android:visibility="gone"
         android:id="@+id/audios_frag_refresh_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -21,6 +20,7 @@
 
     <!-- progress bar -->
     <ProgressBar
+        android:visibility="gone"
         android:id="@+id/audios_frag_progress_bar"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
