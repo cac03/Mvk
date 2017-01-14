@@ -6,9 +6,10 @@ import android.support.v4.app.Fragment;
 
 import com.caco3.mvk.R;
 import com.caco3.mvk.ui.BaseActivity;
+import com.caco3.mvk.ui.UserLoggedInBaseActivity;
 
 
-public class AudiosActivity extends BaseActivity {
+public class AudiosActivity extends UserLoggedInBaseActivity {
   private static final String AUDIOS_FRAGMENT_TAG = "audios_frag";
 
   @Override

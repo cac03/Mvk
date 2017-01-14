@@ -12,6 +12,8 @@ import com.caco3.mvk.loggedin.LoggedInComponent;
 import com.caco3.mvk.loggedin.LoggedInModule;
 import com.caco3.mvk.login.LogInComponent;
 import com.caco3.mvk.login.LogInModule;
+import com.caco3.mvk.navdrawer.NavDrawerComponent;
+import com.caco3.mvk.navdrawer.NavDrawerModule;
 import com.caco3.mvk.splash.SplashComponent;
 import com.caco3.mvk.splash.SplashModule;
 
@@ -26,6 +28,7 @@ public class DaggerComponentsHolder {
   private SplashComponent splashComponent;
   private LoggedInComponent loggedInComponent;
   private AudiosComponent audiosComponent;
+  private NavDrawerComponent navDrawerComponent;
 
   public static DaggerComponentsHolder getInstance() {
     return INSTANCE;
@@ -108,5 +111,23 @@ public class DaggerComponentsHolder {
 
   public void releaseAudiosComponent() {
     audiosComponent = null;
+  }
+
+  public boolean hasNavDrawerComponent() {
+    return navDrawerComponent != null;
+  }
+
+  public NavDrawerComponent getNavDrawerComponent() {
+    return navDrawerComponent;
+  }
+
+  public void createNavDrawerComponent() {
+    checkState(loggedInComponent != null,
+            "Attempt to create NavDrawerComponent, but LoggedInComponent was not created");
+    navDrawerComponent = loggedInComponent.plus(new NavDrawerModule());
+  }
+
+  public void releaseNavDrawerComponent() {
+    navDrawerComponent = null;
   }
 }
