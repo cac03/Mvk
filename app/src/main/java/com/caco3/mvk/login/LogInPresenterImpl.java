@@ -1,5 +1,6 @@
 package com.caco3.mvk.login;
 
+import com.caco3.mvk.dagger.DaggerComponentsHolder;
 import com.caco3.mvk.data.appuser.AppUser;
 import com.caco3.mvk.data.appuser.AppUsersRepository;
 import com.caco3.mvk.data.usertoken.UserTokenRepository;
@@ -148,9 +149,22 @@ import timber.log.Timber;
       appUser.setUserTokenId(userToken.getId());
       appUsersRepository.save(appUser);
       appUsersRepository.setAsActive(appUser);
+      enterLoggedInScope();
+      releaseLogInComponent();
       if (isViewAttached()) {
         view.navigateToAudiosActivity();
       }
     }
+  }
+
+  private void enterLoggedInScope() {
+    DaggerComponentsHolder componentsHolder = DaggerComponentsHolder.getInstance();
+    if (!componentsHolder.hasLoggedInComponent()) {
+      componentsHolder.createLoggedInComponent();
+    }
+  }
+
+  private void releaseLogInComponent() {
+    DaggerComponentsHolder.getInstance().releaseLogInComponent();
   }
 }

@@ -2,6 +2,7 @@ package com.caco3.mvk.splash;
 
 
 import com.caco3.mvk.audios.AudiosActivity;
+import com.caco3.mvk.dagger.DaggerComponentsHolder;
 import com.caco3.mvk.data.appuser.AppUsersRepository;
 import com.caco3.mvk.login.LogInActivity;
 import com.caco3.mvk.ui.BaseActivity;
@@ -20,9 +21,17 @@ public class LauncherActivityManager {
 
   public Class<? extends BaseActivity> getLauncherActivity() {
     if (appUsersRepository.hasActiveAppUser()) {
+      putLoggedInComponent();
       return AudiosActivity.class;
     } else {
       return LogInActivity.class;
+    }
+  }
+
+  private void putLoggedInComponent() {
+    DaggerComponentsHolder componentsHolder = DaggerComponentsHolder.getInstance();
+    if (!componentsHolder.hasLoggedInComponent()) {
+      componentsHolder.createLoggedInComponent();
     }
   }
 }
