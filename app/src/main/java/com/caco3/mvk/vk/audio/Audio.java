@@ -8,9 +8,9 @@ import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.ToOne;
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.DaoException;
-import com.caco3.mvk.vk.auth.DaoSession;
 import com.caco3.mvk.data.appuser.AppUserDao;
 import org.greenrobot.greendao.annotation.NotNull;
+import com.caco3.mvk.vk.users.DaoSession;
 
 /**
  * @see <a href="https://vk.com/dev/objects/audio">Audio object</a>
@@ -178,13 +178,6 @@ public void setAppUser(@NotNull AppUser appUser) {
       myDao.update(this);
   }
 
-  /** called by internal mechanisms, do not call yourself. */
-  @Generated(hash = 1261206123)
-  public void __setDaoSession(DaoSession daoSession) {
-      this.daoSession = daoSession;
-      myDao = daoSession != null ? daoSession.getAudioDao() : null;
-  }
-
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
@@ -216,5 +209,12 @@ public long getAppUserId() {
 
 public void setAppUserId(long appUserId) {
     this.appUserId = appUserId;
+}
+
+/** called by internal mechanisms, do not call yourself. */
+@Generated(hash = 1261206123)
+public void __setDaoSession(DaoSession daoSession) {
+    this.daoSession = daoSession;
+    myDao = daoSession != null ? daoSession.getAudioDao() : null;
 }
 }

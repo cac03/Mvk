@@ -10,8 +10,8 @@ import com.caco3.mvk.data.usertoken.UserTokenRepository;
 import com.caco3.mvk.data.usertoken.UserTokenRepositoryImpl;
 import com.caco3.mvk.data.vkuser.VkUsersRepository;
 import com.caco3.mvk.data.vkuser.VkUsersRepositoryImpl;
-import com.caco3.mvk.vk.auth.DaoMaster;
-import com.caco3.mvk.vk.auth.DaoSession;
+import com.caco3.mvk.vk.users.DaoMaster;
+import com.caco3.mvk.vk.users.DaoSession;
 
 import org.greenrobot.greendao.database.Database;
 

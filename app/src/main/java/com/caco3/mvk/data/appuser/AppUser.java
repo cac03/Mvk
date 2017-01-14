@@ -13,10 +13,10 @@ import java.io.Serializable;
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.DaoException;
 
-import com.caco3.mvk.vk.auth.DaoSession;
 import com.caco3.mvk.vk.auth.UserTokenDao;
 import com.caco3.mvk.vk.users.VkUser;
 import com.caco3.mvk.vk.users.VkUserDao;
+import com.caco3.mvk.vk.users.DaoSession;
 
 @Entity
 public class AppUser implements Serializable {
@@ -161,16 +161,6 @@ public class AppUser implements Serializable {
   }
 
 
-  /**
-   * called by internal mechanisms, do not call yourself.
-   */
-  @Generated(hash = 34658731)
-  public void __setDaoSession(DaoSession daoSession) {
-    this.daoSession = daoSession;
-    myDao = daoSession != null ? daoSession.getAppUserDao() : null;
-  }
-
-
   public Long getUserTokenId() {
     return this.userTokenId;
   }
@@ -219,5 +209,13 @@ public class AppUser implements Serializable {
           vkUserId = vkUser == null ? null : vkUser.getId();
           vkUser__resolvedKey = vkUserId;
       }
+  }
+
+
+  /** called by internal mechanisms, do not call yourself. */
+  @Generated(hash = 34658731)
+  public void __setDaoSession(DaoSession daoSession) {
+      this.daoSession = daoSession;
+      myDao = daoSession != null ? daoSession.getAppUserDao() : null;
   }
 }
