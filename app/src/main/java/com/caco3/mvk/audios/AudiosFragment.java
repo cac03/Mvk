@@ -20,11 +20,14 @@ import com.caco3.mvk.vk.audio.Audio;
 import java.util.List;
 
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class AudiosFragment extends Fragment implements AudiosView,
         SwipeRefreshLayout.OnRefreshListener {
+  @Inject
   AudiosPresenter presenter;
   @BindView(R.id.audios_frag_refresh_layout)
   SwipeRefreshLayout swipeRefreshLayout;
