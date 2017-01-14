@@ -15,6 +15,8 @@ import org.greenrobot.greendao.DaoException;
 
 import com.caco3.mvk.vk.auth.DaoSession;
 import com.caco3.mvk.vk.auth.UserTokenDao;
+import com.caco3.mvk.vk.users.VkUser;
+import com.caco3.mvk.vk.users.VkUserDao;
 
 @Entity
 public class AppUser implements Serializable {
@@ -23,6 +25,9 @@ public class AppUser implements Serializable {
   private Long userTokenId;
   @ToOne(joinProperty = "userTokenId")
   private UserToken userToken;
+  private Long vkUserId;
+  @ToOne(joinProperty = "vkUserId")
+  private VkUser vkUser;
   private String username;
 
   private static final long serialVersionUID = 797454612133L;
@@ -38,6 +43,8 @@ public class AppUser implements Serializable {
   private transient AppUserDao myDao;
   @Generated(hash = 371602608)
   private transient Long userToken__resolvedKey;
+  @Generated(hash = 1065472442)
+  private transient Long vkUser__resolvedKey;
 
   @Keep
   public AppUser(UserToken userToken, String username) {
@@ -46,11 +53,12 @@ public class AppUser implements Serializable {
   }
 
 
-  @Generated(hash = 118919436)
-  public AppUser(Long id, Long userTokenId, String username) {
-    this.id = id;
-    this.userTokenId = userTokenId;
-    this.username = username;
+  @Generated(hash = 1369865397)
+  public AppUser(Long id, Long userTokenId, Long vkUserId, String username) {
+      this.id = id;
+      this.userTokenId = userTokenId;
+      this.vkUserId = vkUserId;
+      this.username = username;
   }
 
 
@@ -170,5 +178,46 @@ public class AppUser implements Serializable {
 
   public void setUserTokenId(Long userTokenId) {
     this.userTokenId = userTokenId;
+  }
+
+
+  public Long getVkUserId() {
+      return this.vkUserId;
+  }
+
+
+  public void setVkUserId(Long vkUserId) {
+      this.vkUserId = vkUserId;
+  }
+
+
+  /** To-one relationship, resolved on first access. */
+  @Generated(hash = 296510890)
+  public VkUser getVkUser() {
+      Long __key = this.vkUserId;
+      if (vkUser__resolvedKey == null || !vkUser__resolvedKey.equals(__key)) {
+          final DaoSession daoSession = this.daoSession;
+          if (daoSession == null) {
+              throw new DaoException("Entity is detached from DAO context");
+          }
+          VkUserDao targetDao = daoSession.getVkUserDao();
+          VkUser vkUserNew = targetDao.load(__key);
+          synchronized (this) {
+              vkUser = vkUserNew;
+              vkUser__resolvedKey = __key;
+          }
+      }
+      return vkUser;
+  }
+
+
+  /** called by internal mechanisms, do not call yourself. */
+  @Generated(hash = 1446452749)
+  public void setVkUser(VkUser vkUser) {
+      synchronized (this) {
+          this.vkUser = vkUser;
+          vkUserId = vkUser == null ? null : vkUser.getId();
+          vkUser__resolvedKey = vkUserId;
+      }
   }
 }

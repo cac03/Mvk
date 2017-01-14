@@ -8,6 +8,8 @@ import com.caco3.mvk.data.audio.AudiosRepository;
 import com.caco3.mvk.data.audio.AudiosRepositoryImpl;
 import com.caco3.mvk.data.usertoken.UserTokenRepository;
 import com.caco3.mvk.data.usertoken.UserTokenRepositoryImpl;
+import com.caco3.mvk.data.vkuser.VkUsersRepository;
+import com.caco3.mvk.data.vkuser.VkUsersRepositoryImpl;
 import com.caco3.mvk.vk.auth.DaoMaster;
 import com.caco3.mvk.vk.auth.DaoSession;
 
@@ -24,12 +26,14 @@ public class DataModule {
   private final AudiosRepository audiosRepository;
   private final AppUsersRepository appUsersRepository;
   private final UserTokenRepository userTokenRepository;
+  private final VkUsersRepository vkUsersRepository;
 
   public DataModule(Context context) {
     DaoSession daoSession = createDaoSession(context);
     this.audiosRepository = new AudiosRepositoryImpl(daoSession.getAudioDao());
     this.appUsersRepository = new AppUsersRepositoryImpl(context, daoSession.getAppUserDao());
     this.userTokenRepository = new UserTokenRepositoryImpl(daoSession.getUserTokenDao());
+    this.vkUsersRepository = new VkUsersRepositoryImpl(daoSession.getVkUserDao());
   }
 
   private DaoSession createDaoSession(Context context) {
@@ -54,5 +58,11 @@ public class DataModule {
   @Singleton
   public UserTokenRepository provideUserTokenRepository() {
     return userTokenRepository;
+  }
+
+  @Provides
+  @Singleton
+  public VkUsersRepository provideVkUsersRepository() {
+    return vkUsersRepository;
   }
 }
