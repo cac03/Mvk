@@ -5,6 +5,8 @@ import android.content.Context;
 import com.caco3.mvk.ApplicationComponent;
 import com.caco3.mvk.ApplicationModule;
 import com.caco3.mvk.DaggerApplicationComponent;
+import com.caco3.mvk.audios.AudiosComponent;
+import com.caco3.mvk.audios.AudiosModule;
 import com.caco3.mvk.data.DataModule;
 import com.caco3.mvk.loggedin.LoggedInComponent;
 import com.caco3.mvk.loggedin.LoggedInModule;
@@ -15,12 +17,15 @@ import com.caco3.mvk.splash.SplashModule;
 
 import timber.log.Timber;
 
+import static com.caco3.mvk.util.Preconditions.checkState;
+
 public class DaggerComponentsHolder {
   private static final DaggerComponentsHolder INSTANCE = new DaggerComponentsHolder();
   private ApplicationComponent applicationComponent;
   private LogInComponent logInComponent;
   private SplashComponent splashComponent;
   private LoggedInComponent loggedInComponent;
+  private AudiosComponent audiosComponent;
 
   public static DaggerComponentsHolder getInstance() {
     return INSTANCE;
@@ -85,5 +90,23 @@ public class DaggerComponentsHolder {
 
   public void releaseLoggedInComponent() {
     loggedInComponent = null;
+  }
+
+  public boolean hasAudiosComponent() {
+    return audiosComponent != null;
+  }
+
+  public AudiosComponent getAudiosComponent() {
+    return audiosComponent;
+  }
+
+  public void createAudiosComponent() {
+    checkState(loggedInComponent != null,
+            "Attempt to create AudiosComponent, but LoggedInComponent was not created");
+    audiosComponent = loggedInComponent.plus(new AudiosModule());
+  }
+
+  public void releaseAudiosComponent() {
+    audiosComponent = null;
   }
 }

@@ -1,5 +1,8 @@
 package com.caco3.mvk.loggedin;
 
+import com.caco3.mvk.audios.AudiosComponent;
+import com.caco3.mvk.audios.AudiosModule;
+
 import dagger.Subcomponent;
 
 /**
@@ -12,4 +15,5 @@ import dagger.Subcomponent;
         }
 )
 public interface LoggedInComponent {
+  AudiosComponent plus(AudiosModule audiosModule);
 }
