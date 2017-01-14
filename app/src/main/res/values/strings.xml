@@ -4,6 +4,7 @@
     <!-- Strings related to navigation drawer -->
     <string name="nav_drawer_open">Open navigation drawer</string>
     <string name="nav_drawer_close">Close navigation drawer</string>
+    <string name="nav_my_audios_title">My audios</string>
 
     <!-- General errors string -->
     <string name="network_is_unavailable">Network is unavailable. Check your connection</string>

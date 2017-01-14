@@ -39,4 +39,9 @@ public class AudiosActivity extends BaseActivity {
             .replace(R.id.fragment_container, fragment, AUDIOS_FRAGMENT_TAG)
             .commitNow();
   }
+
+  @Override
+  protected int getNavDrawerItemId() {
+    return R.id.nav_my_audios;
+  }
 }

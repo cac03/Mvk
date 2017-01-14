@@ -1,5 +1,6 @@
 package com.caco3.mvk.ui;
 
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
@@ -16,6 +17,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import com.caco3.mvk.R;
+import com.caco3.mvk.audios.AudiosActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -109,7 +111,12 @@ public abstract class BaseActivity extends AppCompatActivity {
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
           if (item.getItemId() != getNavDrawerItemId()) {
             int itemId = item.getItemId();
-            // TODO: 1/2/17 implement navigation here
+            if (itemId == R.id.nav_my_audios) {
+              startActivity(new Intent(BaseActivity.this, AudiosActivity.class));
+              finish();
+            } else {
+              throw new IllegalArgumentException("Unknown item id (" + item + ")");
+            }
           }
 
           if (drawerLayout != null) {

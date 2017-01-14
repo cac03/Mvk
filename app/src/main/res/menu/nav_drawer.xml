@@ -1,4 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <group
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_my_audios"
+            android:title="@string/nav_my_audios_title"
+            android:icon="@drawable/ic_music"/>
+    </group>
 </menu>
