@@ -4,7 +4,7 @@ package com.caco3.mvk.vk.users;
 import com.google.gson.annotations.SerializedName;
 
 public class VkUser {
-  @SerializedName("id")
+  @SerializedName("uid")
   private long vkUserId;
   @SerializedName("first_name")
   private String firstName;
@@ -13,4 +13,19 @@ public class VkUser {
   @SerializedName("photo_200_orig")
   private String photoUrl;
 
+  public long getVkUserId() {
+    return vkUserId;
+  }
+
+  public String getFirstName() {
+    return firstName;
+  }
+
+  public String getLastName() {
+    return lastName;
+  }
+
+  public String getPhotoUrl() {
+    return photoUrl;
+  }
 }
