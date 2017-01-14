@@ -5,6 +5,7 @@ import com.caco3.mvk.loggedin.LoggedInComponent;
 import com.caco3.mvk.loggedin.LoggedInModule;
 import com.caco3.mvk.login.LogInComponent;
 import com.caco3.mvk.login.LogInModule;
+import com.caco3.mvk.network.NetworkModule;
 import com.caco3.mvk.splash.SplashComponent;
 import com.caco3.mvk.splash.SplashModule;
 import com.caco3.mvk.vk.VkModule;
@@ -18,6 +19,7 @@ import dagger.Component;
         modules = {
                 ApplicationModule.class,
                 DataModule.class,
+                NetworkModule.class,
                 VkModule.class
         }
 )
