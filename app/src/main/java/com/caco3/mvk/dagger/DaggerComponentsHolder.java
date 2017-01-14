@@ -13,7 +13,7 @@ import com.caco3.mvk.login.LogInModule;
 import com.caco3.mvk.splash.SplashComponent;
 import com.caco3.mvk.splash.SplashModule;
 
-import static com.caco3.mvk.util.Preconditions.checkState;
+import timber.log.Timber;
 
 public class DaggerComponentsHolder {
   private static final DaggerComponentsHolder INSTANCE = new DaggerComponentsHolder();
@@ -30,7 +30,9 @@ public class DaggerComponentsHolder {
   }
 
   public void initApplicationComponent(Context context) {
-    checkState(applicationComponent == null, "Application component is already initialized");
+    if (applicationComponent != null) {
+      Timber.w("Application component is already initialized");
+    }
     applicationComponent = DaggerApplicationComponent.builder()
             .applicationModule(new ApplicationModule(context))
             .dataModule(new DataModule(context))
