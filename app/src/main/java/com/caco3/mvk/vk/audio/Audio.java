@@ -177,4 +177,29 @@ public class Audio {
       this.daoSession = daoSession;
       myDao = daoSession != null ? daoSession.getAudioDao() : null;
   }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+
+    Audio audio = (Audio) o;
+
+    if (durationSeconds != audio.durationSeconds) return false;
+    if (downloaded != audio.downloaded) return false;
+    if (artist != null ? !artist.equals(audio.artist) : audio.artist != null) return false;
+    if (title != null ? !title.equals(audio.title) : audio.title != null) return false;
+    return downloadUrl != null ? downloadUrl.equals(audio.downloadUrl) : audio.downloadUrl == null;
+
+  }
+
+  @Override
+  public int hashCode() {
+    int result = artist != null ? artist.hashCode() : 0;
+    result = 31 * result + (title != null ? title.hashCode() : 0);
+    result = 31 * result + durationSeconds;
+    result = 31 * result + (downloadUrl != null ? downloadUrl.hashCode() : 0);
+    result = 31 * result + (downloaded ? 1 : 0);
+    return result;
+  }
 }
