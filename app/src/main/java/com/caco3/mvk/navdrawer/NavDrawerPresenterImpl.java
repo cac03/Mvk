@@ -19,7 +19,7 @@ import timber.log.Timber;
 
 
 /*package*/ class NavDrawerPresenterImpl implements NavDrawerPresenter {
-  private static final long MIN_TIME_DIFF_TO_UPDATE_CURRENT_VK_USER
+  /*package*/ static final long MIN_TIME_DIFF_TO_UPDATE_CURRENT_VK_USER
           = TimeUnit.HOURS.toMillis(3);
 
   private List<NavDrawerView> views = new ArrayList<>(2);
@@ -61,21 +61,38 @@ import timber.log.Timber;
             >= MIN_TIME_DIFF_TO_UPDATE_CURRENT_VK_USER;
   }
 
-  private void updateVkUser() {
+  /*package*/ void updateVkUser() {
     vkUserSubscriber = new VkUserSubscriber();
     Observable.fromCallable(new Callable<VkUser>() {
       @Override
       public VkUser call() throws Exception {
         VkUser vkUser = vk.users().get(currentAppUser.getUserToken());
-        vkUser.setLastUpdated(System.currentTimeMillis());
-        vkUsersRepository.save(vkUser);
-        currentAppUser.setVkUser(vkUser);
-        appUsersRepository.update(currentAppUser);
+        updateAppUserWithVkUser(vkUser);
 
         return vkUser;
       }
     }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
             .subscribe(vkUserSubscriber);
+  }
+
+  private boolean isVkUserLoadedPreviously() {
+    return currentAppUser.getVkUser() != null;
+  }
+
+  private void updateAppUserWithVkUser(VkUser vkUser) {
+    if (isVkUserLoadedPreviously()) {
+      VkUser oldVkUser = currentAppUser.getVkUser();
+      oldVkUser.setLastUpdated(System.currentTimeMillis());
+      oldVkUser.setFirstName(vkUser.getFirstName());
+      oldVkUser.setLastName(vkUser.getLastName());
+      oldVkUser.setPhotoUrl(vkUser.getPhotoUrl());
+      vkUsersRepository.update(oldVkUser);
+    } else {
+      vkUser.setLastUpdated(System.currentTimeMillis());
+      currentAppUser.setVkUser(vkUser);
+      vkUsersRepository.save(vkUser);
+    }
+    appUsersRepository.update(currentAppUser);
   }
 
   @Override
