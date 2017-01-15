@@ -8,7 +8,7 @@ import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Generated;
 
 @Entity
-public class VkUser {
+public class VkUser implements Cloneable {
   @Id
   private Long id;
 
@@ -83,5 +83,43 @@ public class VkUser {
 
   public void setLastUpdated(long lastUpdated) {
     this.lastUpdated = lastUpdated;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+
+    VkUser vkUser = (VkUser) o;
+
+    if (vkUserId != vkUser.vkUserId) return false;
+    if (lastUpdated != vkUser.lastUpdated) return false;
+    if (id != null ? !id.equals(vkUser.id) : vkUser.id != null) return false;
+    if (firstName != null ? !firstName.equals(vkUser.firstName) : vkUser.firstName != null)
+      return false;
+    if (lastName != null ? !lastName.equals(vkUser.lastName) : vkUser.lastName != null)
+      return false;
+    return photoUrl != null ? photoUrl.equals(vkUser.photoUrl) : vkUser.photoUrl == null;
+
+  }
+
+  @Override
+  public int hashCode() {
+    int result = id != null ? id.hashCode() : 0;
+    result = 31 * result + (int) (vkUserId ^ (vkUserId >>> 32));
+    result = 31 * result + (firstName != null ? firstName.hashCode() : 0);
+    result = 31 * result + (lastName != null ? lastName.hashCode() : 0);
+    result = 31 * result + (photoUrl != null ? photoUrl.hashCode() : 0);
+    result = 31 * result + (int) (lastUpdated ^ (lastUpdated >>> 32));
+    return result;
+  }
+
+  @Override
+  public VkUser clone() {
+    try {
+      return (VkUser) super.clone();
+    } catch (CloneNotSupportedException cannotHappen) {
+      throw new AssertionError("We're cloneable. This cannot happen.");
+    }
   }
 }
