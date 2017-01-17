@@ -94,13 +94,11 @@ public class FileDownloader {
     this.response = response;
   }
 
-  private void updateProgress(long contentLength,
-                              long bytesRead, long nanosElapsed) {
-    double secondsElapsed = TimeUnit.NANOSECONDS.toSeconds(nanosElapsed);
-    downloadProgress.contentLength = contentLength;
-    downloadProgress.bytesDownloaded = bytesRead;
-    downloadProgress.bytesRemaining = contentLength - bytesRead;
-    downloadProgress.speedBytesPerSecond = (float)(bytesRead / secondsElapsed);
+  private void updateProgress(long totalBytes,
+                              long bytesDownloaded, long nanosElapsed) {
+    downloadProgress.totalBytes = totalBytes;
+    downloadProgress.bytesDownloaded = bytesDownloaded;
+    downloadProgress.nanosElapsed = nanosElapsed;
   }
 
   private Response makeRequest() throws IOException {
@@ -128,25 +126,20 @@ public class FileDownloader {
   }
 
   public static class DownloadProgress {
-    private long contentLength;
+    private long totalBytes;
     private long bytesDownloaded;
-    private long bytesRemaining;
-    private float speedBytesPerSecond;
+    private long nanosElapsed;
 
-    public long getContentLength() {
-      return contentLength;
+    public long getTotalBytes() {
+      return totalBytes;
     }
 
     public long getBytesDownloaded() {
       return bytesDownloaded;
     }
 
-    public long getBytesRemaining() {
-      return bytesRemaining;
-    }
-
-    public float getSpeedBytesPerSecond() {
-      return speedBytesPerSecond;
+    public long getNanosElapsed() {
+      return nanosElapsed;
     }
   }
 }
