@@ -9,6 +9,7 @@ import com.caco3.mvk.audiodownload.AudioDownloadView;
 import com.caco3.mvk.audiodownload.DownloadViewNotificationsImpl;
 import com.caco3.mvk.data.audio.AudiosRepository;
 import com.caco3.mvk.loggedin.LoggedInScope;
+import com.caco3.mvk.storage.dir.DirectoryProvider;
 
 import javax.inject.Named;
 
@@ -33,14 +34,12 @@ public class AudiosModule {
   @Named("notificationsView")
   @LoggedInScope
   public AudioDownloadView provideAudioDownloadView(Context context) {
-    // FIXME: 1/18/17
-    return null;
+    return new DownloadViewNotificationsImpl(context);
   }
 
   @Provides
   @LoggedInScope
-  public AudioDownloadDirectoryProvider provideAudioDownloadDirectoryProvider() {
-    // FIXME: 1/18/17
-    return null;
+  public AudioDownloadDirectoryProvider provideAudioDownloadDirectoryProvider(DirectoryProvider directoryProvider) {
+    return new AudioDownloadDirectoryProvider(directoryProvider);
   }
 }

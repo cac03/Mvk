@@ -1,6 +1,7 @@
 package com.caco3.mvk.myaudios;
 
 
+import com.caco3.mvk.audiodownload.AudioDownloadPresenter;
 import com.caco3.mvk.data.appuser.AppUser;
 import com.caco3.mvk.data.audio.AudiosRepository;
 import com.caco3.mvk.vk.Vk;
@@ -28,13 +29,15 @@ import timber.log.Timber;
   private AudiosRepository audiosRepository;
   private Vk vk;
   private Subscriber<List<Audio>> vkAudiosSubscriber = null;
+  private AudioDownloadPresenter audioDownloadPresenter;
 
   @Inject
   /*package*/ MyAudiosPresenterImpl(AppUser appUser, AudiosRepository audiosRepository,
-                                    Vk vk) {
+                                    Vk vk, AudioDownloadPresenter audioDownloadPresenter) {
     this.currentAppUser = appUser;
     this.audiosRepository = audiosRepository;
     this.vk = vk;
+    this.audioDownloadPresenter = audioDownloadPresenter;
   }
 
   @Override
@@ -140,6 +143,6 @@ import timber.log.Timber;
 
   @Override
   public void onDownloadRequest(Audio audio) {
-    throw new RuntimeException("onDownloadRequest(audio) not implemented");
+    audioDownloadPresenter.startDownload(audio);
   }
 }

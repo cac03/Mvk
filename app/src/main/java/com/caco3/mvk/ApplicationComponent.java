@@ -8,6 +8,7 @@ import com.caco3.mvk.login.LogInModule;
 import com.caco3.mvk.network.NetworkModule;
 import com.caco3.mvk.splash.SplashComponent;
 import com.caco3.mvk.splash.SplashModule;
+import com.caco3.mvk.storage.StorageModule;
 import com.caco3.mvk.vk.VkModule;
 
 import javax.inject.Singleton;
@@ -20,6 +21,7 @@ import dagger.Component;
                 ApplicationModule.class,
                 DataModule.class,
                 NetworkModule.class,
+                StorageModule.class,
                 VkModule.class
         }
 )
