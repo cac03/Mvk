@@ -4,7 +4,6 @@ import com.caco3.mvk.util.io.Closeables;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.concurrent.TimeUnit;
 
 import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
@@ -16,6 +15,7 @@ import okio.Sink;
 import okio.Source;
 import rx.Observable;
 import rx.Subscriber;
+import rx.functions.Action0;
 
 import static com.caco3.mvk.util.Preconditions.checkArgument;
 import static com.caco3.mvk.util.Preconditions.checkNotNull;
@@ -40,6 +40,8 @@ public class FileDownloader {
   private Source source;
   private Sink sink;
   private Buffer buffer = new Buffer();
+
+  private volatile boolean subscribed = true;
 
   private DownloadProgress downloadProgress = new DownloadProgress();
 
@@ -82,6 +84,11 @@ public class FileDownloader {
         } finally {
           cleanUp();
         }
+      }
+    }).doOnUnsubscribe(new Action0() {
+      @Override
+      public void call() {
+        subscribed = false;
       }
     });
   }
@@ -126,9 +133,9 @@ public class FileDownloader {
   }
 
   public static class DownloadProgress {
-    private long totalBytes;
-    private long bytesDownloaded;
-    private long nanosElapsed;
+    long totalBytes;
+    long bytesDownloaded;
+    long nanosElapsed;
 
     public long getTotalBytes() {
       return totalBytes;
