@@ -1,4 +1,4 @@
-package com.caco3.mvk.file;
+package com.caco3.mvk.storage.file;
 
 import com.caco3.mvk.util.Strings;
 
@@ -35,6 +35,10 @@ public abstract class AbstractDownloadableMvkFile {
   public File restoreAfterDownload() {
     renameBack();
     return getFile();
+  }
+
+  public boolean remove() {
+    return getFile().delete();
   }
 
   private boolean renameBack() {

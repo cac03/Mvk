@@ -1,6 +1,6 @@
 package com.caco3.mvk.audiodownload;
 
-import com.caco3.mvk.file.AbstractDownloadableMvkFile;
+import com.caco3.mvk.storage.file.AbstractDownloadableMvkFile;
 import com.caco3.mvk.vk.audio.Audio;
 
 import java.io.File;

@@ -1,5 +1,6 @@
 package com.caco3.mvk.loggedin;
 
+import com.caco3.mvk.audios.AudiosModule;
 import com.caco3.mvk.myaudios.MyAudiosComponent;
 import com.caco3.mvk.myaudios.MyAudiosModule;
 import com.caco3.mvk.navdrawer.NavDrawerComponent;
@@ -13,6 +14,7 @@ import dagger.Subcomponent;
 @LoggedInScope
 @Subcomponent(
         modules = {
+                AudiosModule.class,
                 LoggedInModule.class
         }
 )
