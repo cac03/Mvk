@@ -1,4 +1,4 @@
-package com.caco3.mvk.audios;
+package com.caco3.mvk.myaudios;
 
 import com.caco3.mvk.data.appuser.AppUser;
 import com.caco3.mvk.data.audio.AudiosRepository;

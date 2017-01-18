@@ -20,7 +20,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".login.LogInActivity" />
-        <activity android:name=".audios.MyAudiosActivity" />
+        <activity android:name=".myaudios.MyAudiosActivity" />
     </application>
 
 </manifest>

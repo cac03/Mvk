@@ -5,7 +5,7 @@ import android.content.Intent;
 
 import com.caco3.mvk.BuildConfig;
 import com.caco3.mvk.R;
-import com.caco3.mvk.audios.MyAudiosActivity;
+import com.caco3.mvk.myaudios.MyAudiosActivity;
 
 import org.junit.Before;
 import org.junit.Test;

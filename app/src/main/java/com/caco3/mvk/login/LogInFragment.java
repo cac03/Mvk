@@ -14,7 +14,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.caco3.mvk.R;
-import com.caco3.mvk.audios.MyAudiosActivity;
+import com.caco3.mvk.myaudios.MyAudiosActivity;
 import com.caco3.mvk.dagger.DaggerComponentsHolder;
 
 import javax.inject.Inject;

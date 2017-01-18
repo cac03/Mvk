@@ -17,7 +17,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import com.caco3.mvk.R;
-import com.caco3.mvk.audios.MyAudiosActivity;
+import com.caco3.mvk.myaudios.MyAudiosActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

@@ -1,7 +1,7 @@
 package com.caco3.mvk.loggedin;
 
-import com.caco3.mvk.audios.MyAudiosComponent;
-import com.caco3.mvk.audios.MyAudiosModule;
+import com.caco3.mvk.myaudios.MyAudiosComponent;
+import com.caco3.mvk.myaudios.MyAudiosModule;
 import com.caco3.mvk.navdrawer.NavDrawerComponent;
 import com.caco3.mvk.navdrawer.NavDrawerModule;
 

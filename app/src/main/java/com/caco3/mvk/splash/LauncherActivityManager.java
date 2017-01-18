@@ -1,7 +1,7 @@
 package com.caco3.mvk.splash;
 
 
-import com.caco3.mvk.audios.MyAudiosActivity;
+import com.caco3.mvk.myaudios.MyAudiosActivity;
 import com.caco3.mvk.dagger.DaggerComponentsHolder;
 import com.caco3.mvk.data.appuser.AppUsersRepository;
 import com.caco3.mvk.login.LogInActivity;
