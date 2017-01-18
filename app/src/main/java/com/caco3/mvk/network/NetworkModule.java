@@ -6,6 +6,7 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
+import okhttp3.OkHttpClient;
 
 @Module
 public class NetworkModule {
@@ -13,5 +14,11 @@ public class NetworkModule {
   @Singleton
   public NetworkManager provideNetworkManager(Context context) {
     return new NetworkManagerImpl(context);
+  }
+
+  @Provides
+  @Singleton
+  public OkHttpClient provideHttpClient() {
+    return new OkHttpClient();
   }
 }
