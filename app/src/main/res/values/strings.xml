@@ -17,4 +17,7 @@
     <string name="this_field_required">This field required</string>
     <string name="username_or_password_incorrect">Login or password incorrect</string>
     <string name="logging_in">Logging in</string>
+
+    <!-- Strings related to audios fragment -->
+    <string name="audio_download">Download</string>
 </resources>

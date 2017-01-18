@@ -2,12 +2,17 @@ package com.caco3.mvk.audios;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.BottomSheetDialog;
+import android.support.design.widget.BottomSheetDialogFragment;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
@@ -26,7 +31,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class AudiosFragment extends Fragment implements AudiosView,
-        SwipeRefreshLayout.OnRefreshListener {
+        SwipeRefreshLayout.OnRefreshListener, AudiosAdapter.UiEventsListener {
   @Inject
   AudiosPresenter presenter;
   @BindView(R.id.audios_frag_refresh_layout)
@@ -36,7 +41,7 @@ public class AudiosFragment extends Fragment implements AudiosView,
   @BindView(R.id.audios_frag_progress_bar)
   ProgressBar progressBar;
   View audiosContentView;
-  private AudiosAdapter audiosAdapter = new AudiosAdapter();
+  private AudiosAdapter audiosAdapter = new AudiosAdapter(this);
 
   @Override
   public View onCreateView(LayoutInflater inflater,
@@ -131,5 +136,32 @@ public class AudiosFragment extends Fragment implements AudiosView,
   @Override
   public void showNetworkErrorOccurredError() {
     Toast.makeText(getContext(), R.string.network_error_occurred, Toast.LENGTH_SHORT).show();
+  }
+
+  @Override
+  public void onAudioItemClicked(Audio audio, View clickedView) {
+    showAudioPopupMenu(audio, clickedView);
+  }
+
+  private void showAudioPopupMenu(final Audio audio, View anchor) {
+    PopupMenu popupMenu = new PopupMenu(getContext(), anchor);
+    popupMenu.getMenuInflater().inflate(R.menu.audio_popup_menu, popupMenu.getMenu());
+    popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+      @Override
+      public boolean onMenuItemClick(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.audio_item_menu_download) {
+          downloadAudio(audio);
+          return true;
+        } else {
+          return false;
+        }
+      }
+    });
+    popupMenu.show();
+  }
+
+  private void downloadAudio(Audio audio) {
+    presenter.onDownloadRequest(audio);
   }
 }

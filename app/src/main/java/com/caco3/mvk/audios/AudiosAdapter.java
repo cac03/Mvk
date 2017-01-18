@@ -1,5 +1,6 @@
 package com.caco3.mvk.audios;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -17,10 +18,21 @@ import java.util.concurrent.TimeUnit;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.caco3.mvk.util.Preconditions.checkNotNull;
+
 public class AudiosAdapter extends RecyclerView.Adapter<AudiosAdapter.AudioViewHolder> {
+
+  /*package*/ interface UiEventsListener {
+    void onAudioItemClicked(Audio audio, View clickedView);
+  }
 
   private final List<Audio> items = new ArrayList<>();
   private Context context;
+  private UiEventsListener uiEventsListener;
+
+  /*package*/ AudiosAdapter(UiEventsListener listener) {
+    this.uiEventsListener = checkNotNull(listener, "listener == null");
+  }
 
   public void setItems(List<Audio> items) {
     this.items.clear();
@@ -57,10 +69,10 @@ public class AudiosAdapter extends RecyclerView.Adapter<AudiosAdapter.AudioViewH
     return items.size();
   }
 
-  /*package*/ static class AudioViewHolder extends RecyclerView.ViewHolder {
-    private static final int SECONDS_PER_MINUTE = (int)TimeUnit.MINUTES.toSeconds(1);
-    private static final String AUDIO_DURATION_STR_FMT = "%d:%02d";
+  private static final int SECONDS_PER_MINUTE = (int)TimeUnit.MINUTES.toSeconds(1);
+  private static final String AUDIO_DURATION_STR_FMT = "%d:%02d";
 
+  /*package*/ class AudioViewHolder extends RecyclerView.ViewHolder {
     @BindView(R.id.audio_item_artist)
     TextView artistView;
     @BindView(R.id.audio_item_title)
@@ -75,13 +87,20 @@ public class AudiosAdapter extends RecyclerView.Adapter<AudiosAdapter.AudioViewH
       ButterKnife.bind(this, itemView);
     }
 
-    public void bind(Audio audio) {
+    public void bind(final Audio audio) {
       artistView.setText(audio.getArtist());
       titleView.setText(audio.getTitle());
       durationView.setText(formatDuration(audio.getDurationSeconds()));
       downloadedView.setText(audio.isDownloaded() ? "Y" : "N");
+      itemView.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+          uiEventsListener.onAudioItemClicked(audio, itemView);
+        }
+      });
     }
 
+    @SuppressLint("DefaultLocale")
     private String formatDuration(int durationSeconds) {
       int minutes = durationSeconds / SECONDS_PER_MINUTE;
       int seconds = durationSeconds % SECONDS_PER_MINUTE;

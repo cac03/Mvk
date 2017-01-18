@@ -138,4 +138,8 @@ import timber.log.Timber;
     }
   }
 
+  @Override
+  public void onDownloadRequest(Audio audio) {
+    throw new RuntimeException("onDownloadRequest(audio) not implemented");
+  }
 }
