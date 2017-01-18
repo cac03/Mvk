@@ -7,8 +7,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
-import java.io.File;
-
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
 
@@ -23,10 +21,7 @@ public class MvkAudioFileTest {
     Audio audio = audiosGenerator.generateAudio();
     MvkAudioFile audioFile = new MvkAudioFile(temporaryFolder.getRoot(), audio);
 
-    audioFile.prepareForDownload();
-    File file = audioFile.getFile();
-
-    assertTrue(file.exists());
+    assertTrue(audioFile.prepareForDownload().exists());
   }
 
   @Test
@@ -36,9 +31,8 @@ public class MvkAudioFileTest {
     audio.setDownloadUrl(audio.getDownloadUrl() + "." + expected + "?dummy=asdasd&param=param");
     MvkAudioFile audioFile = new MvkAudioFile(temporaryFolder.getRoot(), audio);
     audioFile.prepareForDownload();
-    audioFile.restoreAfterDownload();
 
-    String fileName = audioFile.getFile().getName();
+    String fileName = audioFile.restoreAfterDownload().getName();
     String actual = fileName.substring(fileName.length() - 3, fileName.length());
     assertEquals(expected, actual);
   }
@@ -51,9 +45,8 @@ public class MvkAudioFileTest {
     audio.setDownloadUrl(audio.getDownloadUrl() + "." + expected);
     MvkAudioFile audioFile = new MvkAudioFile(temporaryFolder.getRoot(), audio);
     audioFile.prepareForDownload();
-    audioFile.restoreAfterDownload();
 
-    String fileName = audioFile.getFile().getName();
+    String fileName = audioFile.restoreAfterDownload().getName();
     String actual = fileName.substring(fileName.length() - 3, fileName.length());
     assertEquals(expected, actual);
   }
