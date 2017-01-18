@@ -1,6 +1,10 @@
 <resources>
     <string name="app_name">Mvk</string>
 
+    <string name="kilobyte_short">kB</string>
+    <string name="megabyte_short">MB</string>
+    <string name="second_short">s</string>
+
     <!-- Strings related to navigation drawer -->
     <string name="nav_drawer_open">Open navigation drawer</string>
     <string name="nav_drawer_close">Close navigation drawer</string>
@@ -20,4 +24,10 @@
 
     <!-- Strings related to audios fragment -->
     <string name="audio_download">Download</string>
+
+    <!-- Strings related to audio download notifications view -->
+    <string name="download_pending">Download pending</string>
+    <string name="download_canceled">Download canceled</string>
+    <string name="download_failed">Download failed</string>
+    <string name="download_complete">Download complete</string>
 </resources>
