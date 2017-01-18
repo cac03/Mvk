@@ -43,7 +43,7 @@ public class AudioDownloadPresenterImpl implements AudioDownloadPresenter {
     this.okHttpClient = okHttpClient;
     this.directoryProvider = directoryProvider;
     this.audiosRepository = audiosRepository;
-    onViewDetached(notificationsView);
+    onViewAttached(notificationsView);
   }
 
   @Override
@@ -55,7 +55,7 @@ public class AudioDownloadPresenterImpl implements AudioDownloadPresenter {
 
   @Override
   public void onViewDetached(AudioDownloadView view) {
-    views.add(view);
+    views.remove(view);
   }
 
   private void initView(AudioDownloadView view) {
