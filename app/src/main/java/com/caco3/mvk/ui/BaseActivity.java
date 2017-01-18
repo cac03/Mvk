@@ -17,7 +17,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import com.caco3.mvk.R;
-import com.caco3.mvk.audios.AudiosActivity;
+import com.caco3.mvk.audios.MyAudiosActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -112,7 +112,7 @@ public abstract class BaseActivity extends AppCompatActivity {
           if (item.getItemId() != getNavDrawerItemId()) {
             int itemId = item.getItemId();
             if (itemId == R.id.nav_my_audios) {
-              startActivity(new Intent(BaseActivity.this, AudiosActivity.class));
+              startActivity(new Intent(BaseActivity.this, MyAudiosActivity.class));
               finish();
             } else {
               throw new IllegalArgumentException("Unknown item id (" + item + ")");

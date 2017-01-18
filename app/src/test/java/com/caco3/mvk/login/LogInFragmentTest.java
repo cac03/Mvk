@@ -5,7 +5,7 @@ import android.content.Intent;
 
 import com.caco3.mvk.BuildConfig;
 import com.caco3.mvk.R;
-import com.caco3.mvk.audios.AudiosActivity;
+import com.caco3.mvk.audios.MyAudiosActivity;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -14,11 +14,8 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
-import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
-import org.robolectric.shadows.ShadowActivity;
-import org.robolectric.shadows.ShadowIntent;
 import org.robolectric.shadows.ShadowToast;
 
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -110,17 +107,17 @@ public class LogInFragmentTest {
   }
 
   @Test
-  public void navigateToAudiosActivityCalled_intentFired() {
+  public void navigateToMyAudiosActivityCalled_intentFired() {
     Activity activity = fragment.getActivity();
-    Intent expected = new Intent(activity, AudiosActivity.class);
-    fragment.navigateToAudiosActivity();
+    Intent expected = new Intent(activity, MyAudiosActivity.class);
+    fragment.navigateToMyAudiosActivity();
     assertEquals(expected.getComponent(), shadowOf(activity).getNextStartedActivity().getComponent());
   }
 
   @Test
   public void navigateToAudiosActivityCalled_currentActivityIsFinishing() {
     Activity activity = fragment.getActivity();
-    fragment.navigateToAudiosActivity();
+    fragment.navigateToMyAudiosActivity();
     assertTrue(activity.isFinishing());
   }
 

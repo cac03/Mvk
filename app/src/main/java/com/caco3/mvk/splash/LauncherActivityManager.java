@@ -1,7 +1,7 @@
 package com.caco3.mvk.splash;
 
 
-import com.caco3.mvk.audios.AudiosActivity;
+import com.caco3.mvk.audios.MyAudiosActivity;
 import com.caco3.mvk.dagger.DaggerComponentsHolder;
 import com.caco3.mvk.data.appuser.AppUsersRepository;
 import com.caco3.mvk.login.LogInActivity;
@@ -22,7 +22,7 @@ public class LauncherActivityManager {
   public Class<? extends BaseActivity> getLauncherActivity() {
     if (appUsersRepository.hasActiveAppUser()) {
       putLoggedInComponent();
-      return AudiosActivity.class;
+      return MyAudiosActivity.class;
     } else {
       return LogInActivity.class;
     }

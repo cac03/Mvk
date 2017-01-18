@@ -27,15 +27,15 @@ import static org.robolectric.shadows.support.v4.SupportFragmentTestUtil.startFr
         constants = BuildConfig.class,
         sdk = 22
 )
-public class AudiosFragmentTest {
+public class MyAudiosFragmentTest {
   @Mock
-  private AudiosPresenter presenter;
-  private AudiosFragment fragment;
+  private MyAudiosPresenter presenter;
+  private MyAudiosFragment fragment;
 
   @Before
   public void setUp() {
     MockitoAnnotations.initMocks(this);
-    fragment = new AudiosFragment();
+    fragment = new MyAudiosFragment();
     fragment.presenter = presenter;
     startFragment(fragment);
   }

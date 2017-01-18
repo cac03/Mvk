@@ -20,7 +20,7 @@ import butterknife.ButterKnife;
 
 import static com.caco3.mvk.util.Preconditions.checkNotNull;
 
-public class AudiosAdapter extends RecyclerView.Adapter<AudiosAdapter.AudioViewHolder> {
+public class MyAudiosAdapter extends RecyclerView.Adapter<MyAudiosAdapter.AudioViewHolder> {
 
   /*package*/ interface UiEventsListener {
     void onAudioItemClicked(Audio audio, View clickedView);
@@ -30,7 +30,7 @@ public class AudiosAdapter extends RecyclerView.Adapter<AudiosAdapter.AudioViewH
   private Context context;
   private UiEventsListener uiEventsListener;
 
-  /*package*/ AudiosAdapter(UiEventsListener listener) {
+  /*package*/ MyAudiosAdapter(UiEventsListener listener) {
     this.uiEventsListener = checkNotNull(listener, "listener == null");
   }
 

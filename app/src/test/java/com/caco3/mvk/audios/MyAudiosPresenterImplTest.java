@@ -30,7 +30,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.when;
 
-public class AudiosPresenterImplTest {
+public class MyAudiosPresenterImplTest {
   @Mock
   private Vk vk;
   @Mock
@@ -40,8 +40,8 @@ public class AudiosPresenterImplTest {
   @Mock
   private AudiosRepository audiosRepository;
   @Mock
-  private AudiosView view;
-  private AudiosPresenter presenter;
+  private MyAudiosView view;
+  private MyAudiosPresenter presenter;
   private AudiosGenerator audiosGenerator = new AudiosGenerator();
 
   @Before
@@ -49,7 +49,7 @@ public class AudiosPresenterImplTest {
     MockitoAnnotations.initMocks(this);
     initAppUser();
     initVk();
-    presenter = new AudiosPresenterImpl(appUser, audiosRepository, vk);
+    presenter = new MyAudiosPresenterImpl(appUser, audiosRepository, vk);
     Rxs.setUpRx();
     Timber.plant(new SystemOutTree());
   }

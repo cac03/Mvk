@@ -5,11 +5,10 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 
 import com.caco3.mvk.R;
-import com.caco3.mvk.ui.BaseActivity;
 import com.caco3.mvk.ui.UserLoggedInBaseActivity;
 
 
-public class AudiosActivity extends UserLoggedInBaseActivity {
+public class MyAudiosActivity extends UserLoggedInBaseActivity {
   private static final String AUDIOS_FRAGMENT_TAG = "audios_frag";
 
   @Override
@@ -30,7 +29,7 @@ public class AudiosActivity extends UserLoggedInBaseActivity {
   }
 
   private Fragment createFragment() {
-    Fragment fragment = new AudiosFragment();
+    Fragment fragment = new MyAudiosFragment();
     fragment.setRetainInstance(true);
     return fragment;
   }

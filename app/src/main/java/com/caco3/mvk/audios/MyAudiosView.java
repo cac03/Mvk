@@ -6,7 +6,7 @@ import com.caco3.mvk.vk.audio.Audio;
 
 import java.util.List;
 
-public interface AudiosView extends BaseView<AudiosPresenter> {
+public interface MyAudiosView extends BaseView<MyAudiosPresenter> {
   void hideRefreshLayout();
   void showRefreshLayout();
   void showGlobalProgress();

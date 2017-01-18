@@ -2,6 +2,7 @@
           package="com.caco3.mvk">
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -19,7 +20,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".login.LogInActivity" />
-        <activity android:name=".audios.AudiosActivity" />
+        <activity android:name=".audios.MyAudiosActivity" />
     </application>
 
 </manifest>

@@ -11,5 +11,5 @@ public interface LogInView extends BaseView<LogInPresenter> {
   void showUsernameOrPasswordIncorrectError();
   void showNetworkIsUnavailableError();
   void showNetworkErrorOccurredError();
-  void navigateToAudiosActivity();
+  void navigateToMyAudiosActivity();
 }

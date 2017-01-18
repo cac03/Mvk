@@ -14,7 +14,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.caco3.mvk.R;
-import com.caco3.mvk.audios.AudiosActivity;
+import com.caco3.mvk.audios.MyAudiosActivity;
 import com.caco3.mvk.dagger.DaggerComponentsHolder;
 
 import javax.inject.Inject;
@@ -103,9 +103,9 @@ public class LogInFragment extends Fragment implements LogInView {
   }
 
   @Override
-  public void navigateToAudiosActivity() {
+  public void navigateToMyAudiosActivity() {
     Activity activity = getActivity();
-    Intent intent = new Intent(activity, AudiosActivity.class);
+    Intent intent = new Intent(activity, MyAudiosActivity.class);
     activity.startActivity(intent);
     activity.finish();
   }

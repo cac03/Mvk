@@ -2,9 +2,6 @@ package com.caco3.mvk.audios;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.BottomSheetDialog;
-import android.support.design.widget.BottomSheetDialogFragment;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DividerItemDecoration;
@@ -30,10 +27,10 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class AudiosFragment extends Fragment implements AudiosView,
-        SwipeRefreshLayout.OnRefreshListener, AudiosAdapter.UiEventsListener {
+public class MyAudiosFragment extends Fragment implements MyAudiosView,
+        SwipeRefreshLayout.OnRefreshListener, MyAudiosAdapter.UiEventsListener {
   @Inject
-  AudiosPresenter presenter;
+  MyAudiosPresenter presenter;
   @BindView(R.id.audios_frag_refresh_layout)
   SwipeRefreshLayout swipeRefreshLayout;
   @BindView(R.id.audios_frag_recycler_view)
@@ -41,7 +38,7 @@ public class AudiosFragment extends Fragment implements AudiosView,
   @BindView(R.id.audios_frag_progress_bar)
   ProgressBar progressBar;
   View audiosContentView;
-  private AudiosAdapter audiosAdapter = new AudiosAdapter(this);
+  private MyAudiosAdapter audiosAdapter = new MyAudiosAdapter(this);
 
   @Override
   public View onCreateView(LayoutInflater inflater,
@@ -84,10 +81,10 @@ public class AudiosFragment extends Fragment implements AudiosView,
 
   private void injectPresenter() {
     DaggerComponentsHolder componentsHolder = DaggerComponentsHolder.getInstance();
-    if (!componentsHolder.hasAudiosComponent()) {
-      componentsHolder.createAudiosComponent();
+    if (!componentsHolder.hasMyAudiosComponent()) {
+      componentsHolder.createMyAudiosComponent();
     }
-    componentsHolder.getAudiosComponent().inject(this);
+    componentsHolder.getMyAudiosComponent().inject(this);
   }
 
   @Override

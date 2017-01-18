@@ -1,7 +1,7 @@
 package com.caco3.mvk.loggedin;
 
-import com.caco3.mvk.audios.AudiosComponent;
-import com.caco3.mvk.audios.AudiosModule;
+import com.caco3.mvk.audios.MyAudiosComponent;
+import com.caco3.mvk.audios.MyAudiosModule;
 import com.caco3.mvk.navdrawer.NavDrawerComponent;
 import com.caco3.mvk.navdrawer.NavDrawerModule;
 
@@ -17,6 +17,6 @@ import dagger.Subcomponent;
         }
 )
 public interface LoggedInComponent {
-  AudiosComponent plus(AudiosModule audiosModule);
+  MyAudiosComponent plus(MyAudiosModule myAudiosModule);
   NavDrawerComponent plus(NavDrawerModule navDrawerModule);
 }

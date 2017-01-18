@@ -152,7 +152,7 @@ import timber.log.Timber;
       enterLoggedInScope();
       releaseLogInComponent();
       if (isViewAttached()) {
-        view.navigateToAudiosActivity();
+        view.navigateToMyAudiosActivity();
       }
     }
   }

@@ -5,8 +5,8 @@ import android.content.Context;
 import com.caco3.mvk.ApplicationComponent;
 import com.caco3.mvk.ApplicationModule;
 import com.caco3.mvk.DaggerApplicationComponent;
-import com.caco3.mvk.audios.AudiosComponent;
-import com.caco3.mvk.audios.AudiosModule;
+import com.caco3.mvk.audios.MyAudiosComponent;
+import com.caco3.mvk.audios.MyAudiosModule;
 import com.caco3.mvk.data.DataModule;
 import com.caco3.mvk.loggedin.LoggedInComponent;
 import com.caco3.mvk.loggedin.LoggedInModule;
@@ -27,7 +27,7 @@ public class DaggerComponentsHolder {
   private LogInComponent logInComponent;
   private SplashComponent splashComponent;
   private LoggedInComponent loggedInComponent;
-  private AudiosComponent audiosComponent;
+  private MyAudiosComponent myAudiosComponent;
   private NavDrawerComponent navDrawerComponent;
 
   public static DaggerComponentsHolder getInstance() {
@@ -95,22 +95,22 @@ public class DaggerComponentsHolder {
     loggedInComponent = null;
   }
 
-  public boolean hasAudiosComponent() {
-    return audiosComponent != null;
+  public boolean hasMyAudiosComponent() {
+    return myAudiosComponent != null;
   }
 
-  public AudiosComponent getAudiosComponent() {
-    return audiosComponent;
+  public MyAudiosComponent getMyAudiosComponent() {
+    return myAudiosComponent;
   }
 
-  public void createAudiosComponent() {
+  public void createMyAudiosComponent() {
     checkState(loggedInComponent != null,
-            "Attempt to create AudiosComponent, but LoggedInComponent was not created");
-    audiosComponent = loggedInComponent.plus(new AudiosModule());
+            "Attempt to create MyAudiosComponent, but LoggedInComponent was not created");
+    myAudiosComponent = loggedInComponent.plus(new MyAudiosModule());
   }
 
-  public void releaseAudiosComponent() {
-    audiosComponent = null;
+  public void releaseMyAudiosComponent() {
+    myAudiosComponent = null;
   }
 
   public boolean hasNavDrawerComponent() {

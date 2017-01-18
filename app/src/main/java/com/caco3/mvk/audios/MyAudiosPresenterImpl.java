@@ -22,23 +22,23 @@ import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
 
-/*package*/ class AudiosPresenterImpl implements AudiosPresenter {
-  private AudiosView view;
+/*package*/ class MyAudiosPresenterImpl implements MyAudiosPresenter {
+  private MyAudiosView view;
   private AppUser currentAppUser;
   private AudiosRepository audiosRepository;
   private Vk vk;
   private Subscriber<List<Audio>> vkAudiosSubscriber = null;
 
   @Inject
-  /*package*/ AudiosPresenterImpl(AppUser appUser, AudiosRepository audiosRepository,
-                             Vk vk) {
+  /*package*/ MyAudiosPresenterImpl(AppUser appUser, AudiosRepository audiosRepository,
+                                    Vk vk) {
     this.currentAppUser = appUser;
     this.audiosRepository = audiosRepository;
     this.vk = vk;
   }
 
   @Override
-  public void onViewAttached(AudiosView view) {
+  public void onViewAttached(MyAudiosView view) {
     this.view = view;
     initView();
   }
@@ -73,7 +73,7 @@ import timber.log.Timber;
   }
 
   @Override
-  public void onViewDetached(AudiosView view) {
+  public void onViewDetached(MyAudiosView view) {
     this.view = null;
   }
 
