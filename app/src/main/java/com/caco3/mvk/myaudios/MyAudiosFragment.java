@@ -31,6 +31,7 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import jp.wasabeef.recyclerview.animators.OvershootInLeftAnimator;
 
 public class MyAudiosFragment extends Fragment implements MyAudiosView,
         SwipeRefreshLayout.OnRefreshListener, MyAudiosAdapter.UiEventsListener,
@@ -96,6 +97,7 @@ public class MyAudiosFragment extends Fragment implements MyAudiosView,
     recyclerView.addItemDecoration(new DividerItemDecoration(getContext(),
             linearLayoutManager.getOrientation()));
     recyclerView.setAdapter(audiosAdapter);
+    recyclerView.setItemAnimator(new OvershootInLeftAnimator());
   }
 
   private void initSwipeRefreshLayout() {

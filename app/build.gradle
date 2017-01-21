@@ -56,4 +56,6 @@ dependencies {
     compile 'com.squareup.picasso:picasso:2.5.2'
     // MockWebServer
     testCompile 'com.squareup.okhttp3:mockwebserver:3.3.0'
+    // recyclerView animations
+    compile 'jp.wasabeef:recyclerview-animators:2.2.5'
 }
