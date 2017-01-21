@@ -4,6 +4,7 @@ package com.caco3.mvk.myaudios;
 import com.caco3.mvk.audiodownload.AudioDownloadPresenter;
 import com.caco3.mvk.data.appuser.AppUser;
 import com.caco3.mvk.data.audio.AudiosRepository;
+import com.caco3.mvk.search.DataSetFilter;
 import com.caco3.mvk.vk.Vk;
 import com.caco3.mvk.vk.VkException;
 import com.caco3.mvk.vk.audio.Audio;
@@ -30,6 +31,7 @@ import timber.log.Timber;
   private Vk vk;
   private Subscriber<List<Audio>> vkAudiosSubscriber = null;
   private AudioDownloadPresenter audioDownloadPresenter;
+  private DataSetFilter<Audio> audiosFilter;
 
   @Inject
   /*package*/ MyAudiosPresenterImpl(AppUser appUser, AudiosRepository audiosRepository,
@@ -65,10 +67,19 @@ import timber.log.Timber;
               public void call(List<Audio> audios) {
                 if (isViewAttached()) {
                   view.showAudios(audios);
+                  resetOrInitAudiosFilter(audios);
                   view.hideGlobalProgress();
                 }
               }
             });
+  }
+
+  private void resetOrInitAudiosFilter(List<Audio> audios) {
+    if (audiosFilter == null) {
+      audiosFilter = new AudiosFilter(audios);
+    } else {
+      audiosFilter.resetWith(audios);
+    }
   }
 
   private boolean isViewAttached() {
@@ -134,6 +145,7 @@ import timber.log.Timber;
     @Override
     public void onNext(List<Audio> audios) {
       vkAudiosSubscriber = null;
+      resetOrInitAudiosFilter(audios);
       if (isViewAttached()) {
         view.hideRefreshLayout();
         view.showAudios(audios);
@@ -144,5 +156,20 @@ import timber.log.Timber;
   @Override
   public void onDownloadRequest(Audio audio) {
     audioDownloadPresenter.startDownload(audio);
+  }
+
+  @Override
+  public void onSearch(String query) {
+    List<Audio> lastAudiosReturnedByFilter = audiosFilter.filter(query);
+    if (isViewAttached()) {
+      view.showAudios(lastAudiosReturnedByFilter);
+    }
+  }
+
+  @Override
+  public void onSearchCanceled() {
+    if (isViewAttached()) {
+      loadAudiosFromRepositoryToView();
+    }
   }
 }

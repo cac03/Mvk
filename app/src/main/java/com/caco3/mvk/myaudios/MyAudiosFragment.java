@@ -3,12 +3,16 @@ package com.caco3.mvk.myaudios;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,7 +32,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class MyAudiosFragment extends Fragment implements MyAudiosView,
-        SwipeRefreshLayout.OnRefreshListener, MyAudiosAdapter.UiEventsListener {
+        SwipeRefreshLayout.OnRefreshListener, MyAudiosAdapter.UiEventsListener,
+        SearchView.OnQueryTextListener {
   @Inject
   MyAudiosPresenter presenter;
   @BindView(R.id.audios_frag_refresh_layout)
@@ -39,6 +44,24 @@ public class MyAudiosFragment extends Fragment implements MyAudiosView,
   ProgressBar progressBar;
   View audiosContentView;
   private MyAudiosAdapter audiosAdapter = new MyAudiosAdapter(this);
+  /**State of Search view is not saved when orientation changed.
+   * So we have to save and restore it manually*/
+  private String lastSearchQuery = null;
+  private boolean isSearchViewExpanded = false;
+  private MenuItemCompat.OnActionExpandListener searchViewOnExpandListener
+          = new MenuItemCompat.OnActionExpandListener() {
+    @Override
+    public boolean onMenuItemActionExpand(MenuItem item) {
+      isSearchViewExpanded = true;
+      return true;
+    }
+
+    @Override
+    public boolean onMenuItemActionCollapse(MenuItem item) {
+      isSearchViewExpanded = false;
+      return true;
+    }
+  };
 
   @Override
   public View onCreateView(LayoutInflater inflater,
@@ -47,6 +70,7 @@ public class MyAudiosFragment extends Fragment implements MyAudiosView,
     View root = inflater.inflate(R.layout.audios_fragment, container, false);
     ButterKnife.bind(this, root);
     initViews();
+    setHasOptionsMenu(true);
 
     return root;
   }
@@ -160,5 +184,45 @@ public class MyAudiosFragment extends Fragment implements MyAudiosView,
 
   private void downloadAudio(Audio audio) {
     presenter.onDownloadRequest(audio);
+  }
+
+  @Override
+  public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    inflater.inflate(R.menu.my_audios_menu, menu);
+    initSearchView(menu);
+  }
+
+  private void initSearchView(Menu menu) {
+    MenuItem searchMenuItem = menu.findItem(R.id.my_audios_action_search);
+    MenuItemCompat.setOnActionExpandListener(searchMenuItem, searchViewOnExpandListener);
+    SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchMenuItem);
+    searchView.setQueryHint(getString(R.string.search_audios_hint));
+    searchView.setOnQueryTextListener(this);
+    final String searchQuery = lastSearchQuery;
+    if (isSearching()) {
+      searchMenuItem.expandActionView();
+      searchView.setQuery(searchQuery, false);
+    }
+  }
+
+  @Override
+  public boolean onQueryTextSubmit(String query) {
+    return false;
+  }
+
+  @Override
+  public boolean onQueryTextChange(String newText) {
+    lastSearchQuery = newText;
+    if (isSearching()) {
+      presenter.onSearch(newText);
+    } else {
+      presenter.onSearchCanceled();
+    }
+    return true;
+  }
+
+  private boolean isSearching() {
+    return isSearchViewExpanded &&
+            lastSearchQuery != null && !lastSearchQuery.isEmpty();
   }
 }

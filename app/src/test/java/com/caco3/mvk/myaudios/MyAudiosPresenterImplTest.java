@@ -12,6 +12,7 @@ import com.caco3.mvk.vk.auth.UserToken;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.invocation.InvocationOnMock;
@@ -21,9 +22,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 
 import timber.log.Timber;
 
+import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
 import static junit.framework.Assert.fail;
 import static org.mockito.ArgumentMatchers.any;
@@ -49,7 +52,7 @@ public class MyAudiosPresenterImplTest {
     MockitoAnnotations.initMocks(this);
     initAppUser();
     initVk();
-    presenter = new MyAudiosPresenterImpl(appUser, audiosRepository, vk);
+    presenter = new MyAudiosPresenterImpl(appUser, audiosRepository, vk, null);
     Rxs.setUpRx();
     Timber.plant(new SystemOutTree());
   }
@@ -241,5 +244,46 @@ public class MyAudiosPresenterImplTest {
         }
       }
     }
+  }
+
+  @Test
+  public void onSearchCalled_showItemsCalled() {
+    List<Audio> audiosInRepository = audiosGenerator.generateList(100);
+    AudiosFilter filter = new AudiosFilter(audiosInRepository);
+    when(audiosRepository.getAllByAppUser(any(AppUser.class))).thenReturn(audiosInRepository);
+    presenter.onViewAttached(view);
+    final AtomicReference<List<Audio>> actual = new AtomicReference<>();
+    doAnswer(new Answer() {
+      @Override
+      public Object answer(InvocationOnMock invocation) throws Throwable {
+        // noinspection unchecked
+        List<Audio> arg = (List<Audio>)invocation.getArguments()[0];
+        actual.set(arg);
+        return null;
+      }
+    }).when(view).showAudios(ArgumentMatchers.<Audio>anyList());
+    String query = "gs";
+    List<Audio> expected = filter.filter(query);
+    presenter.onSearch(query);
+    assertEquals(expected, actual.get());
+  }
+
+  @Test
+  public void onSearchCanceledCalled_itemsFromRepositoryShown() {
+    List<Audio> audiosInRepository = audiosGenerator.generateList(100);
+    when(audiosRepository.getAllByAppUser(any(AppUser.class))).thenReturn(audiosInRepository);
+    presenter.onViewAttached(view);
+    final AtomicReference<List<Audio>> actual = new AtomicReference<>();
+    doAnswer(new Answer() {
+      @Override
+      public Object answer(InvocationOnMock invocation) throws Throwable {
+        // noinspection unchecked
+        List<Audio> arg = (List<Audio>)invocation.getArguments()[0];
+        actual.set(arg);
+        return null;
+      }
+    }).when(view).showAudios(ArgumentMatchers.<Audio>anyList());
+    presenter.onSearchCanceled();
+    assertEquals(audiosInRepository, actual.get());
   }
 }

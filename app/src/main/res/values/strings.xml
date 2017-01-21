@@ -5,6 +5,8 @@
     <string name="megabyte_short">MB</string>
     <string name="second_short">s</string>
 
+    <string name="action_search">Search</string>
+
     <!-- Strings related to navigation drawer -->
     <string name="nav_drawer_open">Open navigation drawer</string>
     <string name="nav_drawer_close">Close navigation drawer</string>
@@ -24,6 +26,7 @@
 
     <!-- Strings related to audios fragment -->
     <string name="audio_download">Download</string>
+    <string name="search_audios_hint">Search…</string>
 
     <!-- Strings related to audio download notifications view -->
     <string name="download_pending">Download pending</string>
