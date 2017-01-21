@@ -230,6 +230,7 @@ public class MyAudiosFragment extends Fragment implements MyAudiosView,
     } else {
       presenter.onSearchCanceled();
     }
+    recyclerView.scrollToPosition(0);
     return true;
   }
 
