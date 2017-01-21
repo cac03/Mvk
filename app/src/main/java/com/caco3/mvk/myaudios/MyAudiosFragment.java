@@ -23,6 +23,7 @@ import com.caco3.mvk.R;
 import com.caco3.mvk.dagger.DaggerComponentsHolder;
 import com.caco3.mvk.vk.audio.Audio;
 
+import java.util.Comparator;
 import java.util.List;
 
 
@@ -34,6 +35,13 @@ import butterknife.ButterKnife;
 public class MyAudiosFragment extends Fragment implements MyAudiosView,
         SwipeRefreshLayout.OnRefreshListener, MyAudiosAdapter.UiEventsListener,
         SearchView.OnQueryTextListener {
+  private static final Comparator<Audio> audioByIdComparator = new Comparator<Audio>() {
+    @Override
+    public int compare(Audio o1, Audio o2) {
+      return (int)(o1.getId() - o2.getId());
+    }
+  };
+
   @Inject
   MyAudiosPresenter presenter;
   @BindView(R.id.audios_frag_refresh_layout)
@@ -43,7 +51,7 @@ public class MyAudiosFragment extends Fragment implements MyAudiosView,
   @BindView(R.id.audios_frag_progress_bar)
   ProgressBar progressBar;
   View audiosContentView;
-  private MyAudiosAdapter audiosAdapter = new MyAudiosAdapter(this);
+  private MyAudiosAdapter audiosAdapter = new MyAudiosAdapter(this, audioByIdComparator);
   /**State of Search view is not saved when orientation changed.
    * So we have to save and restore it manually*/
   private String lastSearchQuery = null;
