@@ -15,6 +15,7 @@ public class AudiosFilter extends DataSetFilter<Audio> {
 
   @Override
   public List<Audio> filter(String query) {
+    query = query.toLowerCase();
     List<Audio> filtered = new ArrayList<>();
     for(Audio audio : dataSet) {
       if (audio.getTitle().toLowerCase().contains(query)
