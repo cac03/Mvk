@@ -28,12 +28,22 @@ public class UserTokenRepositoryImpl implements UserTokenRepository {
   }
 
   @Override
-  public void remove(UserToken userToken) {
+  public void delete(UserToken userToken) {
     dao.delete(userToken);
   }
 
   @Override
-  public void removeAll() {
+  public void deleteAll() {
     dao.deleteAll();
+  }
+
+  @Override
+  public void updateAll(Iterable<UserToken> entities) {
+    dao.updateInTx(entities);
+  }
+
+  @Override
+  public void saveAll(Iterable<UserToken> entities) {
+    dao.saveInTx(entities);
   }
 }

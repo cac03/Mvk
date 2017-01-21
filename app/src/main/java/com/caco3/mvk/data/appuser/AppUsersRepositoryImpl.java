@@ -43,7 +43,7 @@ public class AppUsersRepositoryImpl implements AppUsersRepository {
   }
 
   @Override
-  public void removeAll() {
+  public void deleteAll() {
     dao.deleteAll();
   }
 
@@ -65,5 +65,15 @@ public class AppUsersRepositoryImpl implements AppUsersRepository {
   @Override
   public boolean hasActiveAppUser() {
     return preferences.contains(ACTIVE_APP_USER_ID_KEY);
+  }
+
+  @Override
+  public void saveAll(Iterable<AppUser> entities) {
+    dao.saveInTx(entities);
+  }
+
+  @Override
+  public void updateAll(Iterable<AppUser> entities) {
+    dao.updateInTx(entities);
   }
 }

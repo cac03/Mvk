@@ -1,16 +1,10 @@
 package com.caco3.mvk.data.appuser;
 
-import java.util.List;
+import com.caco3.mvk.data.BaseRepository;
 
 
-public interface AppUsersRepository {
-  void save(AppUser appUser);
-  List<AppUser> getAll();
-  void update(AppUser appUser);
-  void delete(AppUser appUser);
-  void removeAll();
-
-  /** Call {@link AppUsersRepository#save(AppUser)} first */
+public interface AppUsersRepository extends BaseRepository<AppUser> {
+  /** Call {@link BaseRepository<AppUser>#save(AppUser)} first */
   void setAsActive(AppUser appUser);
   AppUser getActive();
   boolean hasActiveAppUser();

@@ -56,4 +56,9 @@ public class AudiosRepositoryImpl implements AudiosRepository {
   public void deleteAll() {
     dao.deleteAll();
   }
+
+  @Override
+  public List<Audio> getAll() {
+    return dao.loadAll();
+  }
 }
