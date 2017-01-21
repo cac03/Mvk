@@ -199,8 +199,10 @@ public class MyAudiosFragment extends Fragment implements MyAudiosView,
     searchView.setQueryHint(getString(R.string.search_audios_hint));
     searchView.setOnQueryTextListener(this);
     final String searchQuery = lastSearchQuery;
-    if (isSearching()) {
+    if (isSearchViewExpanded) {
       searchMenuItem.expandActionView();
+    }
+    if (isSearching()) {
       searchView.setQuery(searchQuery, false);
     }
   }
@@ -222,7 +224,6 @@ public class MyAudiosFragment extends Fragment implements MyAudiosView,
   }
 
   private boolean isSearching() {
-    return isSearchViewExpanded &&
-            lastSearchQuery != null && !lastSearchQuery.isEmpty();
+    return lastSearchQuery != null && !lastSearchQuery.isEmpty();
   }
 }
