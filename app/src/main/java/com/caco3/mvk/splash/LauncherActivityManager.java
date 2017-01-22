@@ -21,17 +21,9 @@ public class LauncherActivityManager {
 
   public Class<? extends BaseActivity> getLauncherActivity() {
     if (appUsersRepository.hasActiveAppUser()) {
-      putLoggedInComponent();
       return MyAudiosActivity.class;
     } else {
       return LogInActivity.class;
-    }
-  }
-
-  private void putLoggedInComponent() {
-    DaggerComponentsHolder componentsHolder = DaggerComponentsHolder.getInstance();
-    if (!componentsHolder.hasLoggedInComponent()) {
-      componentsHolder.createLoggedInComponent();
     }
   }
 }

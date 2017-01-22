@@ -31,9 +31,6 @@ public abstract class UserLoggedInBaseActivity extends BaseActivity implements N
 
   private void injectNavDrawerPresenter() {
     DaggerComponentsHolder componentsHolder = DaggerComponentsHolder.getInstance();
-    if (!componentsHolder.hasNavDrawerComponent()) {
-      componentsHolder.createNavDrawerComponent();
-    }
     componentsHolder.getNavDrawerComponent().inject(this);
   }
 

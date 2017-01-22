@@ -149,18 +149,10 @@ import timber.log.Timber;
       appUser.setUserTokenId(userToken.getId());
       appUsersRepository.save(appUser);
       appUsersRepository.setAsActive(appUser);
-      enterLoggedInScope();
       releaseLogInComponent();
       if (isViewAttached()) {
         view.navigateToMyAudiosActivity();
       }
-    }
-  }
-
-  private void enterLoggedInScope() {
-    DaggerComponentsHolder componentsHolder = DaggerComponentsHolder.getInstance();
-    if (!componentsHolder.hasLoggedInComponent()) {
-      componentsHolder.createLoggedInComponent();
     }
   }
 

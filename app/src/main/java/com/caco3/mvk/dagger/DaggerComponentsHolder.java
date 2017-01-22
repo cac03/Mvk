@@ -47,84 +47,61 @@ public class DaggerComponentsHolder {
             .build();
   }
 
-  public boolean hasLogInComponent() {
-    return logInComponent != null;
-  }
-
   public LogInComponent getLogInComponent() {
+    if (logInComponent == null) {
+      logInComponent = applicationComponent.plus(new LogInModule());
+    }
     return logInComponent;
-  }
-
-  public void createLogInComponent() {
-    logInComponent = applicationComponent.plus(new LogInModule());
   }
 
   public void releaseLogInComponent() {
     logInComponent = null;
   }
 
-  public boolean hasSplashComponent() {
-    return splashComponent != null;
-  }
-
   public SplashComponent getSplashComponent() {
+    if (splashComponent == null) {
+      splashComponent = applicationComponent.plus(new SplashModule());
+    }
     return splashComponent;
-  }
-
-  public void createSplashComponent() {
-    splashComponent = applicationComponent.plus(new SplashModule());
   }
 
   public void releaseSplashComponent() {
     splashComponent = null;
   }
 
-  public boolean hasLoggedInComponent() {
-    return loggedInComponent != null;
-  }
-
   public LoggedInComponent getLoggedInComponent() {
+    if (loggedInComponent == null) {
+      loggedInComponent = applicationComponent.plus(new LoggedInModule());
+    }
     return loggedInComponent;
-  }
-
-  public void createLoggedInComponent() {
-    loggedInComponent = applicationComponent.plus(new LoggedInModule());
   }
 
   public void releaseLoggedInComponent() {
     loggedInComponent = null;
   }
 
-  public boolean hasMyAudiosComponent() {
-    return myAudiosComponent != null;
-  }
-
   public MyAudiosComponent getMyAudiosComponent() {
+    if (myAudiosComponent == null) {
+      if (loggedInComponent == null) {
+        loggedInComponent = applicationComponent.plus(new LoggedInModule());
+      }
+      myAudiosComponent = loggedInComponent.plus(new MyAudiosModule());
+    }
     return myAudiosComponent;
-  }
-
-  public void createMyAudiosComponent() {
-    checkState(loggedInComponent != null,
-            "Attempt to create MyAudiosComponent, but LoggedInComponent was not created");
-    myAudiosComponent = loggedInComponent.plus(new MyAudiosModule());
   }
 
   public void releaseMyAudiosComponent() {
     myAudiosComponent = null;
   }
 
-  public boolean hasNavDrawerComponent() {
-    return navDrawerComponent != null;
-  }
-
   public NavDrawerComponent getNavDrawerComponent() {
+    if (navDrawerComponent == null) {
+      if (loggedInComponent == null) {
+        loggedInComponent = applicationComponent.plus(new LoggedInModule());
+      }
+      navDrawerComponent = loggedInComponent.plus(new NavDrawerModule());
+    }
     return navDrawerComponent;
-  }
-
-  public void createNavDrawerComponent() {
-    checkState(loggedInComponent != null,
-            "Attempt to create NavDrawerComponent, but LoggedInComponent was not created");
-    navDrawerComponent = loggedInComponent.plus(new NavDrawerModule());
   }
 
   public void releaseNavDrawerComponent() {

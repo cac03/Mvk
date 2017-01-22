@@ -123,9 +123,6 @@ public class MyAudiosFragment extends BaseFragment implements MyAudiosView,
 
   private void injectPresenter() {
     DaggerComponentsHolder componentsHolder = DaggerComponentsHolder.getInstance();
-    if (!componentsHolder.hasMyAudiosComponent()) {
-      componentsHolder.createMyAudiosComponent();
-    }
     componentsHolder.getMyAudiosComponent().inject(this);
   }
 

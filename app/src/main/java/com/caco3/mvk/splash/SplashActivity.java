@@ -25,9 +25,6 @@ public class SplashActivity extends BaseActivity {
 
   private void injectFields() {
     DaggerComponentsHolder componentsHolder = DaggerComponentsHolder.getInstance();
-    if (!componentsHolder.hasSplashComponent()) {
-      componentsHolder.createSplashComponent();
-    }
     componentsHolder.getSplashComponent().inject(this);
   }
 

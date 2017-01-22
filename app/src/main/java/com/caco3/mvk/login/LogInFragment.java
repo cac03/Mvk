@@ -57,9 +57,6 @@ public class LogInFragment extends Fragment implements LogInView {
 
   private void injectPresenter() {
     DaggerComponentsHolder componentsHolder = DaggerComponentsHolder.getInstance();
-    if (!componentsHolder.hasLogInComponent()) {
-      componentsHolder.createLogInComponent();
-    }
     componentsHolder.getLogInComponent().inject(this);
   }
 
