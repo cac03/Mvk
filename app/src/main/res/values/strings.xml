@@ -7,6 +7,8 @@
 
     <string name="action_search">Search</string>
 
+    <string name="settings">Settings</string>
+
     <!-- Strings related to navigation drawer -->
     <string name="nav_drawer_open">Open navigation drawer</string>
     <string name="nav_drawer_close">Close navigation drawer</string>
@@ -27,10 +29,16 @@
     <!-- Strings related to audios fragment -->
     <string name="audio_download">Download</string>
     <string name="search_audios_hint">Search…</string>
+    <string name="cannot_download_without_permission">Access to external storage denied.</string>
+
 
     <!-- Strings related to audio download notifications view -->
     <string name="download_pending">Download pending</string>
     <string name="download_canceled">Download canceled</string>
     <string name="download_failed">Download failed</string>
     <string name="download_complete">Download complete</string>
+
+    <!-- Permissions -->
+    <string name="action_grant_permission">Grant</string>
+    <string name="write_external_storage_rational">Access to external storage is required for files downloading</string>
 </resources>

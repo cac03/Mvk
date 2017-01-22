@@ -2,7 +2,8 @@ package com.caco3.mvk.myaudios;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
+import android.support.annotation.StringRes;
+import android.support.design.widget.Snackbar;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DividerItemDecoration;
@@ -21,6 +22,12 @@ import android.widget.Toast;
 
 import com.caco3.mvk.R;
 import com.caco3.mvk.dagger.DaggerComponentsHolder;
+import com.caco3.mvk.permission.Permission;
+import com.caco3.mvk.permission.PermissionRequest;
+import com.caco3.mvk.ui.BaseFragment;
+import com.caco3.mvk.util.Intents;
+import com.caco3.mvk.util.function.Action0;
+import com.caco3.mvk.util.function.Action1;
 import com.caco3.mvk.vk.audio.Audio;
 
 import java.util.Comparator;
@@ -33,7 +40,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import jp.wasabeef.recyclerview.animators.OvershootInLeftAnimator;
 
-public class MyAudiosFragment extends Fragment implements MyAudiosView,
+public class MyAudiosFragment extends BaseFragment implements MyAudiosView,
         SwipeRefreshLayout.OnRefreshListener, MyAudiosAdapter.UiEventsListener,
         SearchView.OnQueryTextListener {
   private static final Comparator<Audio> audioByIdComparator = new Comparator<Audio>() {
@@ -71,6 +78,7 @@ public class MyAudiosFragment extends Fragment implements MyAudiosView,
       return true;
     }
   };
+  private Audio pendingAudio = null;
 
   @Override
   public View onCreateView(LayoutInflater inflater,
@@ -182,7 +190,12 @@ public class MyAudiosFragment extends Fragment implements MyAudiosView,
       public boolean onMenuItemClick(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.audio_item_menu_download) {
-          downloadAudio(audio);
+          if (isWriteExternalStoragePermissionGranted()) {
+            downloadAudio(audio);
+          } else {
+            pendingAudio = audio;
+            requestWriteExternalStoragePermission();
+          }
           return true;
         } else {
           return false;
@@ -190,6 +203,79 @@ public class MyAudiosFragment extends Fragment implements MyAudiosView,
       }
     });
     popupMenu.show();
+  }
+
+  private boolean isWriteExternalStoragePermissionGranted() {
+    return permissionManager.isPermissionGranted(Permission.WRITE_EXTERNAL_STORAGE);
+  }
+
+  private void requestWriteExternalStoragePermission() {
+    final View.OnClickListener requestAgain = new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        requestWriteExternalStoragePermission();
+      }
+    };
+    PermissionRequest permissionRequest
+            = PermissionRequest.builder()
+            .addPermission(Permission.WRITE_EXTERNAL_STORAGE)
+            .onAllGranted(new Action0() {
+              @Override
+              public void call() {
+                downloadPendingAudio();
+              }
+            })
+            .onCancel(new Action0() {
+              @Override
+              public void call() {
+                clearPendingAudio();
+                showCannotDownloadWithoutPermissionSnackbar(R.string.action_grant_permission,
+                        requestAgain);
+              }
+            })
+            .onAnyDenied(new Action1<List<Permission>>() {
+              @Override
+              public void call(List<Permission> arg) {
+                clearPendingAudio();
+                showCannotDownloadWithoutPermissionSnackbar(R.string.action_grant_permission,
+                        requestAgain);
+              }
+            })
+            .onAnyNeverAskAgainDenied(new Action1<List<Permission>>() {
+              @Override
+              public void call(List<Permission> arg) {
+                clearPendingAudio();
+                showCannotDownloadWithoutPermissionSnackbar(R.string.settings, new View.OnClickListener() {
+                  @Override
+                  public void onClick(View v) {
+                    openAppSettings();
+                  }
+                });
+              }
+            }).build();
+    permissionManager.newRequest(permissionRequest);
+  }
+
+  private void showCannotDownloadWithoutPermissionSnackbar(@StringRes int actionBtnText,
+                                                           View.OnClickListener listener) {
+    Snackbar.make(getView(), R.string.write_external_storage_rational, Snackbar.LENGTH_LONG)
+            .setAction(actionBtnText, listener)
+            .show();
+  }
+
+  private void downloadPendingAudio() {
+    if (pendingAudio != null) {
+      downloadAudio(pendingAudio);
+    }
+    clearPendingAudio();
+  }
+
+  private void clearPendingAudio() {
+    pendingAudio = null;
+  }
+
+  private void openAppSettings() {
+    Intents.openApplicationSettings(getContext());
   }
 
   private void downloadAudio(Audio audio) {
