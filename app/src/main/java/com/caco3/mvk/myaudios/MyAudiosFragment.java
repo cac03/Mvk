@@ -294,8 +294,6 @@ public class MyAudiosFragment extends BaseFragment implements MyAudiosView,
     final String searchQuery = lastSearchQuery;
     if (isSearchViewExpanded) {
       searchMenuItem.expandActionView();
-    }
-    if (isSearching()) {
       searchView.setQuery(searchQuery, false);
     }
   }
