@@ -51,8 +51,15 @@ import timber.log.Timber;
   private void initView() {
     if (isViewAttached()) {
       view.showGlobalProgress();
+      if (isAudiosLoadingFromVk()) {
+        view.showRefreshLayout();
+      }
     }
     loadAudiosFromRepositoryToView();
+  }
+
+  private boolean isAudiosLoadingFromVk() {
+    return vkAudiosSubscriber != null && !vkAudiosSubscriber.isUnsubscribed();
   }
 
   private void loadAudiosFromRepositoryToView() {
