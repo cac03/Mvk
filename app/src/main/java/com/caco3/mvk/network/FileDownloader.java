@@ -71,7 +71,7 @@ public class FileDownloader {
           long contentLength = response.body().contentLength();
           long read;
 
-          while ((read = source.read(buffer, CHUNK_SIZE)) != -1) {
+          while (subscribed && (read = source.read(buffer, CHUNK_SIZE)) != -1) {
             sink.write(buffer, read);
             long nanosElapsed = System.nanoTime() - startNanos;
             bytesReadTotal += read;
