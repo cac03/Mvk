@@ -25,6 +25,7 @@ import com.caco3.mvk.dagger.DaggerComponentsHolder;
 import com.caco3.mvk.permission.Permission;
 import com.caco3.mvk.permission.PermissionRequest;
 import com.caco3.mvk.ui.BaseFragment;
+import com.caco3.mvk.ui.recyclerview.decorator.MarginItemDecorator;
 import com.caco3.mvk.util.Intents;
 import com.caco3.mvk.util.function.Action0;
 import com.caco3.mvk.util.function.Action1;
@@ -100,10 +101,8 @@ public class MyAudiosFragment extends BaseFragment implements MyAudiosView,
   }
 
   private void initRecyclerView() {
-    LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
-    recyclerView.setLayoutManager(linearLayoutManager);
-    recyclerView.addItemDecoration(new DividerItemDecoration(getContext(),
-            linearLayoutManager.getOrientation()));
+    int margin = (int)getResources().getDimension(R.dimen.default_padding) / 2;
+    recyclerView.addItemDecoration(new MarginItemDecorator(margin, margin));
     recyclerView.setAdapter(audiosAdapter);
     recyclerView.setItemAnimator(new OvershootInLeftAnimator());
   }
