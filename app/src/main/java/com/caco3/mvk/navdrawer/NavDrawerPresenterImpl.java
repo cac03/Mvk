@@ -89,8 +89,8 @@ import timber.log.Timber;
       vkUsersRepository.update(oldVkUser);
     } else {
       vkUser.setLastUpdated(System.currentTimeMillis());
-      currentAppUser.setVkUser(vkUser);
       vkUsersRepository.save(vkUser);
+      currentAppUser.setVkUserId(vkUser.getId());
     }
     appUsersRepository.update(currentAppUser);
   }
