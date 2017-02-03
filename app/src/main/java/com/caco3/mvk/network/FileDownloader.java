@@ -41,8 +41,6 @@ public class FileDownloader {
   private Sink sink;
   private Buffer buffer = new Buffer();
 
-  private volatile boolean subscribed = true;
-
   private DownloadProgress downloadProgress = new DownloadProgress();
 
   /**
@@ -71,7 +69,7 @@ public class FileDownloader {
           long contentLength = response.body().contentLength();
           long read;
 
-          while (subscribed && (read = source.read(buffer, CHUNK_SIZE)) != -1) {
+          while (!subscriber.isUnsubscribed() && (read = source.read(buffer, CHUNK_SIZE)) != -1) {
             sink.write(buffer, read);
             long nanosElapsed = System.nanoTime() - startNanos;
             bytesReadTotal += read;
@@ -84,11 +82,6 @@ public class FileDownloader {
         } finally {
           cleanUp();
         }
-      }
-    }).doOnUnsubscribe(new Action0() {
-      @Override
-      public void call() {
-        subscribed = false;
       }
     });
   }
