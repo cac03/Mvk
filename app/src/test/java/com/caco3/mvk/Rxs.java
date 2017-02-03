@@ -21,11 +21,6 @@ public class Rxs {
     });
     RxJavaPlugins.getInstance().registerSchedulersHook(new RxJavaSchedulersHook(){
       @Override
-      public Scheduler getComputationScheduler() {
-        return Schedulers.immediate();
-      }
-
-      @Override
       public Scheduler getIOScheduler() {
         return Schedulers.immediate();
       }
