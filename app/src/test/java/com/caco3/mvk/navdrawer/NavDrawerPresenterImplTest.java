@@ -5,7 +5,7 @@ import com.caco3.mvk.data.appuser.AppUser;
 import com.caco3.mvk.data.appuser.AppUsersRepository;
 import com.caco3.mvk.data.vkuser.InMemoryVkUsersRepository;
 import com.caco3.mvk.data.vkuser.VkUsersRepository;
-import com.caco3.mvk.generator.VkUserGenerator;
+import com.caco3.mvk.vk.users.VkUserGenerator;
 import com.caco3.mvk.timber.SystemOutTree;
 import com.caco3.mvk.vk.Vk;
 import com.caco3.mvk.vk.auth.UserToken;

@@ -5,6 +5,7 @@ import android.view.View;
 import com.caco3.mvk.BuildConfig;
 import com.caco3.mvk.R;
 import com.caco3.mvk.vk.audio.Audio;
+import com.caco3.mvk.vk.audio.AudiosGenerator;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -15,7 +16,6 @@ import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowToast;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static junit.framework.Assert.assertEquals;

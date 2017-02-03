@@ -3,7 +3,7 @@ package com.caco3.mvk.audiodownload;
 
 import com.caco3.mvk.Rxs;
 import com.caco3.mvk.data.audio.AudiosRepository;
-import com.caco3.mvk.myaudios.AudiosGenerator;
+import com.caco3.mvk.vk.audio.AudiosGenerator;
 import com.caco3.mvk.timber.SystemOutTree;
 import com.caco3.mvk.vk.audio.Audio;
 
@@ -26,7 +26,6 @@ import okhttp3.OkHttpClient;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import okio.ByteString;
-import okio.Okio;
 import timber.log.Timber;
 
 import static junit.framework.Assert.assertEquals;

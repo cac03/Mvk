@@ -6,6 +6,7 @@ import com.caco3.mvk.data.audio.AudiosRepository;
 import com.caco3.mvk.timber.SystemOutTree;
 import com.caco3.mvk.vk.Vk;
 import com.caco3.mvk.vk.audio.Audio;
+import com.caco3.mvk.vk.audio.AudiosGenerator;
 import com.caco3.mvk.vk.audio.VkAudiosService;
 import com.caco3.mvk.vk.auth.UserToken;
 

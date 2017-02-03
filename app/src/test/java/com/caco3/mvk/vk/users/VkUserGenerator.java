@@ -1,4 +1,4 @@
-package com.caco3.mvk.generator;
+package com.caco3.mvk.vk.users;
 
 
 import com.caco3.mvk.vk.users.VkUser;

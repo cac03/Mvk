@@ -1,6 +1,6 @@
 package com.caco3.mvk.audiodownload;
 
-import com.caco3.mvk.myaudios.AudiosGenerator;
+import com.caco3.mvk.vk.audio.AudiosGenerator;
 import com.caco3.mvk.vk.audio.Audio;
 
 import org.junit.Before;

@@ -1,4 +1,4 @@
-package com.caco3.mvk.myaudios;
+package com.caco3.mvk.vk.audio;
 
 
 import com.caco3.mvk.vk.audio.Audio;
