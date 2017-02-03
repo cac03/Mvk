@@ -31,6 +31,7 @@ public class MyAudiosFragmentTest {
   @Mock
   private MyAudiosPresenter presenter;
   private MyAudiosFragment fragment;
+  private AudiosGenerator audiosGenerator = new AudiosGenerator();
 
   @Before
   public void setUp() {
@@ -76,9 +77,7 @@ public class MyAudiosFragmentTest {
 
   @Test
   public void showAudiosCalled_adapterItemCountSameAsProvidedAudios() {
-    List<Audio> audios = new ArrayList<>();
-    audios.add(new Audio());
-    audios.add(new Audio());
+    List<Audio> audios = audiosGenerator.generateList(10);
     fragment.showAudios(audios);
     int expected = audios.size();
     int actual = fragment.recyclerView.getAdapter().getItemCount();

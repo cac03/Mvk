@@ -32,6 +32,7 @@ public class AudiosGenerator {
     audio.setDurationSeconds(random.nextInt());
     audio.setDownloadUrl(artists[random.nextInt(artists.length)]
             + titles[random.nextInt(titles.length)]);
+    audio.setId(random.nextLong());
     return audio;
   }
 }
