@@ -1,13 +1,14 @@
 package com.caco3.mvk.vk.users;
 
 
+import com.caco3.mvk.AbstractPojoGenerator;
 import com.caco3.mvk.vk.users.VkUser;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class VkUserGenerator {
+public class VkUserGenerator extends AbstractPojoGenerator<VkUser> {
   private static final String[] dummyFirstNames = {
           "dummyName1", "dummyName2", "dummyName3"
   };
@@ -21,6 +22,7 @@ public class VkUserGenerator {
 
   private final Random random = new Random();
 
+  @Override
   public VkUser generateOne() {
     VkUser vkUser = new VkUser();
     vkUser.setFirstName(dummyFirstNames[random.nextInt(dummyFirstNames.length)]);
@@ -28,14 +30,5 @@ public class VkUserGenerator {
     vkUser.setPhotoUrl(dummyPhotoUrls[random.nextInt(dummyPhotoUrls.length)]);
 
     return vkUser;
-  }
-
-  public List<VkUser> generateList(int n) {
-    List<VkUser> vkUsers = new ArrayList<>(n);
-    for(int i = 0; i < n; i++) {
-      vkUsers.add(generateOne());
-    }
-
-    return vkUsers;
   }
 }

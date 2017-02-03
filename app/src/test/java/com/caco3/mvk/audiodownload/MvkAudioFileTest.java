@@ -18,7 +18,7 @@ public class MvkAudioFileTest {
 
   @Test
   public void prepareForDownloadCalled_temporaryFileCreated() throws Exception {
-    Audio audio = audiosGenerator.generateAudio();
+    Audio audio = audiosGenerator.generateOne();
     MvkAudioFile audioFile = new MvkAudioFile(temporaryFolder.getRoot(), audio);
 
     assertTrue(audioFile.prepareForDownload().exists());
@@ -27,7 +27,7 @@ public class MvkAudioFileTest {
   @Test
   public void restoreAfterDownloadCalled_fileRenamedWithExpectedExtension() throws Exception {
     String expected = "mp3";
-    Audio audio = audiosGenerator.generateAudio();
+    Audio audio = audiosGenerator.generateOne();
     audio.setDownloadUrl(audio.getDownloadUrl() + "." + expected + "?dummy=asdasd&param=param");
     MvkAudioFile audioFile = new MvkAudioFile(temporaryFolder.getRoot(), audio);
     audioFile.prepareForDownload();
@@ -41,7 +41,7 @@ public class MvkAudioFileTest {
   public void restoreAfterDownloadCalledAndUrlHasNoGetParameters_fileRenamedWithExpectedExtension()
     throws Exception {
     String expected = "mp3";
-    Audio audio = audiosGenerator.generateAudio();
+    Audio audio = audiosGenerator.generateOne();
     audio.setDownloadUrl(audio.getDownloadUrl() + "." + expected);
     MvkAudioFile audioFile = new MvkAudioFile(temporaryFolder.getRoot(), audio);
     audioFile.prepareForDownload();

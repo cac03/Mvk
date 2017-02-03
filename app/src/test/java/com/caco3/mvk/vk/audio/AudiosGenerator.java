@@ -1,13 +1,11 @@
 package com.caco3.mvk.vk.audio;
 
 
-import com.caco3.mvk.vk.audio.Audio;
+import com.caco3.mvk.AbstractPojoGenerator;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
-public class AudiosGenerator {
+public class AudiosGenerator extends AbstractPojoGenerator<Audio> {
   private static final String[] artists = {
           "asdafs", "gwetwoei", "kjhasdhgkjand", "asfnadksdnvjka", "gadgasdvavxvc"
   };
@@ -16,16 +14,8 @@ public class AudiosGenerator {
   };
   private final Random random = new Random();
 
-  public List<Audio> generateList(int numToGenerate) {
-    List<Audio> audios = new ArrayList<>();
-    for(int i = 0; i < numToGenerate; i++) {
-      audios.add(generateAudio());
-    }
-
-    return audios;
-  }
-
-  public Audio generateAudio() {
+  @Override
+  public Audio generateOne() {
     Audio audio = new Audio();
     audio.setArtist(artists[random.nextInt(artists.length)]);
     audio.setTitle(titles[random.nextInt(titles.length)]);

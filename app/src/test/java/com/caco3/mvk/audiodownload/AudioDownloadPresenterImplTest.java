@@ -59,7 +59,7 @@ public class AudioDownloadPresenterImplTest {
     MockitoAnnotations.initMocks(this);
     Rxs.setUpRx();
     when(directoryProvider.getDirectory()).thenReturn(temporaryFolder.getRoot());
-    dummyAudio = audiosGenerator.generateAudio();
+    dummyAudio = audiosGenerator.generateOne();
     dummyAudio.setDownloadUrl(DUMMY_URL.toString());
     presenter = new AudioDownloadPresenterImpl(okHttpClient, directoryProvider,
             audiosRepository, view);

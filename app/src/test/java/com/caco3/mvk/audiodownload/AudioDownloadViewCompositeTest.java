@@ -27,7 +27,7 @@ public class AudioDownloadViewCompositeTest {
   @Before
   public void setUp() {
     MockitoAnnotations.initMocks(this);
-    dummyAudio = audiosGenerator.generateAudio();
+    dummyAudio = audiosGenerator.generateOne();
   }
 
   @Test
