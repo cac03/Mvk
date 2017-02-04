@@ -16,9 +16,9 @@ import com.caco3.mvk.vk.users.DaoSession;
  * @see <a href="https://vk.com/dev/objects/audio">Audio object</a>
  */
 @Entity
-public class Audio {
+public class Audio implements Cloneable {
   @Id
-  private Long id;
+  private Long entityId;
   private long appUserId;
   @ToOne(joinProperty = "appUserId")
   private AppUser appUser;
@@ -30,7 +30,12 @@ public class Audio {
   private int durationSeconds;
   @SerializedName("url")
   private String downloadUrl;
+  @SerializedName("aid")
+  private long id;
+  @SerializedName("owner_id")
+  private long ownerId;
   private boolean downloaded;
+  private Integer vkPlaylistPosition;
   /** Used to resolve relations */
   @Generated(hash = 2040040024)
   private transient DaoSession daoSession;
@@ -38,16 +43,19 @@ public class Audio {
   @Generated(hash = 226033729)
   private transient AudioDao myDao;
 
-  @Generated(hash = 839876211)
-public Audio(Long id, long appUserId, String artist, String title, int durationSeconds,
-        String downloadUrl, boolean downloaded) {
-    this.id = id;
+  @Generated(hash = 872514301)
+public Audio(Long entityId, long appUserId, String artist, String title, int durationSeconds,
+        String downloadUrl, long id, long ownerId, boolean downloaded, Integer vkPlaylistPosition) {
+    this.entityId = entityId;
     this.appUserId = appUserId;
     this.artist = artist;
     this.title = title;
     this.durationSeconds = durationSeconds;
     this.downloadUrl = downloadUrl;
+    this.id = id;
+    this.ownerId = ownerId;
     this.downloaded = downloaded;
+    this.vkPlaylistPosition = vkPlaylistPosition;
 }
 
 @Generated(hash = 1642629471)
@@ -77,7 +85,7 @@ public String getArtist() {
     return downloaded;
   }
 
-  public Long getId() {
+  public long getId() {
       return this.id;
   }
 
@@ -185,25 +193,36 @@ public void setAppUser(@NotNull AppUser appUser) {
 
     Audio audio = (Audio) o;
 
+    if (appUserId != audio.appUserId) return false;
     if (durationSeconds != audio.durationSeconds) return false;
+    if (id != audio.id) return false;
+    if (ownerId != audio.ownerId) return false;
     if (downloaded != audio.downloaded) return false;
+    if (appUser != null ? !appUser.equals(audio.appUser) : audio.appUser != null) return false;
     if (artist != null ? !artist.equals(audio.artist) : audio.artist != null) return false;
     if (title != null ? !title.equals(audio.title) : audio.title != null) return false;
-    return downloadUrl != null ? downloadUrl.equals(audio.downloadUrl) : audio.downloadUrl == null;
+    if (downloadUrl != null ? !downloadUrl.equals(audio.downloadUrl) : audio.downloadUrl != null)
+      return false;
+    return vkPlaylistPosition != null ? vkPlaylistPosition.equals(audio.vkPlaylistPosition) : audio.vkPlaylistPosition == null;
 
   }
 
   @Override
   public int hashCode() {
-    int result = artist != null ? artist.hashCode() : 0;
+    int result = (int) (appUserId ^ (appUserId >>> 32));
+    result = 31 * result + (appUser != null ? appUser.hashCode() : 0);
+    result = 31 * result + (artist != null ? artist.hashCode() : 0);
     result = 31 * result + (title != null ? title.hashCode() : 0);
     result = 31 * result + durationSeconds;
     result = 31 * result + (downloadUrl != null ? downloadUrl.hashCode() : 0);
+    result = 31 * result + (int) (id ^ (id >>> 32));
+    result = 31 * result + (int) (ownerId ^ (ownerId >>> 32));
     result = 31 * result + (downloaded ? 1 : 0);
+    result = 31 * result + (vkPlaylistPosition != null ? vkPlaylistPosition.hashCode() : 0);
     return result;
   }
 
-public long getAppUserId() {
+  public long getAppUserId() {
     return this.appUserId;
 }
 
@@ -217,4 +236,41 @@ public void __setDaoSession(DaoSession daoSession) {
     this.daoSession = daoSession;
     myDao = daoSession != null ? daoSession.getAudioDao() : null;
 }
+
+public Long getEntityId() {
+    return this.entityId;
+}
+
+public void setEntityId(Long entityId) {
+    this.entityId = entityId;
+}
+
+public void setId(long id) {
+    this.id = id;
+}
+
+public long getOwnerId() {
+    return this.ownerId;
+}
+
+public void setOwnerId(long ownerId) {
+    this.ownerId = ownerId;
+}
+
+public Integer getVkPlaylistPosition() {
+    return this.vkPlaylistPosition;
+}
+
+public void setVkPlaylistPosition(Integer vkPlaylistPosition) {
+    this.vkPlaylistPosition = vkPlaylistPosition;
+}
+
+  @Override
+  public Audio clone() {
+    try {
+      return (Audio) super.clone();
+    } catch (CloneNotSupportedException cannotHappen) {
+      throw new AssertionError(cannotHappen);
+    }
+  }
 }
