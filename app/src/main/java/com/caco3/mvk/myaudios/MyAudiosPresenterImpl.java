@@ -25,7 +25,7 @@ import timber.log.Timber;
 
 
 /*package*/ class MyAudiosPresenterImpl implements MyAudiosPresenter {
-  private MyAudiosView view;
+  private MyAudiosView view = NullAudiosView.INSTANCE;
   private AppUser currentAppUser;
   private AudiosRepository audiosRepository;
   private Vk vk;
@@ -51,17 +51,11 @@ import timber.log.Timber;
   }
 
   private void initView() {
-    if (isViewAttached()) {
-      view.showGlobalProgress();
-      if (areAudiosLoadingFromVk()) {
-        view.showRefreshLayout();
-      }
+    view.showGlobalProgress();
+    if (areAudiosLoadingFromVk()) {
+      view.showRefreshLayout();
     }
     showAudios();
-  }
-
-  private boolean isViewAttached() {
-    return view != null;
   }
 
   private boolean areAudiosLoadingFromVk() {
@@ -69,16 +63,14 @@ import timber.log.Timber;
   }
 
   private void showAudios() {
-    if (isViewAttached()) {
-      if (areAudiosCached()) {
-        if (isSearching()) {
-          view.showAudios(audiosFilter.filter(cachedAudios, searchQuery));
-        } else {
-          view.showAudios(cachedAudios);
-        }
+    if (areAudiosCached()) {
+      if (isSearching()) {
+        view.showAudios(audiosFilter.filter(cachedAudios, searchQuery));
       } else {
-        loadAudiosFromRepository();
+        view.showAudios(cachedAudios);
       }
+    } else {
+      loadAudiosFromRepository();
     }
   }
 
@@ -100,11 +92,9 @@ import timber.log.Timber;
             .subscribe(new Action1<List<Audio>>() {
               @Override
               public void call(List<Audio> audios) {
-                if (isViewAttached()) {
-                  setCache(audios);
-                  showAudios();
-                  view.hideGlobalProgress();
-                }
+                setCache(audios);
+                showAudios();
+                view.hideGlobalProgress();
               }
             });
   }
@@ -115,7 +105,7 @@ import timber.log.Timber;
 
   @Override
   public void onViewDetached(MyAudiosView view) {
-    this.view = null;
+    this.view = NullAudiosView.INSTANCE;
   }
 
   @Override
@@ -124,9 +114,7 @@ import timber.log.Timber;
   }
 
   private void loadAudiosFromVk() {
-    if (isViewAttached()) {
-      view.showRefreshLayout();
-    }
+    view.showRefreshLayout();
     vkAudiosSubscriber = new VkAudiosSubscriber();
     Observable.fromCallable(new Callable<List<Audio>>() {
       @Override
@@ -152,16 +140,12 @@ import timber.log.Timber;
     @Override
     public void onError(Throwable e) {
       vkAudiosSubscriber = null;
-      if (isViewAttached()) {
-        view.hideRefreshLayout();
-      }
+      view.hideRefreshLayout();
       Timber.e(e, "An error occurred while trying to get audios (username = '%s')",
               currentAppUser.getUsername());
       if (e instanceof IOException) {
         Timber.e("No network?");
-        if (isViewAttached()) {
-          view.showNetworkErrorOccurredError();
-        }
+        view.showNetworkErrorOccurredError();
       } else if (e instanceof VkException) {
         Timber.e("Unknown subclass of vk exception caught.");
       } else {
@@ -173,10 +157,8 @@ import timber.log.Timber;
     public void onNext(List<Audio> audios) {
       vkAudiosSubscriber = null;
       setCache(audios);
-      if (isViewAttached()) {
-        view.hideRefreshLayout();
-        showAudios();
-      }
+      view.hideRefreshLayout();
+      showAudios();
     }
   }
 
