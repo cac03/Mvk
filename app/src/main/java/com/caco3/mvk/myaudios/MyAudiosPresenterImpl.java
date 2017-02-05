@@ -69,6 +69,7 @@ import timber.log.Timber;
       } else {
         view.showAudios(cachedAudios);
       }
+      view.hideGlobalProgress();
     } else {
       loadAudiosFromRepository();
     }
