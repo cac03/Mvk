@@ -25,11 +25,13 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
+import edu.emory.mathcs.backport.java.util.Arrays;
 import timber.log.Timber;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
 import static junit.framework.Assert.fail;
+import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.when;
@@ -286,5 +288,39 @@ public class MyAudiosPresenterImplTest {
     }).when(view).showAudios(ArgumentMatchers.<Audio>anyList());
     presenter.onSearchCanceled();
     assertEquals(audiosInRepository, actual.get());
+  }
+
+  @Test
+  public void filterAppliedThenOnRefreshRequestCalled_itemsFilteredAfterRefreshShown() throws Exception {
+    List<Audio> fromRepository = audiosGenerator.generateList(5);
+    AudiosFilter audiosFilter = new AudiosFilter(fromRepository);
+    when(audiosRepository.getAllByAppUser(any(AppUser.class))).thenReturn(fromRepository);
+    String dummyQuery = "af";
+    List<Audio> filtered = audiosFilter.filter(dummyQuery);
+    presenter.onViewAttached(view);
+    final AtomicReference<List<Audio>> actuallyShown = new AtomicReference<>();
+    doAnswer(new Answer() {
+      @Override
+      public Object answer(InvocationOnMock invocation) throws Throwable {
+        // noinspection unchecked
+        actuallyShown.set((List<Audio>)invocation.getArguments()[0]);
+        return null;
+      }
+    }).when(view).showAudios(any(List.class));
+    presenter.onSearch(dummyQuery);
+    Audio mustBeShown = audiosGenerator.generateOne();
+    mustBeShown.setArtist("afoiqwru");
+    Audio mustNotBeShown = audiosGenerator.generateOne();
+    mustNotBeShown.setArtist("");
+    mustNotBeShown.setTitle("");
+    fromRepository.add(mustBeShown);
+    fromRepository.add(mustNotBeShown);
+    when(audiosService.get(any(UserToken.class))).thenReturn(fromRepository);
+    presenter.onRefreshRequest();
+
+    assertThat(actuallyShown.get())
+            .containsAll(filtered)
+            .contains(mustBeShown)
+            .doesNotContain(mustNotBeShown);
   }
 }

@@ -32,6 +32,7 @@ import timber.log.Timber;
   private Subscriber<List<Audio>> vkAudiosSubscriber = null;
   private AudioDownloadPresenter audioDownloadPresenter;
   private DataSetFilter<Audio> audiosFilter;
+  private String searchQuery = "";
 
   @Inject
   /*package*/ MyAudiosPresenterImpl(AppUser appUser, AudiosRepository audiosRepository,
@@ -73,8 +74,8 @@ import timber.log.Timber;
               @Override
               public void call(List<Audio> audios) {
                 if (isViewAttached()) {
-                  view.showAudios(audios);
                   resetOrInitAudiosFilter(audios);
+                  showAudios();
                   view.hideGlobalProgress();
                 }
               }
@@ -155,8 +156,14 @@ import timber.log.Timber;
       resetOrInitAudiosFilter(audios);
       if (isViewAttached()) {
         view.hideRefreshLayout();
-        view.showAudios(audios);
+        showAudios();
       }
+    }
+  }
+
+  private void showAudios() {
+    if (isViewAttached()) {
+      view.showAudios(audiosFilter.filter(searchQuery));
     }
   }
 
@@ -167,14 +174,13 @@ import timber.log.Timber;
 
   @Override
   public void onSearch(String query) {
-    List<Audio> lastAudiosReturnedByFilter = audiosFilter.filter(query);
-    if (isViewAttached()) {
-      view.showAudios(lastAudiosReturnedByFilter);
-    }
+    searchQuery = query;
+    showAudios();
   }
 
   @Override
   public void onSearchCanceled() {
+    searchQuery = "";
     if (isViewAttached()) {
       loadAudiosFromRepositoryToView();
     }
