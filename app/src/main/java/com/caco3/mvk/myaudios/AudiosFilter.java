@@ -7,17 +7,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class AudiosFilter extends DataSetFilter<Audio> {
-
-  public AudiosFilter(List<Audio> dataSet) {
-    super(dataSet);
-  }
+public class AudiosFilter implements DataSetFilter<Audio> {
 
   @Override
-  public List<Audio> filter(String query) {
+  public List<Audio> filter(List<Audio> all, String query) {
     query = query.toLowerCase();
     List<Audio> filtered = new ArrayList<>();
-    for(Audio audio : dataSet) {
+    for(Audio audio : all) {
       if (audio.getTitle().toLowerCase().contains(query)
               || audio.getArtist().toLowerCase().contains(query)) {
         filtered.add(audio);
