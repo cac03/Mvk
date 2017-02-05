@@ -53,18 +53,44 @@ import timber.log.Timber;
   private void initView() {
     if (isViewAttached()) {
       view.showGlobalProgress();
-      if (isAudiosLoadingFromVk()) {
+      if (areAudiosLoadingFromVk()) {
         view.showRefreshLayout();
       }
     }
     showAudios();
   }
 
-  private boolean isAudiosLoadingFromVk() {
+  private boolean isViewAttached() {
+    return view != null;
+  }
+
+  private boolean areAudiosLoadingFromVk() {
     return vkAudiosSubscriber != null && !vkAudiosSubscriber.isUnsubscribed();
   }
 
-  private void loadAudiosFromRepositoryToView() {
+  private void showAudios() {
+    if (isViewAttached()) {
+      if (areAudiosCached()) {
+        if (isSearching()) {
+          view.showAudios(audiosFilter.filter(cachedAudios, searchQuery));
+        } else {
+          view.showAudios(cachedAudios);
+        }
+      } else {
+        loadAudiosFromRepository();
+      }
+    }
+  }
+
+  private boolean areAudiosCached() {
+    return cachedAudios != null;
+  }
+
+  private boolean isSearching() {
+    return searchQuery != null && !searchQuery.isEmpty();
+  }
+
+  private void loadAudiosFromRepository() {
     Observable.fromCallable(new Callable<List<Audio>>() {
       @Override
       public List<Audio> call() {
@@ -85,10 +111,6 @@ import timber.log.Timber;
 
   private void setCache(List<Audio> audios) {
     cachedAudios = audios;
-  }
-
-  private boolean isViewAttached() {
-    return view != null;
   }
 
   @Override
@@ -156,28 +178,6 @@ import timber.log.Timber;
         showAudios();
       }
     }
-  }
-
-  private void showAudios() {
-    if (isViewAttached()) {
-      if (areAudiosCached()) {
-        if (isSearching()) {
-          view.showAudios(audiosFilter.filter(cachedAudios, searchQuery));
-        } else {
-          view.showAudios(cachedAudios);
-        }
-      } else {
-        loadAudiosFromRepositoryToView();
-      }
-    }
-  }
-
-  private boolean areAudiosCached() {
-    return cachedAudios != null;
-  }
-
-  private boolean isSearching() {
-    return searchQuery != null && !searchQuery.isEmpty();
   }
 
   @Override
