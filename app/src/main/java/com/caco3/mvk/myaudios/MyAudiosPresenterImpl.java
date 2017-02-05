@@ -31,7 +31,8 @@ import timber.log.Timber;
   private Vk vk;
   private Subscriber<List<Audio>> vkAudiosSubscriber = null;
   private AudioDownloadPresenter audioDownloadPresenter;
-  private DataSetFilter<Audio> audiosFilter;
+  private DataSetFilter<Audio> audiosFilter = new AudiosFilter();
+  private List<Audio> cachedAudios;
   private String searchQuery = "";
 
   @Inject
@@ -56,7 +57,7 @@ import timber.log.Timber;
         view.showRefreshLayout();
       }
     }
-    loadAudiosFromRepositoryToView();
+    showAudios();
   }
 
   private boolean isAudiosLoadingFromVk() {
@@ -74,7 +75,7 @@ import timber.log.Timber;
               @Override
               public void call(List<Audio> audios) {
                 if (isViewAttached()) {
-                  resetOrInitAudiosFilter(audios);
+                  setCache(audios);
                   showAudios();
                   view.hideGlobalProgress();
                 }
@@ -82,12 +83,8 @@ import timber.log.Timber;
             });
   }
 
-  private void resetOrInitAudiosFilter(List<Audio> audios) {
-    if (audiosFilter == null) {
-      audiosFilter = new AudiosFilter(audios);
-    } else {
-      audiosFilter.resetWith(audios);
-    }
+  private void setCache(List<Audio> audios) {
+    cachedAudios = audios;
   }
 
   private boolean isViewAttached() {
@@ -153,7 +150,7 @@ import timber.log.Timber;
     @Override
     public void onNext(List<Audio> audios) {
       vkAudiosSubscriber = null;
-      resetOrInitAudiosFilter(audios);
+      setCache(audios);
       if (isViewAttached()) {
         view.hideRefreshLayout();
         showAudios();
@@ -163,8 +160,24 @@ import timber.log.Timber;
 
   private void showAudios() {
     if (isViewAttached()) {
-      view.showAudios(audiosFilter.filter(searchQuery));
+      if (areAudiosCached()) {
+        if (isSearching()) {
+          view.showAudios(audiosFilter.filter(cachedAudios, searchQuery));
+        } else {
+          view.showAudios(cachedAudios);
+        }
+      } else {
+        loadAudiosFromRepositoryToView();
+      }
     }
+  }
+
+  private boolean areAudiosCached() {
+    return cachedAudios != null;
+  }
+
+  private boolean isSearching() {
+    return searchQuery != null && !searchQuery.isEmpty();
   }
 
   @Override
@@ -181,8 +194,6 @@ import timber.log.Timber;
   @Override
   public void onSearchCanceled() {
     searchQuery = "";
-    if (isViewAttached()) {
-      loadAudiosFromRepositoryToView();
-    }
+    showAudios();
   }
 }

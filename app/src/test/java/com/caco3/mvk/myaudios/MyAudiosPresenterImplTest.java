@@ -252,7 +252,7 @@ public class MyAudiosPresenterImplTest {
   @Test
   public void onSearchCalled_showItemsCalled() {
     List<Audio> audiosInRepository = audiosGenerator.generateList(100);
-    AudiosFilter filter = new AudiosFilter(audiosInRepository);
+    AudiosFilter filter = new AudiosFilter();
     when(audiosRepository.getAllByAppUser(any(AppUser.class))).thenReturn(audiosInRepository);
     presenter.onViewAttached(view);
     final AtomicReference<List<Audio>> actual = new AtomicReference<>();
@@ -266,7 +266,7 @@ public class MyAudiosPresenterImplTest {
       }
     }).when(view).showAudios(ArgumentMatchers.<Audio>anyList());
     String query = "gs";
-    List<Audio> expected = filter.filter(query);
+    List<Audio> expected = filter.filter(audiosInRepository, query);
     presenter.onSearch(query);
     assertEquals(expected, actual.get());
   }
@@ -293,10 +293,10 @@ public class MyAudiosPresenterImplTest {
   @Test
   public void filterAppliedThenOnRefreshRequestCalled_itemsFilteredAfterRefreshShown() throws Exception {
     List<Audio> fromRepository = audiosGenerator.generateList(5);
-    AudiosFilter audiosFilter = new AudiosFilter(fromRepository);
+    AudiosFilter audiosFilter = new AudiosFilter();
     when(audiosRepository.getAllByAppUser(any(AppUser.class))).thenReturn(fromRepository);
     String dummyQuery = "af";
-    List<Audio> filtered = audiosFilter.filter(dummyQuery);
+    List<Audio> filtered = audiosFilter.filter(fromRepository, dummyQuery);
     presenter.onViewAttached(view);
     final AtomicReference<List<Audio>> actuallyShown = new AtomicReference<>();
     doAnswer(new Answer() {
