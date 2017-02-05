@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.caco3.mvk.R;
 import com.caco3.mvk.vk.audio.Audio;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -30,64 +31,17 @@ public class MyAudiosAdapter extends RecyclerView.Adapter<MyAudiosAdapter.AudioV
 
   private Context context;
   private UiEventsListener uiEventsListener;
-  private Comparator<Audio> comparator;
-  private final SortedList<Audio> items = new SortedList<>(Audio.class, new SortedList.Callback<Audio>() {
-    @Override
-    public int compare(Audio o1, Audio o2) {
-      return comparator.compare(o1, o2);
-    }
+  final List<Audio> items = new ArrayList<>();
 
-    @Override
-    public void onChanged(int position, int count) {
-      notifyItemChanged(position, count);
-    }
-
-    @Override
-    public boolean areContentsTheSame(Audio oldItem, Audio newItem) {
-      return oldItem.equals(newItem);
-    }
-
-    @Override
-    public boolean areItemsTheSame(Audio item1, Audio item2) {
-      return item1.getId().equals(item2.getId());
-    }
-
-    @Override
-    public void onInserted(int position, int count) {
-      notifyItemRangeInserted(position, count);
-    }
-
-    @Override
-    public void onRemoved(int position, int count) {
-      notifyItemRangeRemoved(position, count);
-    }
-
-    @Override
-    public void onMoved(int fromPosition, int toPosition) {
-      notifyItemMoved(fromPosition, toPosition);
-    }
-  });
-
-  /*package*/ MyAudiosAdapter(UiEventsListener listener, Comparator<Audio> comparator) {
+  /*package*/ MyAudiosAdapter(UiEventsListener listener) {
     this.uiEventsListener = checkNotNull(listener, "listener == null");
-    this.comparator = checkNotNull(comparator, "comparator == null");
   }
 
   public void setItems(List<Audio> items) {
-    this.items.beginBatchedUpdates();
-    removeAllThatAreNotIn(items);
+    this.items.clear();
     this.items.addAll(items);
-    this.items.endBatchedUpdates();
-  }
-
-  private void removeAllThatAreNotIn(List<Audio> anotherList) {
-    Collections.sort(anotherList, comparator);
-    for (int i = items.size() - 1; i >= 0; i--) {
-      Audio audio = items.get(i);
-      if (Collections.binarySearch(anotherList, audio, comparator) < 0) {
-        items.remove(audio);
-      }
-    }
+    notifyDataSetChanged();
+    // TODO: 2/5/17 Do it gently.. trigger animations
   }
 
   @Override
