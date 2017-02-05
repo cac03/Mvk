@@ -9,6 +9,7 @@ import com.caco3.mvk.vk.audio.Audio;
 import com.caco3.mvk.vk.audio.AudiosGenerator;
 import com.caco3.mvk.vk.audio.VkAudiosService;
 import com.caco3.mvk.vk.auth.UserToken;
+import com.caco3.mvk.vk.users.VkUser;
 
 import org.junit.After;
 import org.junit.Before;
@@ -25,7 +26,6 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
-import edu.emory.mathcs.backport.java.util.Arrays;
 import timber.log.Timber;
 
 import static junit.framework.Assert.assertEquals;
@@ -33,6 +33,7 @@ import static junit.framework.Assert.assertTrue;
 import static junit.framework.Assert.fail;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.when;
 
@@ -43,6 +44,8 @@ public class MyAudiosPresenterImplTest {
   private VkAudiosService audiosService;
   @Mock
   private AppUser appUser;
+  @Mock
+  private VkUser vkUser;
   @Mock
   private AudiosRepository audiosRepository;
   @Mock
@@ -58,6 +61,7 @@ public class MyAudiosPresenterImplTest {
     presenter = new MyAudiosPresenterImpl(appUser, audiosRepository, vk, null);
     Rxs.setUpRx();
     Timber.plant(new SystemOutTree());
+    when(appUser.getVkUser()).thenReturn(vkUser);
   }
 
   private void initAppUser() {
@@ -77,7 +81,7 @@ public class MyAudiosPresenterImplTest {
   @Test
   public void viewAttached_songsFromRepositoryShown() {
     final List<Audio> audios = audiosGenerator.generateList(10);
-    when(audiosRepository.getAllByAppUser(appUser)).thenReturn(audios);
+    when(audiosRepository.getAllByVkUserId(anyLong())).thenReturn(audios);
     final AtomicBoolean audiosFromRepositoryShown = new AtomicBoolean(false);
     doAnswer(new Answer() {
       @Override
@@ -210,14 +214,14 @@ public class MyAudiosPresenterImplTest {
   @Test
   public void audiosUpdated_repositoryDoesNotContainsDuplicates() throws Exception {
     final List<Audio> audiosInRepository = audiosGenerator.generateList(1);
-    when(audiosRepository.getAllByAppUser(appUser)).thenReturn(audiosInRepository);
+    when(audiosRepository.getAllByVkUserId(anyLong())).thenReturn(audiosInRepository);
     doAnswer(new Answer() {
       @Override
       public Object answer(InvocationOnMock invocation) throws Throwable {
         audiosInRepository.clear();
         return null;
       }
-    }).when(audiosRepository).deleteAllByAppUser(appUser);
+    }).when(audiosRepository).deleteAllByVkUserId(anyLong());
     doAnswer(new Answer() {
       @Override
       public Object answer(InvocationOnMock invocation) throws Throwable {
@@ -253,7 +257,7 @@ public class MyAudiosPresenterImplTest {
   public void onSearchCalled_showItemsCalled() {
     List<Audio> audiosInRepository = audiosGenerator.generateList(100);
     AudiosFilter filter = new AudiosFilter();
-    when(audiosRepository.getAllByAppUser(any(AppUser.class))).thenReturn(audiosInRepository);
+    when(audiosRepository.getAllByVkUserId(anyLong())).thenReturn(audiosInRepository);
     presenter.onViewAttached(view);
     final AtomicReference<List<Audio>> actual = new AtomicReference<>();
     doAnswer(new Answer() {
@@ -274,7 +278,7 @@ public class MyAudiosPresenterImplTest {
   @Test
   public void onSearchCanceledCalled_itemsFromRepositoryShown() {
     List<Audio> audiosInRepository = audiosGenerator.generateList(100);
-    when(audiosRepository.getAllByAppUser(any(AppUser.class))).thenReturn(audiosInRepository);
+    when(audiosRepository.getAllByVkUserId(anyLong())).thenReturn(audiosInRepository);
     presenter.onViewAttached(view);
     final AtomicReference<List<Audio>> actual = new AtomicReference<>();
     doAnswer(new Answer() {
@@ -294,7 +298,7 @@ public class MyAudiosPresenterImplTest {
   public void filterAppliedThenOnRefreshRequestCalled_itemsFilteredAfterRefreshShown() throws Exception {
     List<Audio> fromRepository = audiosGenerator.generateList(5);
     AudiosFilter audiosFilter = new AudiosFilter();
-    when(audiosRepository.getAllByAppUser(any(AppUser.class))).thenReturn(fromRepository);
+    when(audiosRepository.getAllByVkUserId(anyLong())).thenReturn(fromRepository);
     String dummyQuery = "af";
     List<Audio> filtered = audiosFilter.filter(fromRepository, dummyQuery);
     presenter.onViewAttached(view);

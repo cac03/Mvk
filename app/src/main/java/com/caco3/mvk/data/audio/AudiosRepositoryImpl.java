@@ -1,8 +1,8 @@
 package com.caco3.mvk.data.audio;
 
-import com.caco3.mvk.data.appuser.AppUser;
 import com.caco3.mvk.vk.audio.Audio;
 import com.caco3.mvk.vk.audio.AudioDao;
+import com.caco3.mvk.vk.users.VkUser;
 
 import java.util.List;
 
@@ -27,8 +27,8 @@ public class AudiosRepositoryImpl implements AudiosRepository {
   }
 
   @Override
-  public List<Audio> getAllByAppUser(AppUser appUser) {
-    return dao.queryBuilder().where(AudioDao.Properties.AppUserId.eq(appUser.getId())).build().list();
+  public List<Audio> getAllByVkUserId(long vkUserId) {
+    return dao.queryBuilder().where(AudioDao.Properties.OwnerId.eq(vkUserId)).build().list();
   }
 
   @Override
@@ -47,8 +47,8 @@ public class AudiosRepositoryImpl implements AudiosRepository {
   }
 
   @Override
-  public void deleteAllByAppUser(AppUser appUser) {
-    Iterable<Audio> usersAudios = getAllByAppUser(appUser);
+  public void deleteAllByVkUserId(long vkUserId) {
+    Iterable<Audio> usersAudios = getAllByVkUserId(vkUserId);
     dao.deleteInTx(usersAudios);
   }
 

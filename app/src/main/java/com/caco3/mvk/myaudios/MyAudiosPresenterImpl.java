@@ -87,7 +87,7 @@ import timber.log.Timber;
     Observable.fromCallable(new Callable<List<Audio>>() {
       @Override
       public List<Audio> call() {
-        return audiosRepository.getAllByAppUser(currentAppUser);
+        return audiosRepository.getAllByVkUserId(currentAppUser.getUserToken().getVkUserId());
       }
     }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
             .subscribe(new Action1<List<Audio>>() {
@@ -121,11 +121,8 @@ import timber.log.Timber;
       @Override
       public List<Audio> call() throws Exception {
         List<Audio> audios = vk.audios().get(currentAppUser.getUserToken());
-        for(Audio audio : audios) {
-          audio.setAppUser(currentAppUser);
 
-        }
-        audiosRepository.deleteAllByAppUser(currentAppUser);
+        audiosRepository.deleteAllByVkUserId(currentAppUser.getUserToken().getVkUserId());
         audiosRepository.saveAll(audios);
         return audios;
       }

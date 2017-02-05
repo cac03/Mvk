@@ -19,9 +19,6 @@ import com.caco3.mvk.vk.users.DaoSession;
 public class Audio implements Cloneable {
   @Id
   private Long entityId;
-  private long appUserId;
-  @ToOne(joinProperty = "appUserId")
-  private AppUser appUser;
   @SerializedName("artist")
   private String artist;
   @SerializedName("title")
@@ -36,18 +33,10 @@ public class Audio implements Cloneable {
   private long ownerId;
   private boolean downloaded;
   private Integer vkPlaylistPosition;
-  /** Used to resolve relations */
-  @Generated(hash = 2040040024)
-  private transient DaoSession daoSession;
-  /** Used for active entity operations. */
-  @Generated(hash = 226033729)
-  private transient AudioDao myDao;
-
-  @Generated(hash = 872514301)
-public Audio(Long entityId, long appUserId, String artist, String title, int durationSeconds,
-        String downloadUrl, long id, long ownerId, boolean downloaded, Integer vkPlaylistPosition) {
+  @Generated(hash = 529378541)
+public Audio(Long entityId, String artist, String title, int durationSeconds, String downloadUrl, long id, long ownerId,
+        boolean downloaded, Integer vkPlaylistPosition) {
     this.entityId = entityId;
-    this.appUserId = appUserId;
     this.artist = artist;
     this.title = title;
     this.durationSeconds = durationSeconds;
@@ -62,10 +51,7 @@ public Audio(Long entityId, long appUserId, String artist, String title, int dur
   public Audio() {
   }
 
-  @Generated(hash = 1545085567)
-private transient Long appUser__resolvedKey;
-
-public String getArtist() {
+  public String getArtist() {
     return artist;
   }
 
@@ -117,75 +103,6 @@ public String getArtist() {
       this.downloaded = downloaded;
   }
 
-  /** To-one relationship, resolved on first access. */
-@Generated(hash = 243680710)
-public AppUser getAppUser() {
-    long __key = this.appUserId;
-    if (appUser__resolvedKey == null || !appUser__resolvedKey.equals(__key)) {
-        final DaoSession daoSession = this.daoSession;
-        if (daoSession == null) {
-            throw new DaoException("Entity is detached from DAO context");
-        }
-        AppUserDao targetDao = daoSession.getAppUserDao();
-        AppUser appUserNew = targetDao.load(__key);
-        synchronized (this) {
-            appUser = appUserNew;
-            appUser__resolvedKey = __key;
-        }
-    }
-    return appUser;
-}
-
-/** called by internal mechanisms, do not call yourself. */
-@Generated(hash = 1485078859)
-public void setAppUser(@NotNull AppUser appUser) {
-    if (appUser == null) {
-        throw new DaoException(
-                "To-one property 'appUserId' has not-null constraint; cannot set to-one to null");
-    }
-    synchronized (this) {
-        this.appUser = appUser;
-        appUserId = appUser.getId();
-        appUser__resolvedKey = appUserId;
-    }
-}
-
-/**
-   * Convenient call for {@link org.greenrobot.greendao.AbstractDao#delete(Object)}.
-   * Entity must attached to an entity context.
-   */
-  @Generated(hash = 128553479)
-  public void delete() {
-      if (myDao == null) {
-          throw new DaoException("Entity is detached from DAO context");
-      }
-      myDao.delete(this);
-  }
-
-  /**
-   * Convenient call for {@link org.greenrobot.greendao.AbstractDao#refresh(Object)}.
-   * Entity must attached to an entity context.
-   */
-  @Generated(hash = 1942392019)
-  public void refresh() {
-      if (myDao == null) {
-          throw new DaoException("Entity is detached from DAO context");
-      }
-      myDao.refresh(this);
-  }
-
-  /**
-   * Convenient call for {@link org.greenrobot.greendao.AbstractDao#update(Object)}.
-   * Entity must attached to an entity context.
-   */
-  @Generated(hash = 713229351)
-  public void update() {
-      if (myDao == null) {
-          throw new DaoException("Entity is detached from DAO context");
-      }
-      myDao.update(this);
-  }
-
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
@@ -193,12 +110,10 @@ public void setAppUser(@NotNull AppUser appUser) {
 
     Audio audio = (Audio) o;
 
-    if (appUserId != audio.appUserId) return false;
     if (durationSeconds != audio.durationSeconds) return false;
     if (id != audio.id) return false;
     if (ownerId != audio.ownerId) return false;
     if (downloaded != audio.downloaded) return false;
-    if (appUser != null ? !appUser.equals(audio.appUser) : audio.appUser != null) return false;
     if (artist != null ? !artist.equals(audio.artist) : audio.artist != null) return false;
     if (title != null ? !title.equals(audio.title) : audio.title != null) return false;
     if (downloadUrl != null ? !downloadUrl.equals(audio.downloadUrl) : audio.downloadUrl != null)
@@ -209,9 +124,7 @@ public void setAppUser(@NotNull AppUser appUser) {
 
   @Override
   public int hashCode() {
-    int result = (int) (appUserId ^ (appUserId >>> 32));
-    result = 31 * result + (appUser != null ? appUser.hashCode() : 0);
-    result = 31 * result + (artist != null ? artist.hashCode() : 0);
+    int result = artist != null ? artist.hashCode() : 0;
     result = 31 * result + (title != null ? title.hashCode() : 0);
     result = 31 * result + durationSeconds;
     result = 31 * result + (downloadUrl != null ? downloadUrl.hashCode() : 0);
@@ -221,21 +134,6 @@ public void setAppUser(@NotNull AppUser appUser) {
     result = 31 * result + (vkPlaylistPosition != null ? vkPlaylistPosition.hashCode() : 0);
     return result;
   }
-
-  public long getAppUserId() {
-    return this.appUserId;
-}
-
-public void setAppUserId(long appUserId) {
-    this.appUserId = appUserId;
-}
-
-/** called by internal mechanisms, do not call yourself. */
-@Generated(hash = 1261206123)
-public void __setDaoSession(DaoSession daoSession) {
-    this.daoSession = daoSession;
-    myDao = daoSession != null ? daoSession.getAudioDao() : null;
-}
 
 public Long getEntityId() {
     return this.entityId;
