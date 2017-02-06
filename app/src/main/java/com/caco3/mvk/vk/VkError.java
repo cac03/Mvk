@@ -16,6 +16,11 @@ public class VkError {
   @SerializedName("captcha_sid")
   public int captchaId;
 
+  public RuntimeException propagate() {
+    // TODO: 2/6/17 Handle possible errors
+    throw new UnknownVkErrorException(toString());
+  }
+
   @Override
   public String toString() {
     return "VkError{" +
