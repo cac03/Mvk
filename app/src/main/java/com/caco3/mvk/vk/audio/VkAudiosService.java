@@ -1,7 +1,5 @@
 package com.caco3.mvk.vk.audio;
 
-import com.caco3.mvk.vk.auth.UserToken;
-
 import java.io.IOException;
 import java.util.List;
 
@@ -14,5 +12,5 @@ public interface VkAudiosService {
    * @return list of audios
    * @throws IOException if i/o error occurs
    */
-  List<Audio> get(UserToken userToken) throws IOException;
+  List<Audio> get() throws IOException;
 }
