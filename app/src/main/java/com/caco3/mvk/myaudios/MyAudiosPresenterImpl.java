@@ -120,7 +120,7 @@ import timber.log.Timber;
     Observable.fromCallable(new Callable<List<Audio>>() {
       @Override
       public List<Audio> call() throws Exception {
-        List<Audio> audios = vk.audios().get(currentAppUser.getUserToken());
+        List<Audio> audios = vk.audios().get();
 
         audiosRepository.deleteAllByVkUserId(currentAppUser.getUserToken().getVkUserId());
         audiosRepository.saveAll(audios);

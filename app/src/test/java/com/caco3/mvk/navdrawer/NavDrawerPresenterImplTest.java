@@ -30,7 +30,6 @@ import timber.log.Timber;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
 import static junit.framework.Assert.fail;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -72,7 +71,7 @@ public class NavDrawerPresenterImplTest {
     appUserReturnsValidUserToken();
     thereIsNoVkUserPreviouslyLoaded();
     final AtomicBoolean getVkUserCalled = new AtomicBoolean(false);
-    when(vkUsersService.get(any(UserToken.class))).then(new Answer<VkUser>() {
+    when(vkUsersService.get()).then(new Answer<VkUser>() {
       @Override
       public VkUser answer(InvocationOnMock invocation) throws Throwable {
         getVkUserCalled.set(true);
@@ -89,7 +88,7 @@ public class NavDrawerPresenterImplTest {
     appUserReturnsValidUserToken();
     thereIsTooLongAgoLoadedVkUser();
     final AtomicBoolean getVkUserCalled = new AtomicBoolean(false);
-    when(vkUsersService.get(any(UserToken.class))).then(new Answer<VkUser>() {
+    when(vkUsersService.get()).then(new Answer<VkUser>() {
       @Override
       public VkUser answer(InvocationOnMock invocation) throws Throwable {
         getVkUserCalled.set(true);
@@ -105,7 +104,7 @@ public class NavDrawerPresenterImplTest {
   public void vkUserUpdatedRecently_getVkUserNotCalled() throws Exception {
     appUserReturnsValidUserToken();
     thereIsRecentlyUpdatedVkUser();
-    when(vkUsersService.get(any(UserToken.class))).then(new Answer<VkUser>() {
+    when(vkUsersService.get()).then(new Answer<VkUser>() {
       @Override
       public VkUser answer(InvocationOnMock invocation) throws Throwable {
         fail("get vkUser called.");
@@ -119,7 +118,7 @@ public class NavDrawerPresenterImplTest {
   public void noVkUserLoaded_afterGetVkUserCalledItSavedToVkUsersRepository() throws Exception {
     appUserReturnsValidUserToken();
     VkUser receivedVkUser = vkUserGenerator.generateOne();
-    when(vkUsersService.get(VALID_DUMMY_USER_TOKEN)).thenReturn(receivedVkUser);
+    when(vkUsersService.get()).thenReturn(receivedVkUser);
     presenter.onViewAttached(view);
 
     assertTrue(vkUsersRepository.getAll().contains(receivedVkUser));
@@ -130,7 +129,7 @@ public class NavDrawerPresenterImplTest {
     appUserReturnsValidUserToken();
     thereIsTooLongAgoLoadedVkUser();
     VkUser receivedVkUser = vkUserGenerator.generateOne();
-    when(vkUsersService.get(VALID_DUMMY_USER_TOKEN)).thenReturn(receivedVkUser);
+    when(vkUsersService.get()).thenReturn(receivedVkUser);
     presenter.onViewAttached(view);
 
     List<VkUser> allUsers = vkUsersRepository.getAll();
@@ -159,7 +158,7 @@ public class NavDrawerPresenterImplTest {
     for (NavDrawerView view: views) {
       presenter.onViewAttached(view);
     }
-    when(vkUsersService.get(VALID_DUMMY_USER_TOKEN)).thenReturn(returnedByVk);
+    when(vkUsersService.get()).thenReturn(returnedByVk);
     presenter.updateVkUser();
 
     assertEquals(numOfViews, showVkUserCalls.get());

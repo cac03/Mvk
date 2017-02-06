@@ -4,11 +4,11 @@ import com.caco3.mvk.dagger.DaggerComponentsHolder;
 import com.caco3.mvk.data.appuser.AppUser;
 import com.caco3.mvk.data.appuser.AppUsersRepository;
 import com.caco3.mvk.data.usertoken.UserTokenRepository;
-import com.caco3.mvk.vk.Vk;
 import com.caco3.mvk.vk.VkException;
 import com.caco3.mvk.vk.auth.Credentials;
 import com.caco3.mvk.vk.auth.UserToken;
 import com.caco3.mvk.vk.auth.UsernameOrPasswordIncorrectException;
+import com.caco3.mvk.vk.auth.VkAuthService;
 
 import java.io.IOException;
 import java.util.concurrent.Callable;
@@ -24,14 +24,14 @@ import timber.log.Timber;
 
 /*package*/ class LogInPresenterImpl implements LogInPresenter {
   private LogInView view;
-  private Vk vk;
+  private VkAuthService vkAuthService;
   private AppUsersRepository appUsersRepository;
   private UserTokenRepository userTokenRepository;
   private Subscriber<UserToken> userTokenSubscriber = null;
 
-  /*package*/LogInPresenterImpl(Vk vk, AppUsersRepository appUsersRepository,
+  /*package*/LogInPresenterImpl(VkAuthService vkAuthService, AppUsersRepository appUsersRepository,
                                 UserTokenRepository userTokenRepository) {
-    this.vk = vk;
+    this.vkAuthService = vkAuthService;
     this.appUsersRepository = appUsersRepository;
     this.userTokenRepository = userTokenRepository;
   }
@@ -87,7 +87,7 @@ import timber.log.Timber;
     Observable.fromCallable(new Callable<UserToken>() {
       @Override
       public UserToken call() throws Exception {
-        return vk.auth().getUserToken(credentials);
+        return vkAuthService.getUserToken(credentials);
       }
     }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
             .subscribe(userTokenSubscriber);

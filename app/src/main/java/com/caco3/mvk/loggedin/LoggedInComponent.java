@@ -5,6 +5,7 @@ import com.caco3.mvk.myaudios.MyAudiosComponent;
 import com.caco3.mvk.myaudios.MyAudiosModule;
 import com.caco3.mvk.navdrawer.NavDrawerComponent;
 import com.caco3.mvk.navdrawer.NavDrawerModule;
+import com.caco3.mvk.vk.VkModule;
 
 import dagger.Subcomponent;
 
@@ -15,7 +16,8 @@ import dagger.Subcomponent;
 @Subcomponent(
         modules = {
                 AudiosModule.class,
-                LoggedInModule.class
+                LoggedInModule.class,
+                VkModule.class
         }
 )
 public interface LoggedInComponent {

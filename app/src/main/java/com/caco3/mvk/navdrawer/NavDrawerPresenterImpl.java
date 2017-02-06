@@ -66,7 +66,7 @@ import timber.log.Timber;
     Observable.fromCallable(new Callable<VkUser>() {
       @Override
       public VkUser call() throws Exception {
-        VkUser vkUser = vk.users().get(currentAppUser.getUserToken());
+        VkUser vkUser = vk.users().get();
         updateAppUserWithVkUser(vkUser);
 
         return vkUser;

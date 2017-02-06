@@ -2,6 +2,9 @@ package com.caco3.mvk.network;
 
 import android.content.Context;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import javax.inject.Singleton;
 
 import dagger.Module;
@@ -20,5 +23,11 @@ public class NetworkModule {
   @Singleton
   public OkHttpClient provideHttpClient() {
     return new OkHttpClient();
+  }
+
+  @Provides
+  @Singleton
+  public Gson provideGson() {
+    return new GsonBuilder().create();
   }
 }

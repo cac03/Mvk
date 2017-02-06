@@ -28,7 +28,6 @@ import timber.log.Timber;
 import static junit.framework.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class LogInPresenterImplTest {
@@ -52,8 +51,7 @@ public class LogInPresenterImplTest {
   @Before
   public void setUp() {
     MockitoAnnotations.initMocks(this);
-    when(vk.auth()).thenReturn(authService);
-    presenter = new LogInPresenterImpl(vk, repository, userTokenRepository);
+    presenter = new LogInPresenterImpl(authService, repository, userTokenRepository);
     Timber.plant(new SystemOutTree());
     Rxs.setUpRx();
   }

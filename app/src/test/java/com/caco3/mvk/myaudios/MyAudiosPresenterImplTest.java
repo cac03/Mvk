@@ -179,7 +179,7 @@ public class MyAudiosPresenterImplTest {
 
   @Test
   public void ioExceptionThrown_showNetworkErrorOccurredErrorCalled() throws Exception {
-    when(audiosService.get(any(UserToken.class))).thenThrow(IOException.class);
+    when(audiosService.get()).thenThrow(IOException.class);
     final AtomicBoolean showNetworkErrorOccurredErrorCalled = new AtomicBoolean(false);
     doAnswer(new Answer() {
       @Override
@@ -196,7 +196,7 @@ public class MyAudiosPresenterImplTest {
 
   @Test
   public void errorOccurred_hideRefreshLayoutCalled() throws Exception {
-    when(audiosService.get(any(UserToken.class))).thenThrow(IOException.class);
+    when(audiosService.get()).thenThrow(IOException.class);
     final AtomicBoolean hideRefreshLayoutCalled = new AtomicBoolean(false);
     doAnswer(new Answer() {
       @Override
@@ -241,7 +241,7 @@ public class MyAudiosPresenterImplTest {
       a.setDurationSeconds(audio.getDurationSeconds());
       vkReturnsSameAudios.add(a);
     }
-    when(audiosService.get(any(UserToken.class))).thenReturn(vkReturnsSameAudios);
+    when(audiosService.get()).thenReturn(vkReturnsSameAudios);
     presenter.onRefreshRequest();
 
     for(Audio outer : audiosInRepository) {
@@ -319,7 +319,7 @@ public class MyAudiosPresenterImplTest {
     mustNotBeShown.setTitle("");
     fromRepository.add(mustBeShown);
     fromRepository.add(mustNotBeShown);
-    when(audiosService.get(any(UserToken.class))).thenReturn(fromRepository);
+    when(audiosService.get()).thenReturn(fromRepository);
     presenter.onRefreshRequest();
 
     assertThat(actuallyShown.get())
