@@ -17,8 +17,7 @@ public class VkError {
   public int captchaId;
 
   public RuntimeException propagate() {
-    // TODO: 2/6/17 Handle possible errors
-    throw new UnknownVkErrorException(toString());
+    throw VkException.byVkError(this);
   }
 
   @Override
