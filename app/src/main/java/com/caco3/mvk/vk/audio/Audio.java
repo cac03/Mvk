@@ -1,16 +1,11 @@
 package com.caco3.mvk.vk.audio;
 
-import com.caco3.mvk.data.appuser.AppUser;
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
-import org.greenrobot.greendao.annotation.ToOne;
 import org.greenrobot.greendao.annotation.Generated;
-import org.greenrobot.greendao.DaoException;
-import com.caco3.mvk.data.appuser.AppUserDao;
-import org.greenrobot.greendao.annotation.NotNull;
-import com.caco3.mvk.vk.users.DaoSession;
 
 /**
  * @see <a href="https://vk.com/dev/objects/audio">Audio object</a>
@@ -20,16 +15,22 @@ public class Audio implements Cloneable {
   @Id
   private Long entityId;
   @SerializedName("artist")
+  @Expose
   private String artist;
   @SerializedName("title")
+  @Expose
   private String title;
   @SerializedName("duration")
+  @Expose
   private int durationSeconds;
   @SerializedName("url")
+  @Expose
   private String downloadUrl;
   @SerializedName("aid")
+  @Expose
   private long id;
   @SerializedName("owner_id")
+  @Expose
   private long ownerId;
   private boolean downloaded;
   private Integer vkPlaylistPosition;

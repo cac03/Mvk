@@ -1,5 +1,6 @@
 package com.caco3.mvk.vk.auth;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import org.greenrobot.greendao.annotation.Entity;
@@ -16,9 +17,12 @@ public class UserToken implements Serializable {
   @Id
   private Long id;
   @NotNull
+  @SerializedName("access_token")
+  @Expose
   private String accessToken;
   @NotNull
   @SerializedName("user_id")
+  @Expose
   private long vkUserId;
 
   private static final long serialVersionUID = 1241253235L;

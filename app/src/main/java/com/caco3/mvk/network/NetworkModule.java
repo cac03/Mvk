@@ -28,6 +28,6 @@ public class NetworkModule {
   @Provides
   @Singleton
   public Gson provideGson() {
-    return new GsonBuilder().create();
+    return new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
   }
 }

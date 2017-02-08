@@ -1,6 +1,7 @@
 package com.caco3.mvk.vk.users;
 
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import org.greenrobot.greendao.annotation.Entity;
@@ -13,12 +14,16 @@ public class VkUser implements Cloneable {
   private Long id;
 
   @SerializedName("uid")
+  @Expose
   private long vkUserId;
   @SerializedName("first_name")
+  @Expose
   private String firstName;
   @SerializedName("last_name")
+  @Expose
   private String lastName;
   @SerializedName("photo_200_orig")
+  @Expose
   private String photoUrl;
   private long lastUpdated;
 
