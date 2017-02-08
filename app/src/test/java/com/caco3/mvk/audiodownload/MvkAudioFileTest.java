@@ -9,6 +9,7 @@ import org.junit.rules.TemporaryFolder;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
+import static org.assertj.core.api.Java6Assertions.assertThat;
 
 
 public class MvkAudioFileTest {
@@ -49,5 +50,21 @@ public class MvkAudioFileTest {
     String fileName = audioFile.restoreAfterDownload().getName();
     String actual = fileName.substring(fileName.length() - 3, fileName.length());
     assertEquals(expected, actual);
+  }
+
+  @Test
+  public void fileRestored_fileNameCorrectlyFormed() throws Exception {
+    Audio audio = audiosGenerator.generateOne();
+    audio.setArtist("A");
+    audio.setTitle("c");
+    audio.setDownloadUrl("https://smth.com/gadsgajsdkhlgo.mp3?some=garbage");
+    MvkAudioFile audioFile = new MvkAudioFile(temporaryFolder.getRoot(), audio);
+    audioFile.prepareForDownload();
+
+    String expected = "A - c.mp3";
+    String actual = audioFile.restoreAfterDownload().getName();
+
+    assertThat(actual)
+            .isEqualTo(expected);
   }
 }

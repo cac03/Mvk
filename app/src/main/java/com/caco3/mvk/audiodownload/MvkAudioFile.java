@@ -35,7 +35,7 @@ public class MvkAudioFile extends AbstractDownloadableMvkFile {
             ? getParamsStart : url.length();
     int startOfExtension = url.lastIndexOf('.', endOfExtension);
     if (startOfExtension != -1) {
-      return url.substring(startOfExtension, endOfExtension);
+      return url.substring(startOfExtension + 1, endOfExtension);
     } else {
       throw new IllegalStateException(String
               .format("Unable to extract file extension from url ('%s')", url));
