@@ -1,11 +1,14 @@
 package com.caco3.mvk.vk;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 public class VkResponse<T> {
   @SerializedName("error")
+  @Expose
   private VkError vkError;
   @SerializedName("response")
+  @Expose
   private T response;
 
   public VkError getVkError() {
