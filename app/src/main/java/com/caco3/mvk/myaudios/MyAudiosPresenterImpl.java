@@ -122,8 +122,8 @@ import timber.log.Timber;
       public List<Audio> call() throws Exception {
         List<Audio> audios = vk.audios().get();
 
-        audiosRepository.deleteAllByVkUserId(currentAppUser.getUserToken().getVkUserId());
-        audiosRepository.saveAll(audios);
+        audiosRepository.replaceAllByVkUserId(currentAppUser.getUserToken().getVkUserId(),
+                audios);
         return audios;
       }
     }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
