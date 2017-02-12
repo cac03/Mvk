@@ -24,17 +24,11 @@ public class VkFriendsServiceImpl implements VkFriendsService {
 
   @Override
   public List<Long> get() throws IOException {
-    return retrofitService.get().execute().body().getResponseOrThrowIfNotSuccessful().items;
+    return retrofitService.get().execute().body().getResponseOrThrowIfNotSuccessful();
   }
 
   /*package*/ interface FriendsRetrofitService {
     @GET("friends.get")
-    Call<VkResponse<Response>> get();
-  }
-
-  private static class Response {
-    @SerializedName("items")
-    @Expose
-    List<Long> items;
+    Call<VkResponse<List<Long>>> get();
   }
 }

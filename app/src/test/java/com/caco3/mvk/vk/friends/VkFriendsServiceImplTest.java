@@ -35,10 +35,7 @@ public class VkFriendsServiceImplTest {
   @Test
   public void getCalled_correctListOfVkUserIdsReturned() throws Exception {
     mockWebServer.enqueue(new MockResponse().setBody("{\n" +
-            "\"response\": {\n" +
-            "\"count\": 724,\n" +
-            "\"items\": [9101748, 15439101, 2453384, 1576215, 8506688]\n" +
-            "}\n" +
+            "\"response\": [9101748, 15439101, 2453384, 1576215, 8506688]\n" +
             "}"));
     Long[] expected = new Long[]{Long.valueOf(9101748L),
             Long.valueOf(15439101L), Long.valueOf(2453384L), Long.valueOf(1576215L), Long.valueOf(8506688L)};
