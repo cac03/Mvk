@@ -49,4 +49,10 @@ public class VkImplTest {
     assertThat(new VkImpl(userToken, okHttpClient, gson).users())
             .isNotNull();
   }
+
+  @Test
+  public void argsOk_friendsServiceIsNotNull() {
+    assertThat(new VkImpl(userToken, okHttpClient, gson).friends())
+            .isNotNull();
+  }
 }

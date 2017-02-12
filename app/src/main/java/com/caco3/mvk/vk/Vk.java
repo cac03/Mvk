@@ -4,9 +4,11 @@ package com.caco3.mvk.vk;
 import com.caco3.mvk.vk.audio.VkAudiosService;
 import com.caco3.mvk.vk.auth.UserToken;
 import com.caco3.mvk.vk.auth.VkAuthService;
+import com.caco3.mvk.vk.friends.VkFriendsService;
 import com.caco3.mvk.vk.users.VkUsersService;
 
 public interface Vk {
   VkAudiosService audios();
   VkUsersService users();
+  VkFriendsService friends();
 }

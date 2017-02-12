@@ -3,6 +3,8 @@ package com.caco3.mvk.vk;
 import com.caco3.mvk.vk.audio.VkAudioServiceImpl;
 import com.caco3.mvk.vk.audio.VkAudiosService;
 import com.caco3.mvk.vk.auth.UserToken;
+import com.caco3.mvk.vk.friends.VkFriendsService;
+import com.caco3.mvk.vk.friends.VkFriendsServiceImpl;
 import com.caco3.mvk.vk.interceptors.UserTokenInterceptor;
 import com.caco3.mvk.vk.users.VkUsersService;
 import com.caco3.mvk.vk.users.VkUsersServiceImpl;
@@ -19,6 +21,7 @@ import static com.caco3.mvk.util.Preconditions.checkNotNull;
   /*package*/ static final String VK_API_BASE_URL = "https://api.vk.com/";
   private final VkAudiosService vkAudiosService;
   private final VkUsersService vkUsersService;
+  private final VkFriendsService vkFriendsService;
 
   public VkImpl(UserToken userToken, OkHttpClient baseOkHttpClient, Gson gson) {
     checkNotNull(userToken, "userToken == null");
@@ -28,6 +31,7 @@ import static com.caco3.mvk.util.Preconditions.checkNotNull;
     Retrofit retrofit = createRetrofit(okHttpClient, gson);
     this.vkUsersService = new VkUsersServiceImpl(retrofit);
     this.vkAudiosService = new VkAudioServiceImpl(retrofit);
+    this.vkFriendsService = new VkFriendsServiceImpl(retrofit);
   }
 
   private OkHttpClient createOkHttpClient(OkHttpClient base, UserToken userToken) {
@@ -52,5 +56,10 @@ import static com.caco3.mvk.util.Preconditions.checkNotNull;
   @Override
   public VkUsersService users() {
     return vkUsersService;
+  }
+
+  @Override
+  public VkFriendsService friends() {
+    return vkFriendsService;
   }
 }
