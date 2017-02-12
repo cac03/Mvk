@@ -20,6 +20,7 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -30,6 +31,8 @@ import timber.log.Timber;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
 import static junit.framework.Assert.fail;
+import static org.assertj.core.api.Java6Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -162,6 +165,24 @@ public class NavDrawerPresenterImplTest {
     presenter.updateVkUser();
 
     assertEquals(numOfViews, showVkUserCalls.get());
+  }
+
+  @Test
+  public void userSavedButItMustBeUpdated_vkUserShown() throws Exception {
+    thereIsTooLongAgoLoadedVkUser();
+    // no network
+    when(vkUsersService.get()).thenThrow(IOException.class);
+    final AtomicBoolean showUserCalled = new AtomicBoolean(false);
+    doAnswer(new Answer() {
+      @Override
+      public Object answer(InvocationOnMock invocation) throws Throwable {
+        showUserCalled.set(true);
+        return null;
+      }
+    }).when(view).showVkUser(any(VkUser.class));
+    presenter.onViewAttached(view);
+    assertThat(showUserCalled.get())
+            .isTrue();
   }
 
   private void ensureVkUserWillNotBeUpdated() {

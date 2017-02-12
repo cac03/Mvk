@@ -44,11 +44,16 @@ import timber.log.Timber;
   }
 
   private void initView(NavDrawerView view) {
-    if (needToUpdateVkUser() && !isVkUserUpdating()) {
-      updateVkUser();
-    } else {
+    if (isVkUserLoaded()) {
       view.showVkUser(currentAppUser.getVkUser());
     }
+    if (needToUpdateVkUser() && !isVkUserUpdating()) {
+      updateVkUser();
+    }
+  }
+
+  private boolean isVkUserLoaded() {
+    return currentAppUser.getVkUser() != null;
   }
 
   private boolean isVkUserUpdating() {
