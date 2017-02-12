@@ -1,7 +1,7 @@
 package com.caco3.mvk.vk.users;
 
+import com.caco3.mvk.util.Strings;
 import com.caco3.mvk.vk.VkResponse;
-import com.caco3.mvk.vk.auth.UserToken;
 
 import java.io.IOException;
 import java.util.List;
@@ -32,21 +32,8 @@ public class VkUsersServiceImpl implements VkUsersService {
 
   @Override
   public List<VkUser> get(long... ids) throws IOException {
-    return retrofitUsersService.get(FIELDS, longsToCommaSeparatedString(ids))
+    return retrofitUsersService.get(FIELDS, Strings.join(",", ids))
             .execute().body().getResponseOrThrowIfNotSuccessful();
-  }
-
-  private static String longsToCommaSeparatedString(long... longs) {
-    StringBuilder sb = new StringBuilder(longs.length * 10);
-    for(int i = 0, length = longs.length; i < length - 1; i++) {
-      sb.append(longs[i])
-              .append(",");
-    }
-    if (longs.length > 0) {
-      sb.append(longs[longs.length - 1]);
-    }
-
-    return sb.toString();
   }
 
   /*package*/ interface RetrofitUsersService {
