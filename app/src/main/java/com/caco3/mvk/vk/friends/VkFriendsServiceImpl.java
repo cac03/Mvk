@@ -28,7 +28,7 @@ public class VkFriendsServiceImpl implements VkFriendsService {
   }
 
   /*package*/ interface FriendsRetrofitService {
-    @GET("friends.get")
+    @GET("/method/friends.get")
     Call<VkResponse<List<Long>>> get();
   }
 }
