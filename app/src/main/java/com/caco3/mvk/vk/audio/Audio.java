@@ -7,11 +7,13 @@ import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Generated;
 
+import java.io.Serializable;
+
 /**
  * @see <a href="https://vk.com/dev/objects/audio">Audio object</a>
  */
 @Entity
-public class Audio implements Cloneable {
+public class Audio implements Cloneable, Serializable {
   @Id
   private Long entityId;
   @SerializedName("artist")
@@ -34,6 +36,9 @@ public class Audio implements Cloneable {
   private long ownerId;
   private boolean downloaded;
   private Integer vkPlaylistPosition;
+
+  private static final long serialVersionUID = 7998765258689575597L;
+
   @Generated(hash = 529378541)
 public Audio(Long entityId, String artist, String title, int durationSeconds, String downloadUrl, long id, long ownerId,
         boolean downloaded, Integer vkPlaylistPosition) {
