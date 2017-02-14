@@ -2,6 +2,8 @@ package com.caco3.mvk;
 
 import android.content.Context;
 
+import com.caco3.mvk.rxbus.RxBus;
+
 import javax.inject.Singleton;
 
 import dagger.Module;
@@ -22,5 +24,11 @@ public class ApplicationModule {
   @Singleton
   public Context provideContext() {
     return context;
+  }
+
+  @Provides
+  @Singleton
+  public RxBus provideRxBus() {
+    return RxBus.getInstance();
   }
 }
