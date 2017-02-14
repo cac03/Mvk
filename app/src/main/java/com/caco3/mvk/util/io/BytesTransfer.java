@@ -53,7 +53,7 @@ public class BytesTransfer {
       long readTotal = 0;
       long bytesTotal = in.available();
       while ((readBytes = in.read(buffer)) != -1) {
-        out.write(buffer);
+        out.write(buffer, 0, readBytes);
 
         if (listener != null) {
           readTotal += readBytes;
