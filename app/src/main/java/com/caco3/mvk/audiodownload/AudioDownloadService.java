@@ -149,7 +149,7 @@ public class AudioDownloadService extends Service {
         if (audioFile != null) {
           audioFile.remove();
         }
-        rxBus.post(new AudioDownloadError(e, audio));
+        rxBus.post(new UnableDownloadAudioEvent(e, audio));
       } finally {
         Closeables.closeOrLog(response);
         Closeables.closeOrLog(out);

@@ -25,7 +25,6 @@ import org.robolectric.annotation.Config;
 
 import java.io.File;
 import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -165,12 +164,12 @@ public class AudioDownloadServiceTest {
 
     List<Object> onNextEvents = testSubscriber.getOnNextEvents();
     try {
-      AudioDownloadError downloadError = (AudioDownloadError)onNextEvents
+      UnableDownloadAudioEvent downloadError = (UnableDownloadAudioEvent)onNextEvents
               .get(onNextEvents.size() - 1);
       assertThat(downloadError.getAudio())
               .isEqualTo(audio);
     } catch (ClassCastException e) {
-      fail(AudioDownloadError.class.getSimpleName() + " was not posted into RxBus");
+      fail(UnableDownloadAudioEvent.class.getSimpleName() + " was not posted into RxBus");
     }
 
   }
