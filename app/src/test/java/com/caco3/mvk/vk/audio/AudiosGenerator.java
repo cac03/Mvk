@@ -21,7 +21,7 @@ public class AudiosGenerator extends AbstractPojoGenerator<Audio> {
     audio.setTitle(titles[random.nextInt(titles.length)]);
     audio.setDurationSeconds(random.nextInt());
     audio.setDownloadUrl(artists[random.nextInt(artists.length)]
-            + titles[random.nextInt(titles.length)]);
+            + titles[random.nextInt(titles.length)] + ".mp3");
     audio.setId(random.nextLong());
     return audio;
   }
