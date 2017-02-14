@@ -2,6 +2,7 @@ package com.caco3.mvk.myaudios;
 
 
 import com.caco3.mvk.audiodownload.AudioDownloadPresenter;
+import com.caco3.mvk.audiodownload.AudioDownloader;
 import com.caco3.mvk.data.appuser.AppUser;
 import com.caco3.mvk.data.audio.AudiosRepository;
 import com.caco3.mvk.search.DataSetFilter;
@@ -30,18 +31,18 @@ import timber.log.Timber;
   private AudiosRepository audiosRepository;
   private Vk vk;
   private Subscriber<List<Audio>> vkAudiosSubscriber = null;
-  private AudioDownloadPresenter audioDownloadPresenter;
+  private AudioDownloader audioDownloader;
   private DataSetFilter<Audio> audiosFilter = new AudiosFilter();
   private List<Audio> cachedAudios;
   private String searchQuery = "";
 
   @Inject
   /*package*/ MyAudiosPresenterImpl(AppUser appUser, AudiosRepository audiosRepository,
-                                    Vk vk, AudioDownloadPresenter audioDownloadPresenter) {
+                                    Vk vk, AudioDownloader audioDownloader) {
     this.currentAppUser = appUser;
     this.audiosRepository = audiosRepository;
     this.vk = vk;
-    this.audioDownloadPresenter = audioDownloadPresenter;
+    this.audioDownloader = audioDownloader;
   }
 
   @Override
@@ -162,7 +163,7 @@ import timber.log.Timber;
 
   @Override
   public void onDownloadRequest(Audio audio) {
-    audioDownloadPresenter.startDownload(audio);
+    audioDownloader.post(audio);
   }
 
   @Override

@@ -6,6 +6,8 @@ import com.caco3.mvk.audiodownload.AudioDownloadDirectoryProvider;
 import com.caco3.mvk.audiodownload.AudioDownloadPresenter;
 import com.caco3.mvk.audiodownload.AudioDownloadPresenterImpl;
 import com.caco3.mvk.audiodownload.AudioDownloadView;
+import com.caco3.mvk.audiodownload.AudioDownloader;
+import com.caco3.mvk.audiodownload.AudioDownloaderImpl;
 import com.caco3.mvk.audiodownload.DownloadViewNotificationsImpl;
 import com.caco3.mvk.data.audio.AudiosRepository;
 import com.caco3.mvk.loggedin.LoggedInScope;
@@ -41,5 +43,11 @@ public class AudiosModule {
   @LoggedInScope
   public AudioDownloadDirectoryProvider provideAudioDownloadDirectoryProvider(DirectoryProvider directoryProvider) {
     return new AudioDownloadDirectoryProvider(directoryProvider);
+  }
+
+  @Provides
+  @LoggedInScope
+  public AudioDownloader provideAudioDownloader(Context context) {
+    return new AudioDownloaderImpl(context);
   }
 }
