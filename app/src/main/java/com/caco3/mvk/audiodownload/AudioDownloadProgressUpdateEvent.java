@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-public class AudioDownloadProgress {
+public class AudioDownloadProgressUpdateEvent {
   /*package*/ List<Audio> pending
           = new CopyOnWriteArrayList<>();
   /*package*/ Map<Audio, DownloadProgress> currentlyDownloading

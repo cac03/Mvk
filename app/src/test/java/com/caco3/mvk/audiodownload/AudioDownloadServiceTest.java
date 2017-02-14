@@ -136,7 +136,7 @@ public class AudioDownloadServiceTest {
       @Override
       public void onNext(Object o) {
         super.onNext(o);
-        if (o instanceof AudioDownloadProgress) {
+        if (o instanceof AudioDownloadProgressUpdateEvent) {
           progressPosted.set(true);
         }
       }

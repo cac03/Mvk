@@ -39,7 +39,7 @@ public class AudioDownloadService extends Service {
   static final String WAKE_LOCK_TAG = "AudioDownloadServiceWakeLockTag";
   static final String EXTRA_AUDIO = "audio";
 
-  final AudioDownloadProgress progress = new AudioDownloadProgress();
+  final AudioDownloadProgressUpdateEvent progress = new AudioDownloadProgressUpdateEvent();
   Executor executor = Executors.newSingleThreadExecutor();
   final AtomicInteger audiosProcessing = new AtomicInteger();
 
@@ -129,7 +129,7 @@ public class AudioDownloadService extends Service {
       Response response = null;
       progress.pending.remove(audio);
       progress.currentlyDownloading.put(audio,
-              new AudioDownloadProgress.DownloadProgress());
+              new AudioDownloadProgressUpdateEvent.DownloadProgress());
       rxBus.post(progress);
       try {
 
@@ -175,7 +175,7 @@ public class AudioDownloadService extends Service {
 
   private void updateProgress(Audio downloading, long bytesRead,
                               long bytesTotal, long nanosElapsed) {
-    AudioDownloadProgress.DownloadProgress downloadProgress
+    AudioDownloadProgressUpdateEvent.DownloadProgress downloadProgress
             = progress.currentlyDownloading.get(downloading);
     downloadProgress.setBytesTotal(bytesTotal);
     downloadProgress.setBytesTransferred(bytesRead);
