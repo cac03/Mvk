@@ -173,4 +173,25 @@ public class AudioDownloadServiceTest {
     }
 
   }
+
+  @Test
+  public void audioDownloaded_audioDownloadedEventPostedViaRxBus() {
+    TestSubscriber<Object> testSubscriber = new TestSubscriber<>();
+    rxBus.observable().subscribe(testSubscriber);
+    Audio audio = audiosGenerator.generateOne();
+    audio.setDownloadUrl(mockWebServer.url("asf.mp3").toString());
+    service.executor = new CurrentThreadExecutor();
+    mockWebServer.enqueue(new MockResponse().setBody("DummySong"));
+    service.onStartCommand(AudioDownloadService.forAudio(RuntimeEnvironment.application, audio), 0, 0);
+
+    List<Object> onNextEvents = testSubscriber.getOnNextEvents();
+    try {
+      AudioDownloadedEvent event = (AudioDownloadedEvent)onNextEvents
+              .get(onNextEvents.size() - 1);
+      assertThat(event.getAudio())
+              .isEqualTo(audio);
+    } catch (ClassCastException e) {
+      fail(AudioDownloadedEvent.class.getSimpleName() + " was not posted into RxBus");
+    }
+  }
 }

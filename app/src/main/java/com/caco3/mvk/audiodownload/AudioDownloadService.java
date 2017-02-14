@@ -143,6 +143,7 @@ public class AudioDownloadService extends Service {
         in = response.body().byteStream();
         transfer(audio, in, out);
         audioFile.restoreAfterDownload();
+        rxBus.post(new AudioDownloadedEvent(audio));
         Timber.d("Audio is '%s' successfully downloaded", audio);
       } catch (IOException e) {
         Timber.e(e, "Unable to download audio ('%s')", audio);
