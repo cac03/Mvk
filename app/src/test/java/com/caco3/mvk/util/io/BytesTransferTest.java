@@ -38,7 +38,7 @@ public class BytesTransferTest {
 
   @Test
   public void transferringBytesWorksCorrectly() throws Exception {
-    byte[] expected = new byte[1024 * 1024];
+    byte[] expected = new byte[666];
     random.nextBytes(expected);
     ByteArrayInputStream in = new ByteArrayInputStream(expected);
     ByteArrayOutputStream out = new ByteArrayOutputStream();
