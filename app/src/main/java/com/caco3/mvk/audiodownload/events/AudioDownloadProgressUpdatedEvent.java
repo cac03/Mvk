@@ -1,4 +1,4 @@
-package com.caco3.mvk.audiodownload;
+package com.caco3.mvk.audiodownload.events;
 
 import com.caco3.mvk.vk.audio.Audio;
 

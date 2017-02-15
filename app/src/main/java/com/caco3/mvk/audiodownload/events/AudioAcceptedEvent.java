@@ -1,12 +1,11 @@
-package com.caco3.mvk.audiodownload;
-
+package com.caco3.mvk.audiodownload.events;
 
 import com.caco3.mvk.vk.audio.Audio;
 
-public class AudioDownloadedEvent {
+public class AudioAcceptedEvent {
   private final Audio audio;
 
-  public AudioDownloadedEvent(Audio audio) {
+  public AudioAcceptedEvent(Audio audio) {
     this.audio = audio;
   }
 

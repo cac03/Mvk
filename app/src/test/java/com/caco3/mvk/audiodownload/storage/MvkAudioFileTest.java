@@ -1,5 +1,6 @@
-package com.caco3.mvk.audiodownload;
+package com.caco3.mvk.audiodownload.storage;
 
+import com.caco3.mvk.audiodownload.storage.MvkAudioFile;
 import com.caco3.mvk.vk.audio.AudiosGenerator;
 import com.caco3.mvk.vk.audio.Audio;
 

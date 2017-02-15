@@ -9,6 +9,12 @@ import android.os.IBinder;
 import android.os.PowerManager;
 import android.support.annotation.Nullable;
 
+import com.caco3.mvk.audiodownload.events.AudioAcceptedEvent;
+import com.caco3.mvk.audiodownload.events.AudioDownloadProgressUpdatedEvent;
+import com.caco3.mvk.audiodownload.events.AudioDownloadedEvent;
+import com.caco3.mvk.audiodownload.events.UnableDownloadAudioEvent;
+import com.caco3.mvk.audiodownload.storage.AudioDownloadDirectoryProvider;
+import com.caco3.mvk.audiodownload.storage.MvkAudioFile;
 import com.caco3.mvk.dagger.DaggerComponentsHolder;
 import com.caco3.mvk.rxbus.RxBus;
 import com.caco3.mvk.util.io.BytesTransfer;

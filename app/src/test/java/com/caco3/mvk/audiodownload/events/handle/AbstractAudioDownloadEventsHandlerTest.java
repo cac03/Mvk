@@ -1,6 +1,11 @@
-package com.caco3.mvk.audiodownload;
+package com.caco3.mvk.audiodownload.events.handle;
 
 
+import com.caco3.mvk.audiodownload.events.AudioAcceptedEvent;
+import com.caco3.mvk.audiodownload.events.AudioDownloadProgressUpdatedEvent;
+import com.caco3.mvk.audiodownload.events.AudioDownloadedEvent;
+import com.caco3.mvk.audiodownload.events.UnableDownloadAudioEvent;
+import com.caco3.mvk.audiodownload.events.handle.AbstractAudioDownloadEventsHandler;
 import com.caco3.mvk.rxbus.RxBus;
 import com.caco3.mvk.vk.audio.Audio;
 

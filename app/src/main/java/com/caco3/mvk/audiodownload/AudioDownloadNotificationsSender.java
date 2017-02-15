@@ -8,6 +8,11 @@ import android.support.annotation.DrawableRes;
 import android.support.v4.app.NotificationCompat;
 
 import com.caco3.mvk.R;
+import com.caco3.mvk.audiodownload.events.AudioAcceptedEvent;
+import com.caco3.mvk.audiodownload.events.AudioDownloadProgressUpdatedEvent;
+import com.caco3.mvk.audiodownload.events.AudioDownloadedEvent;
+import com.caco3.mvk.audiodownload.events.UnableDownloadAudioEvent;
+import com.caco3.mvk.audiodownload.events.handle.AbstractAudioDownloadEventsHandler;
 import com.caco3.mvk.myaudios.MyAudiosActivity;
 import com.caco3.mvk.rxbus.RxBus;
 import com.caco3.mvk.vk.audio.Audio;

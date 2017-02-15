@@ -2,7 +2,7 @@ package com.caco3.mvk.audios;
 
 import android.content.Context;
 
-import com.caco3.mvk.audiodownload.AudioDownloadDirectoryProvider;
+import com.caco3.mvk.audiodownload.storage.AudioDownloadDirectoryProvider;
 import com.caco3.mvk.audiodownload.AudioDownloader;
 import com.caco3.mvk.audiodownload.AudioDownloaderImpl;
 import com.caco3.mvk.loggedin.LoggedInScope;
