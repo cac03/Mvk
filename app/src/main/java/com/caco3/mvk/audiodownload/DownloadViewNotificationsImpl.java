@@ -22,8 +22,7 @@ import javax.inject.Inject;
 import static com.caco3.mvk.util.Preconditions.checkNotNull;
 
 
-public class DownloadViewNotificationsImpl extends AbstractAudioDownloadEventsHandler
-        implements AudioDownloadView {
+public class DownloadViewNotificationsImpl extends AbstractAudioDownloadEventsHandler {
   private static final Locale locale = Locale.getDefault();
 
   @DrawableRes
@@ -33,15 +32,12 @@ public class DownloadViewNotificationsImpl extends AbstractAudioDownloadEventsHa
   @DrawableRes
   private static final int DOWNLOAD_FAILED_ICON = android.R.drawable.stat_notify_error;
   @DrawableRes
-  private static final int DOWNLOAD_CANCELED_ICON = android.R.drawable.ic_menu_close_clear_cancel;
-  @DrawableRes
   private static final int DOWNLOAD_PENDING_ICON = android.R.drawable.stat_sys_download;
 
   private final PendingIntent myAudiosActivityIntent;
 
   private final String DOWNLOAD_FAILED;
   private final String DOWNLOAD_PENDING;
-  private final String DOWNLOAD_CANCELED;
   private final String DOWNLOAD_COMPLETE;
   private final String KILOBYTE;
   private final String MEGABYTE;
@@ -63,7 +59,6 @@ public class DownloadViewNotificationsImpl extends AbstractAudioDownloadEventsHa
     myAudiosActivityIntent = PendingIntent.getActivity(context, 0,
             new Intent(context, MyAudiosActivity.class), 0);
 
-    DOWNLOAD_CANCELED = context.getString(R.string.download_canceled);
     DOWNLOAD_FAILED = context.getString(R.string.download_failed);
     DOWNLOAD_PENDING = context.getString(R.string.download_pending);
     DOWNLOAD_COMPLETE = context.getString(R.string.download_complete);
@@ -72,8 +67,7 @@ public class DownloadViewNotificationsImpl extends AbstractAudioDownloadEventsHa
     SECOND = context.getString(R.string.second_short);
   }
 
-  @Override
-  public void showDownloadPending(Audio audio) {
+  private void showDownloadPending(Audio audio) {
 
     NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
             .setContentTitle(makeTitle(audio))
@@ -139,8 +133,7 @@ public class DownloadViewNotificationsImpl extends AbstractAudioDownloadEventsHa
     showDownloadFailed(audio);
   }
 
-  @Override
-  public void updateProgress(Audio audio, long bytesDownloaded, long bytesTotal, long nanosElapsed) {
+  private void updateProgress(Audio audio, long bytesDownloaded, long bytesTotal, long nanosElapsed) {
     NotificationCompat.Builder builder;
     if (progressNotifications.containsKey(audio)) {
       builder = progressNotifications.get(audio);
@@ -158,8 +151,7 @@ public class DownloadViewNotificationsImpl extends AbstractAudioDownloadEventsHa
     fireNotification(audio, builder);
   }
 
-  @Override
-  public void showDownloadFailed(Audio audio) {
+  private void showDownloadFailed(Audio audio) {
     NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
             .setContentTitle(makeTitle(audio))
             .setContentText(DOWNLOAD_FAILED)
@@ -170,23 +162,11 @@ public class DownloadViewNotificationsImpl extends AbstractAudioDownloadEventsHa
     fireLastNotification(audio, builder);
   }
 
-  @Override
-  public void showDownloadSuccessful(Audio audio) {
+  private void showDownloadSuccessful(Audio audio) {
     NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
             .setContentTitle(makeTitle(audio))
             .setContentText(DOWNLOAD_COMPLETE)
             .setSmallIcon(DOWNLOAD_COMPLETE_ICON)
-            .setAutoCancel(true);
-
-    fireLastNotification(audio, builder);
-  }
-
-  @Override
-  public void showDownloadCanceled(Audio audio) {
-    NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
-            .setContentTitle(makeTitle(audio))
-            .setContentText(DOWNLOAD_CANCELED)
-            .setSmallIcon(DOWNLOAD_CANCELED_ICON)
             .setAutoCancel(true);
 
     fireLastNotification(audio, builder);

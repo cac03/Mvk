@@ -3,9 +3,6 @@ package com.caco3.mvk.audios;
 import android.content.Context;
 
 import com.caco3.mvk.audiodownload.AudioDownloadDirectoryProvider;
-import com.caco3.mvk.audiodownload.AudioDownloadPresenter;
-import com.caco3.mvk.audiodownload.AudioDownloadPresenterImpl;
-import com.caco3.mvk.audiodownload.AudioDownloadView;
 import com.caco3.mvk.audiodownload.AudioDownloader;
 import com.caco3.mvk.audiodownload.AudioDownloaderImpl;
 import com.caco3.mvk.audiodownload.DownloadViewNotificationsImpl;
@@ -22,23 +19,6 @@ import okhttp3.OkHttpClient;
 
 @Module
 public class AudiosModule {
-  @Provides
-  @LoggedInScope
-  public AudioDownloadPresenter
-  provideAudioDownloadPresenter(OkHttpClient okHttpClient,
-                                AudioDownloadDirectoryProvider directoryProvider,
-                                AudiosRepository audiosRepository,
-                                @Named("notificationsView") AudioDownloadView audioDownloadView) {
-    return new AudioDownloadPresenterImpl(okHttpClient, directoryProvider,
-            audiosRepository, audioDownloadView);
-  }
-
-  @Provides
-  @Named("notificationsView")
-  @LoggedInScope
-  public AudioDownloadView provideAudioDownloadView(RxBus rxBus, Context context) {
-    return new DownloadViewNotificationsImpl(context, rxBus);
-  }
 
   @Provides
   @LoggedInScope
