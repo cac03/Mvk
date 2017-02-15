@@ -195,7 +195,6 @@ public class AudioDownloadService extends Service {
             .bytesTotal(bytesTotal)
             .nanosElapsed(nanosElapsed)
             .build());
-    Timber.e("Event posted");
   }
 
   private boolean needToPostProgressUpdatedEvent(){
