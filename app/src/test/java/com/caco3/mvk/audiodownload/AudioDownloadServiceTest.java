@@ -2,15 +2,16 @@ package com.caco3.mvk.audiodownload;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 
 import com.caco3.mvk.BuildConfig;
 import com.caco3.mvk.network.interceptors.NotSuccessfulResponseInterceptor;
 import com.caco3.mvk.rxbus.RxBus;
-import com.caco3.mvk.timber.SystemOutTree;
 import com.caco3.mvk.util.CurrentThreadExecutor;
 import com.caco3.mvk.vk.audio.Audio;
 import com.caco3.mvk.vk.audio.AudiosGenerator;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -24,19 +25,18 @@ import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.Executor;
 
 import okhttp3.OkHttpClient;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import okio.Okio;
 import rx.observers.TestSubscriber;
-import timber.log.Timber;
 
-import static junit.framework.Assert.fail;
 import static org.assertj.core.api.Java6Assertions.assertThat;
+import static org.assertj.core.api.Java6Assertions.fail;
 import static org.mockito.Mockito.when;
 
 
@@ -46,6 +46,8 @@ import static org.mockito.Mockito.when;
         sdk = 23
 )
 public class AudioDownloadServiceTest {
+  private static final Executor currentThreadExecutor = new CurrentThreadExecutor();
+
   private AudioDownloadService service;
   @Rule
   public MockWebServer mockWebServer = new MockWebServer();
@@ -55,17 +57,28 @@ public class AudioDownloadServiceTest {
   @Mock
   private AudioDownloadDirectoryProvider directoryProvider;
   private final RxBus rxBus = RxBus.getInstance();
+  private TestSubscriber<Object> eventsListener = new TestSubscriber<>();
 
   @Before
   public void setUp() throws Exception {
     MockitoAnnotations.initMocks(this);
+    prepareService();
+    rxBus.observable().subscribe(eventsListener);
+  }
+
+  private void prepareService() throws Exception {
     service = Robolectric.buildService(AudioDownloadService.class).get();
+    service.directoryProvider = directoryProvider;
+    service.rxBus = rxBus;
+    service.executor = currentThreadExecutor;
     service.okHttpClient = new OkHttpClient.Builder()
             .addInterceptor(new NotSuccessfulResponseInterceptor()).build();
     when(directoryProvider.getDirectory()).thenReturn(temporaryFolder.getRoot());
-    service.directoryProvider = directoryProvider;
-    service.rxBus = rxBus;
-    Timber.plant(new SystemOutTree());
+  }
+
+  @After
+  public void tearDown() throws Exception {
+    eventsListener.unsubscribe();
   }
 
   @Test
@@ -92,23 +105,26 @@ public class AudioDownloadServiceTest {
 
   @Test
   public void audioPosted_wakeLockAcquired() throws Exception {
-    Audio audio = audiosGenerator.generateOne();
-    audio.setDownloadUrl(mockWebServer.url("asf").toString());
-    mockWebServer.enqueue(new MockResponse().setBodyDelay(1, TimeUnit.HOURS));
-    service.onStartCommand(new Intent(RuntimeEnvironment.application,
-            AudioDownloadService.class).putExtra(AudioDownloadService.EXTRA_AUDIO, audio), 0, 0);
+    service.executor = new Executor() {
+      @Override
+      public void execute(@NonNull Runnable command) {
+        // ignore command since we release wakeLock after its execution.
+        // but we want to test that after posting audio wake lock is acquired
+      }
+    };
+
+    Audio audio = prepareAudio();
+    mockWebServer.enqueue(new MockResponse().setBody("dummyResponse"));
+    startForAudio(audio);
     assertThat(service.wakeLock.isHeld())
             .isTrue();
   }
 
   @Test
   public void audioDownloaded_wakeLockIsReleased() throws Exception {
-    service.executor = new CurrentThreadExecutor();
-    Audio audio = audiosGenerator.generateOne();
-    audio.setDownloadUrl(mockWebServer.url("asf.mp3").toString());
+    Audio audio = prepareAudio();
     mockWebServer.enqueue(new MockResponse());
-    service.onStartCommand(new Intent(RuntimeEnvironment.application,
-            AudioDownloadService.class).putExtra(AudioDownloadService.EXTRA_AUDIO, audio), 0, 0);
+    startForAudio(audio);
     assertThat(service.wakeLock.isHeld())
             .isFalse();
   }
@@ -116,101 +132,92 @@ public class AudioDownloadServiceTest {
   @Test
   public void audioDownloaded_fileCreatedWithExpectedContent() throws Exception {
     String content = "expectedContent";
-
-    Audio audio = audiosGenerator.generateOne();
-    audio.setDownloadUrl(mockWebServer.url("q.mp3").toString());
-    service.executor = new CurrentThreadExecutor();
+    Audio audio = prepareAudio();
     mockWebServer.enqueue(new MockResponse().setBody(content));
-    service.onStartCommand(AudioDownloadService
-            .forAudio(RuntimeEnvironment.application, audio), 0, 0);
+    startForAudio(audio);
+    try {
+      File downloaded = temporaryFolder.getRoot().listFiles()[0];
 
-    File downloaded = temporaryFolder.getRoot().listFiles()[0];
-    assertThat(Okio.buffer(Okio.source(downloaded)).readUtf8())
-            .isEqualTo(content);
+      assertThat(Okio.buffer(Okio.source(downloaded)).readUtf8())
+              .isEqualTo(content);
+    } catch (IndexOutOfBoundsException e) {
+      fail("File was not created (root directory is empty)");
+    }
+
   }
 
   @Test
-  public void audioPosted_audioDownloadProgressPostedViaRxBus() {
-    final AtomicBoolean progressPosted = new AtomicBoolean();
-    TestSubscriber<Object> testSubscriber = new TestSubscriber<Object>() {
-      @Override
-      public void onNext(Object o) {
-        super.onNext(o);
-        if (o instanceof AudioDownloadProgressUpdatedEvent) {
-          progressPosted.set(true);
-        }
-      }
-    };
-    rxBus.observable().subscribe(testSubscriber);
-    Audio audio = audiosGenerator.generateOne();
-    audio.setDownloadUrl(mockWebServer.url("asf.mp3").toString());
+  public void audioPosted_audioDownloadProgressUpdatedEventPosted() {
+    Audio audio = prepareAudio();
     mockWebServer.enqueue(new MockResponse().setBody("does not matter, but must be non-empty"));
-    service.executor = new CurrentThreadExecutor();
-    service.onStartCommand(new Intent(RuntimeEnvironment.application,
-            AudioDownloadService.class).putExtra(AudioDownloadService.EXTRA_AUDIO, audio), 0, 0);
+    startForAudio(audio);
+    List<AudioDownloadProgressUpdatedEvent> events
+            = getEventsByClass(AudioDownloadProgressUpdatedEvent.class);
 
-    assertThat(progressPosted.get())
-            .isTrue();
+    assertThat(events)
+            .isNotEmpty();
+    assertThat(events.get(0).getAudio())
+            .isEqualTo(audio);
   }
 
   @Test
   public void ioExceptionThrown_audioDownloadErrorPostedViaRxBus() {
-    TestSubscriber<Object> testSubscriber = new TestSubscriber<>();
-    rxBus.observable().subscribe(testSubscriber);
-    Audio audio = audiosGenerator.generateOne();
-    audio.setDownloadUrl(mockWebServer.url("asf.mp3").toString());
-    service.executor = new CurrentThreadExecutor();
+    Audio audio = prepareAudio();
     mockWebServer.enqueue(new MockResponse().setResponseCode(404));
-    service.onStartCommand(AudioDownloadService.forAudio(RuntimeEnvironment.application, audio), 0, 0);
+    startForAudio(audio);
+    List<UnableDownloadAudioEvent> events = getEventsByClass(UnableDownloadAudioEvent.class);
 
-    List<Object> onNextEvents = testSubscriber.getOnNextEvents();
-    try {
-      UnableDownloadAudioEvent downloadError = (UnableDownloadAudioEvent)onNextEvents
-              .get(onNextEvents.size() - 1);
-      assertThat(downloadError.getAudio())
-              .isEqualTo(audio);
-    } catch (ClassCastException e) {
-      fail(UnableDownloadAudioEvent.class.getSimpleName() + " was not posted into RxBus");
-    }
-
+    assertThat(events)
+            .isNotEmpty();
+    assertThat(events.get(0).getAudio())
+            .isEqualTo(audio);
   }
 
   @Test
-  public void audioDownloaded_audioDownloadedEventPostedViaRxBus() {
-    TestSubscriber<Object> testSubscriber = new TestSubscriber<>();
-    rxBus.observable().subscribe(testSubscriber);
-    Audio audio = audiosGenerator.generateOne();
-    audio.setDownloadUrl(mockWebServer.url("asf.mp3").toString());
-    service.executor = new CurrentThreadExecutor();
+  public void audioDownloaded_audioDownloadedEventPosted() {
+    Audio audio = prepareAudio();
     mockWebServer.enqueue(new MockResponse().setBody("DummySong"));
-    service.onStartCommand(AudioDownloadService.forAudio(RuntimeEnvironment.application, audio), 0, 0);
+    startForAudio(audio);
+    List<AudioDownloadedEvent> events = getEventsByClass(AudioDownloadedEvent.class);
 
-    List<Object> onNextEvents = testSubscriber.getOnNextEvents();
-    try {
-      AudioDownloadedEvent event = (AudioDownloadedEvent)onNextEvents
-              .get(onNextEvents.size() - 1);
-      assertThat(event.getAudio())
-              .isEqualTo(audio);
-    } catch (ClassCastException e) {
-      fail(AudioDownloadedEvent.class.getSimpleName() + " was not posted into RxBus");
-    }
+    assertThat(events)
+            .isNotEmpty();
+    assertThat(events.get(0).getAudio())
+            .isEqualTo(audio);
   }
 
   @Test
   public void audioAcceptedByService_audioAcceptedEventPosted() {
-    TestSubscriber<Object> testSubscriber = new TestSubscriber<>();
-    rxBus.observable().subscribe(testSubscriber);
+    Audio audio = prepareAudio();
+    startForAudio(audio);
+    List<AudioAcceptedEvent> events = getEventsByClass(AudioAcceptedEvent.class);
+    assertThat(events)
+            .isNotEmpty();
+    assertThat(events.get(0).getAudio())
+            .isEqualTo(audio);
+  }
+
+  private void startForAudio(Audio audio) {
     service.onStartCommand(AudioDownloadService
-            .forAudio(RuntimeEnvironment.application, audiosGenerator.generateOne()), 0, 0);
-    List<Object> events = testSubscriber.getOnNextEvents();
-    boolean audioAcceptedEventPosted = false;
-    for(Object object : events) {
-      if (object instanceof AudioAcceptedEvent) {
-        audioAcceptedEventPosted = true;
+            .forAudio(RuntimeEnvironment.application, audio), 0, 0);
+  }
+
+  private Audio prepareAudio() {
+    Audio audio = audiosGenerator.generateOne();
+    audio.setDownloadUrl(mockWebServer.url("dummyUrl.mp3").toString());
+
+    return audio;
+  }
+
+  @SuppressWarnings("unchecked") // eventClass.isInstance(o) succeed so cast is correct
+  private <T> List<T> getEventsByClass(Class<T> eventClass) {
+    List<T> events = new ArrayList<>();
+    for(Object o : eventsListener.getOnNextEvents()) {
+      if (eventClass.isInstance(o)) {
+        events.add((T)o);
       }
     }
 
-    assertThat(audioAcceptedEventPosted)
-            .isTrue();
+    return events;
   }
 }
