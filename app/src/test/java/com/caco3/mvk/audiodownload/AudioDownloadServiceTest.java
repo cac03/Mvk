@@ -86,6 +86,7 @@ public class AudioDownloadServiceTest {
     try {
       service.onStartCommand(new Intent(RuntimeEnvironment.application,
               AudioDownloadService.class), 0, 0);
+      fail("Iae was not thrown");
     } catch (IllegalArgumentException expected) {
       assertThat(expected.getMessage())
               .isEqualTo("No extras in intent");
@@ -97,6 +98,7 @@ public class AudioDownloadServiceTest {
     try {
       service.onStartCommand(new Intent(RuntimeEnvironment.application,
               AudioDownloadService.class).putExtras(new Bundle()), 0, 0);
+      fail("Iae was not thrown");
     } catch (IllegalArgumentException expected) {
       assertThat(expected.getMessage())
               .contains("No Audio in the intent ");
