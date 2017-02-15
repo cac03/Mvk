@@ -11,6 +11,7 @@ import com.caco3.mvk.audiodownload.AudioDownloaderImpl;
 import com.caco3.mvk.audiodownload.DownloadViewNotificationsImpl;
 import com.caco3.mvk.data.audio.AudiosRepository;
 import com.caco3.mvk.loggedin.LoggedInScope;
+import com.caco3.mvk.rxbus.RxBus;
 import com.caco3.mvk.storage.dir.DirectoryProvider;
 
 import javax.inject.Named;
@@ -35,8 +36,8 @@ public class AudiosModule {
   @Provides
   @Named("notificationsView")
   @LoggedInScope
-  public AudioDownloadView provideAudioDownloadView(Context context) {
-    return new DownloadViewNotificationsImpl(context);
+  public AudioDownloadView provideAudioDownloadView(RxBus rxBus, Context context) {
+    return new DownloadViewNotificationsImpl(context, rxBus);
   }
 
   @Provides

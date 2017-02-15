@@ -9,6 +9,7 @@ import android.support.v4.app.NotificationCompat;
 
 import com.caco3.mvk.R;
 import com.caco3.mvk.myaudios.MyAudiosActivity;
+import com.caco3.mvk.rxbus.RxBus;
 import com.caco3.mvk.vk.audio.Audio;
 
 import java.util.HashMap;
@@ -21,7 +22,8 @@ import javax.inject.Inject;
 import static com.caco3.mvk.util.Preconditions.checkNotNull;
 
 
-public class DownloadViewNotificationsImpl implements AudioDownloadView {
+public class DownloadViewNotificationsImpl extends AbstractAudioDownloadEventsHandler
+        implements AudioDownloadView {
   private static final Locale locale = Locale.getDefault();
 
   @DrawableRes
@@ -53,7 +55,8 @@ public class DownloadViewNotificationsImpl implements AudioDownloadView {
   private int idCounter = 0;
 
   @Inject
-  public DownloadViewNotificationsImpl(Context context) {
+  public DownloadViewNotificationsImpl(Context context, RxBus rxBus) {
+    super(rxBus);
     this.context = checkNotNull(context, "context == null");
     notificationManager = (NotificationManager) context
             .getSystemService(Context.NOTIFICATION_SERVICE);
@@ -109,6 +112,31 @@ public class DownloadViewNotificationsImpl implements AudioDownloadView {
     if (progressNotifications.containsKey(audio)) {
       progressNotifications.remove(audio);
     }
+  }
+
+  @Override
+  public void handle(AudioAcceptedEvent audioAcceptedEvent) {
+    Audio audio = audioAcceptedEvent.getAudio();
+    showDownloadPending(audio);
+  }
+
+  @Override
+  public void handle(AudioDownloadedEvent audioDownloadedEvent) {
+    Audio audio = audioDownloadedEvent.getAudio();
+    showDownloadSuccessful(audio);
+  }
+
+  @Override
+  public void handle(AudioDownloadProgressUpdatedEvent progressUpdatedEvent) {
+    Audio audio = progressUpdatedEvent.getAudio();
+    updateProgress(audio, progressUpdatedEvent.getBytesDownloaded(),
+            progressUpdatedEvent.getBytesTotal(), progressUpdatedEvent.getNanosElapsed());
+  }
+
+  @Override
+  public void handle(UnableDownloadAudioEvent unableDownloadAudioEvent) {
+    Audio audio = unableDownloadAudioEvent.getAudio();
+    showDownloadFailed(audio);
   }
 
   @Override
