@@ -22,7 +22,7 @@ import javax.inject.Inject;
 import static com.caco3.mvk.util.Preconditions.checkNotNull;
 
 
-public class DownloadViewNotificationsImpl extends AbstractAudioDownloadEventsHandler {
+public class AudioDownloadNotificationsSender extends AbstractAudioDownloadEventsHandler {
   private static final Locale locale = Locale.getDefault();
 
   @DrawableRes
@@ -51,7 +51,7 @@ public class DownloadViewNotificationsImpl extends AbstractAudioDownloadEventsHa
   private int idCounter = 0;
 
   @Inject
-  public DownloadViewNotificationsImpl(Context context, RxBus rxBus) {
+  public AudioDownloadNotificationsSender(Context context, RxBus rxBus) {
     super(rxBus);
     this.context = checkNotNull(context, "context == null");
     notificationManager = (NotificationManager) context

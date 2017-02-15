@@ -36,7 +36,7 @@ import static org.robolectric.Shadows.shadowOf;
         constants = BuildConfig.class,
         sdk = 22
 )
-public class DownloadViewNotificationsImplTest {
+public class AudioDownloadNotificationsSenderTest {
   private final RxBus rxBus = RxBus.getInstance();
   private AbstractAudioDownloadEventsHandler eventsHandler;
   private Context context;
@@ -47,7 +47,7 @@ public class DownloadViewNotificationsImplTest {
     context = RuntimeEnvironment.application;
     shadowNotificationManager = shadowOf((NotificationManager)context
             .getSystemService(Context.NOTIFICATION_SERVICE));
-    eventsHandler = new DownloadViewNotificationsImpl(context, rxBus);
+    eventsHandler = new AudioDownloadNotificationsSender(context, rxBus);
     eventsHandler.startHandling(Schedulers.immediate());
   }
 
