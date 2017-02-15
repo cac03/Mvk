@@ -4,11 +4,14 @@ import com.caco3.mvk.audiodownload.AudioDownloader;
 import com.caco3.mvk.data.appuser.AppUser;
 import com.caco3.mvk.data.audio.AudiosRepository;
 import com.caco3.mvk.search.DataSetFilter;
+import com.caco3.mvk.util.Integers;
 import com.caco3.mvk.vk.Vk;
 import com.caco3.mvk.vk.VkException;
 import com.caco3.mvk.vk.audio.Audio;
 
 import java.io.IOException;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -24,6 +27,13 @@ import timber.log.Timber;
 
 
 /*package*/ class MyAudiosPresenterImpl implements MyAudiosPresenter {
+  static final Comparator<Audio> audioByPositionComparator = new Comparator<Audio>() {
+    @Override
+    public int compare(Audio o1, Audio o2) {
+      return Integers.compare(o1.getVkPlaylistPosition(), o2.getVkPlaylistPosition());
+    }
+  };
+
   private MyAudiosView view = NullAudiosView.INSTANCE;
   private AppUser currentAppUser;
   private AudiosRepository audiosRepository;
@@ -86,7 +96,10 @@ import timber.log.Timber;
     Observable.fromCallable(new Callable<List<Audio>>() {
       @Override
       public List<Audio> call() {
-        return audiosRepository.getAllByVkUserId(currentAppUser.getUserToken().getVkUserId());
+        List<Audio> audios = audiosRepository
+                .getAllByVkUserId(currentAppUser.getUserToken().getVkUserId());
+        Collections.sort(audios, audioByPositionComparator);
+        return audios;
       }
     }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
             .subscribe(new Action1<List<Audio>>() {
@@ -120,6 +133,9 @@ import timber.log.Timber;
       @Override
       public List<Audio> call() throws Exception {
         List<Audio> audios = vk.audios().get();
+        for(int i = 0, length = audios.size(); i < length; i++) {
+          audios.get(i).setVkPlaylistPosition(i);
+        }
 
         audiosRepository.replaceAllByVkUserId(currentAppUser.getUserToken().getVkUserId(),
                 audios);

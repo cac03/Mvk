@@ -3,6 +3,7 @@ package com.caco3.mvk.vk.audio;
 
 import com.caco3.mvk.AbstractPojoGenerator;
 
+import java.util.List;
 import java.util.Random;
 
 public class AudiosGenerator extends AbstractPojoGenerator<Audio> {
@@ -24,5 +25,15 @@ public class AudiosGenerator extends AbstractPojoGenerator<Audio> {
             + titles[random.nextInt(titles.length)] + ".mp3");
     audio.setId(random.nextLong());
     return audio;
+  }
+
+  @Override
+  public List<Audio> generateList(int n) {
+    List<Audio> audios = super.generateList(n);
+    for(int i = 0, length = audios.size(); i < length; i++) {
+      audios.get(i).setVkPlaylistPosition(i);
+    }
+
+    return audios;
   }
 }

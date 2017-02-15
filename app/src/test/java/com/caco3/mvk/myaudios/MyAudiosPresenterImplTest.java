@@ -4,6 +4,7 @@ import com.caco3.mvk.Rxs;
 import com.caco3.mvk.data.appuser.AppUser;
 import com.caco3.mvk.data.audio.AudiosRepository;
 import com.caco3.mvk.timber.SystemOutTree;
+import com.caco3.mvk.util.Integers;
 import com.caco3.mvk.vk.Vk;
 import com.caco3.mvk.vk.audio.Audio;
 import com.caco3.mvk.vk.audio.AudiosGenerator;
@@ -22,6 +23,8 @@ import org.mockito.stubbing.Answer;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
@@ -326,5 +329,52 @@ public class MyAudiosPresenterImplTest {
             .containsAll(filtered)
             .contains(mustBeShown)
             .doesNotContain(mustNotBeShown);
+  }
+
+  @Test
+  public void audiosReceivedFromVk_theyHaveSetVkPlaylistPositionWhenReplaceInRepositoryCalled()
+          throws Exception{
+    when(audiosRepository.getAllByVkUserId(anyLong())).thenReturn(Collections.<Audio>emptyList());
+    List<Audio> audios = audiosGenerator.generateList(100);
+    when(audiosService.get()).thenReturn(audios);
+    final AtomicBoolean replaceCalled = new AtomicBoolean();
+    doAnswer(new Answer() {
+      @Override
+      public Object answer(InvocationOnMock invocation) throws Throwable {
+        replaceCalled.set(true);
+        List<Audio> toSave = (List<Audio>)invocation.getArguments()[1];
+        assertThat(toSave)
+                .usingElementComparator(MyAudiosPresenterImpl.audioByPositionComparator)
+                .isSorted();
+        return null;
+      }
+    }).when(audiosRepository).replaceAllByVkUserId(anyLong(), ArgumentMatchers.<Audio>anyList());
+    presenter.onRefreshRequest();
+    assertThat(replaceCalled.get())
+            .isTrue();
+  }
+
+  @Test
+  public void viewAttached_showAudiosCalledWithSortedByVkPlaylistPositionAudios() {
+    List<Audio> fromRepository = audiosGenerator.generateList(100);
+    for(int i = 0, length = fromRepository.size(); i < length; i++) {
+      fromRepository.get(i).setVkPlaylistPosition(i);
+    }
+    Collections.shuffle(fromRepository);
+    when(audiosRepository.getAllByVkUserId(anyLong())).thenReturn(fromRepository);
+    final AtomicBoolean showAudiosCalled = new AtomicBoolean();
+    doAnswer(new Answer() {
+      @Override
+      public Object answer(InvocationOnMock invocation) throws Throwable {
+        showAudiosCalled.set(true);
+        assertThat((List<Audio>)invocation.getArguments()[0])
+                .usingElementComparator(MyAudiosPresenterImpl.audioByPositionComparator)
+                .isSorted();
+        return null;
+      }
+    }).when(view).showAudios(fromRepository);
+    presenter.onViewAttached(view);
+    assertThat(showAudiosCalled.get())
+            .isTrue();
   }
 }
