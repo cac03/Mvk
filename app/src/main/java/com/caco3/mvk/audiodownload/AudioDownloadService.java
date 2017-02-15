@@ -42,6 +42,7 @@ import static com.caco3.mvk.util.Preconditions.checkNotNull;
 import static com.caco3.mvk.util.Preconditions.checkState;
 
 public class AudioDownloadService extends Service {
+  static final int PROGRESS_UPDATED_POSTING_INTERVAL_MILLIS = 250;
   static final String WAKE_LOCK_TAG = "AudioDownloadServiceWakeLockTag";
   static final String EXTRA_AUDIO = "audio";
 
@@ -55,6 +56,7 @@ public class AudioDownloadService extends Service {
   AudioDownloadDirectoryProvider directoryProvider;
   @Inject
   RxBus rxBus;
+  private long lastProgressUpdatedEventPostedTimeMillis;
 
   public static Intent forAudio(Context context, Audio audio) {
     checkNotNull(audio, "audio == null");
@@ -182,6 +184,10 @@ public class AudioDownloadService extends Service {
 
   private void updateProgress(Audio downloading, long bytesRead,
                               long bytesTotal, long nanosElapsed) {
+    if (!needToPostProgressUpdatedEvent()) {
+      return;
+    }
+    lastProgressUpdatedEventPostedTimeMillis = System.currentTimeMillis();
     rxBus.post(AudioDownloadProgressUpdatedEvent
             .builder()
             .audio(downloading)
@@ -190,6 +196,12 @@ public class AudioDownloadService extends Service {
             .nanosElapsed(nanosElapsed)
             .build());
     Timber.e("Event posted");
+  }
+
+  private boolean needToPostProgressUpdatedEvent(){
+    long now = System.currentTimeMillis();
+    return now - lastProgressUpdatedEventPostedTimeMillis
+            >= PROGRESS_UPDATED_POSTING_INTERVAL_MILLIS;
   }
 
   @Override
