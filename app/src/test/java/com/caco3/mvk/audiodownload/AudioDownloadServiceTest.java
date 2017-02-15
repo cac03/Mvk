@@ -136,7 +136,7 @@ public class AudioDownloadServiceTest {
       @Override
       public void onNext(Object o) {
         super.onNext(o);
-        if (o instanceof AudioDownloadProgressUpdateEvent) {
+        if (o instanceof AudioDownloadProgressUpdatedEvent) {
           progressPosted.set(true);
         }
       }
@@ -144,7 +144,8 @@ public class AudioDownloadServiceTest {
     rxBus.observable().subscribe(testSubscriber);
     Audio audio = audiosGenerator.generateOne();
     audio.setDownloadUrl(mockWebServer.url("asf.mp3").toString());
-    mockWebServer.enqueue(new MockResponse());
+    mockWebServer.enqueue(new MockResponse().setBody("does not matter, but must be non-empty"));
+    service.executor = new CurrentThreadExecutor();
     service.onStartCommand(new Intent(RuntimeEnvironment.application,
             AudioDownloadService.class).putExtra(AudioDownloadService.EXTRA_AUDIO, audio), 0, 0);
 
@@ -193,5 +194,23 @@ public class AudioDownloadServiceTest {
     } catch (ClassCastException e) {
       fail(AudioDownloadedEvent.class.getSimpleName() + " was not posted into RxBus");
     }
+  }
+
+  @Test
+  public void audioAcceptedByService_audioAcceptedEventPosted() {
+    TestSubscriber<Object> testSubscriber = new TestSubscriber<>();
+    rxBus.observable().subscribe(testSubscriber);
+    service.onStartCommand(AudioDownloadService
+            .forAudio(RuntimeEnvironment.application, audiosGenerator.generateOne()), 0, 0);
+    List<Object> events = testSubscriber.getOnNextEvents();
+    boolean audioAcceptedEventPosted = false;
+    for(Object object : events) {
+      if (object instanceof AudioAcceptedEvent) {
+        audioAcceptedEventPosted = true;
+      }
+    }
+
+    assertThat(audioAcceptedEventPosted)
+            .isTrue();
   }
 }

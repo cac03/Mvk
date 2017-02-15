@@ -39,7 +39,6 @@ public class AudioDownloadService extends Service {
   static final String WAKE_LOCK_TAG = "AudioDownloadServiceWakeLockTag";
   static final String EXTRA_AUDIO = "audio";
 
-  final AudioDownloadProgressUpdateEvent progress = new AudioDownloadProgressUpdateEvent();
   Executor executor = Executors.newSingleThreadExecutor();
   final AtomicInteger audiosProcessing = new AtomicInteger();
 
@@ -97,8 +96,7 @@ public class AudioDownloadService extends Service {
 
   private void postAudio(Audio audio) {
     audiosProcessing.incrementAndGet();
-    progress.pending.add(audio);
-    rxBus.post(progress);
+    rxBus.post(new AudioAcceptedEvent(audio));
     Timber.d("Going to download audio: '%s', audiosProcessing = '%d'",
             audio, audiosProcessing.get());
 
@@ -127,10 +125,6 @@ public class AudioDownloadService extends Service {
       OutputStream out = null;
       InputStream in = null;
       Response response = null;
-      progress.pending.remove(audio);
-      progress.currentlyDownloading.put(audio,
-              new AudioDownloadProgressUpdateEvent.DownloadProgress());
-      rxBus.post(progress);
       try {
 
         audioFile = new MvkAudioFile(directoryProvider.getDirectory(), audio);
@@ -155,7 +149,6 @@ public class AudioDownloadService extends Service {
         Closeables.closeOrLog(response);
         Closeables.closeOrLog(out);
         Closeables.closeOrLog(in);
-        progress.currentlyDownloading.remove(audio);
         if (audiosProcessing.decrementAndGet() == 0) {
           wakeLock.release();
         }
@@ -176,12 +169,14 @@ public class AudioDownloadService extends Service {
 
   private void updateProgress(Audio downloading, long bytesRead,
                               long bytesTotal, long nanosElapsed) {
-    AudioDownloadProgressUpdateEvent.DownloadProgress downloadProgress
-            = progress.currentlyDownloading.get(downloading);
-    downloadProgress.setBytesTotal(bytesTotal);
-    downloadProgress.setBytesTransferred(bytesRead);
-    downloadProgress.setNanosElapsed(nanosElapsed);
-    rxBus.post(progress);
+    rxBus.post(AudioDownloadProgressUpdatedEvent
+            .builder()
+            .audio(downloading)
+            .bytesDownloaded(bytesRead)
+            .bytesTotal(bytesTotal)
+            .nanosElapsed(nanosElapsed)
+            .build());
+    Timber.e("Event posted");
   }
 
   @Override
