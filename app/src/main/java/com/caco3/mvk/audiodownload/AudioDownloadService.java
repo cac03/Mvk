@@ -141,7 +141,7 @@ public class AudioDownloadService extends Service {
         String url = audio.getDownloadUrl();
         response = okHttpClient.newCall(new Request.Builder().url(url).build()).execute();
         in = response.body().byteStream();
-        transfer(audio, in, out);
+        transfer(audio, in, out, response.body().contentLength());
         audioFile.restoreAfterDownload();
         rxBus.post(new AudioDownloadedEvent(audio));
         Timber.d("Audio is '%s' successfully downloaded", audio);
@@ -163,12 +163,19 @@ public class AudioDownloadService extends Service {
     }
   }
 
-  private void transfer(final Audio audio, InputStream in, OutputStream out) throws IOException {
+  private void transfer(final Audio audio, InputStream in,
+                        OutputStream out, final long contentLength) throws IOException {
+    /**
+     * {@link BytesTransfer} internally uses {@link InputStream#available()}
+     * to determine how many bytes total available, but {@link InputStream}
+     * from {@link okhttp3.ResponseBody} returns 0,
+     * and we have to use contentLength instead
+     */
     new BytesTransfer(out, in)
             .transfer(new BytesTransfer.ProgressListener() {
               @Override
               public void update(long bytesRead, long bytesTotal, long nanosElapsed) {
-                updateProgress(audio, bytesRead, bytesTotal, nanosElapsed);
+                updateProgress(audio, bytesRead, contentLength, nanosElapsed);
               }
             });
   }
