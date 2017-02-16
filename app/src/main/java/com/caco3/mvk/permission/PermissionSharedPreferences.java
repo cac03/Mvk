@@ -16,19 +16,19 @@ import static com.caco3.mvk.util.Preconditions.checkNotNull;
             .getSharedPreferences(PREFERENCES_FILENAME, Context.MODE_PRIVATE);
   }
 
-  /*package*/ boolean isDenied(Permission permission) {
-    return sharedPreferences.getBoolean(DENIED_KEY_PREFIX + permission.permission, false);
+  /*package*/ boolean isDenied(String permission) {
+    return sharedPreferences.getBoolean(DENIED_KEY_PREFIX + permission, false);
   }
 
-  /*package*/ boolean isGranted(Permission permission) {
+  /*package*/ boolean isGranted(String permission) {
     return !isDenied(permission);
   }
 
-  /*package*/ void setDenied(Permission permission) {
-    sharedPreferences.edit().putBoolean(DENIED_KEY_PREFIX + permission.permission, true).apply();
+  /*package*/ void setDenied(String permission) {
+    sharedPreferences.edit().putBoolean(DENIED_KEY_PREFIX + permission, true).apply();
   }
 
-  /*package*/ void setGranted(Permission permission) {
-    sharedPreferences.edit().remove(DENIED_KEY_PREFIX + permission.permission).apply();
+  /*package*/ void setGranted(String permission) {
+    sharedPreferences.edit().remove(DENIED_KEY_PREFIX + permission).apply();
   }
 }

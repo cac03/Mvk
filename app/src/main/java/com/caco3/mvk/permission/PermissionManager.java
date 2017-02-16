@@ -26,12 +26,12 @@ public abstract class PermissionManager implements PermissionManagerDelegate {
     permissionSharedPreferences = new PermissionSharedPreferences(context);
   }
 
-  public boolean isPermissionGranted(Permission permission) {
-    return ContextCompat.checkSelfPermission(context, permission.permission)
+  public boolean isPermissionGranted(String permission) {
+    return ContextCompat.checkSelfPermission(context, permission)
             == PackageManager.PERMISSION_GRANTED;
   }
 
-  protected abstract boolean needToShowRationale(Permission permission);
+  protected abstract boolean needToShowRationale(String permission);
 
   protected abstract void requestPermissions(int requestId, String[] permissions);
 
@@ -44,12 +44,12 @@ public abstract class PermissionManager implements PermissionManagerDelegate {
     if (isRequestCanceled(permissions, grantResults)) {
       request.getOnRequestCanceledAction().call();
     } else {
-      List<Permission> denied = extractDeniedPermissions(permissions, grantResults);
-      List<Permission> granted = extractGrantedPermissions(permissions, grantResults);
-      for(Permission permission : denied) {
+      List<String> denied = extractDeniedPermissions(permissions, grantResults);
+      List<String> granted = extractGrantedPermissions(permissions, grantResults);
+      for(String permission : denied) {
         permissionSharedPreferences.setDenied(permission);
       }
-      for(Permission permission : granted) {
+      for(String permission : granted) {
         permissionSharedPreferences.setGranted(permission);
       }
       if (denied.isEmpty()) {
@@ -67,30 +67,30 @@ public abstract class PermissionManager implements PermissionManagerDelegate {
     return grantResults.length == 0;
   }
 
-  private List<Permission> extractDeniedPermissions(String[] permissions, int[] grantResults) {
-    List<Permission> res = new ArrayList<>(1);
+  private List<String> extractDeniedPermissions(String[] permissions, int[] grantResults) {
+    List<String> res = new ArrayList<>(1);
     for(int i = 0; i < permissions.length; i++) {
       if (grantResults[i] == PackageManager.PERMISSION_DENIED) {
-        res.add(Permission.fromManifestString(permissions[i]));
+        res.add(permissions[i]);
       }
     }
 
     return res;
   }
 
-  private List<Permission> extractGrantedPermissions(String[] permissions, int[] grantResults) {
-    List<Permission> res = new ArrayList<>(1);
+  private List<String> extractGrantedPermissions(String[] permissions, int[] grantResults) {
+    List<String> res = new ArrayList<>(1);
     for(int i = 0; i < permissions.length; i++) {
       if (grantResults[i] == PackageManager.PERMISSION_GRANTED) {
-        res.add(Permission.fromManifestString(permissions[i]));
+        res.add(permissions[i]);
       }
     }
 
     return res;
   }
 
-  private boolean isAnyDeniedForever(List<Permission> denied) {
-    for(Permission permission : denied) {
+  private boolean isAnyDeniedForever(List<String> denied) {
+    for(String permission : denied) {
       if (isDeniedForever(permission)) {
         return true;
       }
@@ -99,7 +99,7 @@ public abstract class PermissionManager implements PermissionManagerDelegate {
     return false;
   }
 
-  private boolean isDeniedForever(Permission permission) {
+  private boolean isDeniedForever(String permission) {
     return permissionSharedPreferences.isDenied(permission)
             && !needToShowRationale(permission);
   }
@@ -109,12 +109,12 @@ public abstract class PermissionManager implements PermissionManagerDelegate {
     ongoingRequests.put(requestCodeCounter, request);
   }
 
-  private String[] permissionsToStringArray(Collection<Permission> permissions) {
+  private String[] permissionsToStringArray(Collection<String> permissions) {
     final int length = permissions.size();
     String[] res = new String[length];
     int i = 0;
-    for(Permission permission : permissions) {
-      res[i++] = permission.permission;
+    for(String permission : permissions) {
+      res[i++] = permission;
     }
 
     return res;

@@ -11,8 +11,8 @@ public class FragmentPermissionManager extends PermissionManager {
   }
 
   @Override
-  public boolean needToShowRationale(Permission permission) {
-    return fragment.shouldShowRequestPermissionRationale(permission.permission);
+  public boolean needToShowRationale(String permission) {
+    return fragment.shouldShowRequestPermissionRationale(permission);
   }
 
   @Override

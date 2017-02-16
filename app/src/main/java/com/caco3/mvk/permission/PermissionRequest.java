@@ -11,11 +11,11 @@ import java.util.List;
 import static com.caco3.mvk.util.Preconditions.checkState;
 
 public class PermissionRequest {
-  private final List<Permission> permissions;
+  private final List<String> permissions;
   private final Action0 onAllPermissionsGranted;
   private final Action0 onRequestCanceled;
-  private final Action1<List<Permission>> onAnyPermissionDenied;
-  private final Action1<List<Permission>> onAnyNeverAskAgainDenied;
+  private final Action1<List<String>> onAnyPermissionDenied;
+  private final Action1<List<String>> onAnyNeverAskAgainDenied;
 
   private PermissionRequest(Builder builder) {
     this.permissions = builder.permissions;
@@ -29,7 +29,7 @@ public class PermissionRequest {
     return new Builder();
   }
 
-  public List<Permission> getPermissions() {
+  public List<String> getPermissions() {
     return permissions;
   }
 
@@ -41,27 +41,27 @@ public class PermissionRequest {
     return onRequestCanceled;
   }
 
-  /*package*/ Action1<List<Permission>> getOnAnyPermissionDeniedAction() {
+  /*package*/ Action1<List<String>> getOnAnyPermissionDeniedAction() {
     return onAnyPermissionDenied;
   }
 
-  /*package*/ Action1<List<Permission>> getOnAnyNeverAskAgainDeniedAction() {
+  /*package*/ Action1<List<String>> getOnAnyNeverAskAgainDeniedAction() {
     return onAnyNeverAskAgainDenied;
   }
 
   public static class Builder {
-    private List<Permission> permissions = new ArrayList<>();
+    private List<String> permissions = new ArrayList<>();
     private Action0 onAllPermissionsGranted;
     private Action0 onRequestCanceled;
-    private Action1<List<Permission>> onAnyPermissionDenied;
-    private Action1<List<Permission>> onAnyNeverAskAgainDenied;
+    private Action1<List<String>> onAnyPermissionDenied;
+    private Action1<List<String>> onAnyNeverAskAgainDenied;
 
-    public Builder addPermission(Permission permission) {
+    public Builder addPermission(String permission) {
       this.permissions.add(permission);
       return this;
     }
 
-    public Builder addPermissions(Collection<Permission> collection) {
+    public Builder addPermissions(Collection<String> collection) {
       this.permissions.addAll(collection);
       return this;
     }
@@ -76,12 +76,12 @@ public class PermissionRequest {
       return this;
     }
 
-    public Builder onAnyDenied(Action1<List<Permission>> onPermissionDenied) {
+    public Builder onAnyDenied(Action1<List<String>> onPermissionDenied) {
       this.onAnyPermissionDenied = onPermissionDenied;
       return this;
     }
 
-    public Builder onAnyNeverAskAgainDenied(Action1<List<Permission>> onAnyNeverAskAgainDenied) {
+    public Builder onAnyNeverAskAgainDenied(Action1<List<String>> onAnyNeverAskAgainDenied) {
       this.onAnyNeverAskAgainDenied = onAnyNeverAskAgainDenied;
       return this;
     }

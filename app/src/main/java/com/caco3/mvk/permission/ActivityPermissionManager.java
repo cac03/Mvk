@@ -15,8 +15,8 @@ public class ActivityPermissionManager extends PermissionManager {
   }
 
   @Override
-  public boolean needToShowRationale(Permission permission) {
-    return ActivityCompat.shouldShowRequestPermissionRationale(activity, permission.permission);
+  public boolean needToShowRationale(String permission) {
+    return ActivityCompat.shouldShowRequestPermissionRationale(activity, permission);
   }
 
   @Override

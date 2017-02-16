@@ -1,5 +1,6 @@
 package com.caco3.mvk.myaudios;
 
+import android.Manifest;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
@@ -22,7 +23,6 @@ import android.widget.Toast;
 
 import com.caco3.mvk.R;
 import com.caco3.mvk.dagger.DaggerComponentsHolder;
-import com.caco3.mvk.permission.Permission;
 import com.caco3.mvk.permission.PermissionRequest;
 import com.caco3.mvk.ui.BaseFragment;
 import com.caco3.mvk.ui.recyclerview.decorator.MarginItemDecorator;
@@ -195,7 +195,7 @@ public class MyAudiosFragment extends BaseFragment implements MyAudiosView,
   }
 
   private boolean isWriteExternalStoragePermissionGranted() {
-    return permissionManager.isPermissionGranted(Permission.WRITE_EXTERNAL_STORAGE);
+    return permissionManager.isPermissionGranted(Manifest.permission.WRITE_EXTERNAL_STORAGE);
   }
 
   private void requestWriteExternalStoragePermission() {
@@ -207,7 +207,7 @@ public class MyAudiosFragment extends BaseFragment implements MyAudiosView,
     };
     PermissionRequest permissionRequest
             = PermissionRequest.builder()
-            .addPermission(Permission.WRITE_EXTERNAL_STORAGE)
+            .addPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
             .onAllGranted(new Action0() {
               @Override
               public void call() {
@@ -222,17 +222,17 @@ public class MyAudiosFragment extends BaseFragment implements MyAudiosView,
                         requestAgain);
               }
             })
-            .onAnyDenied(new Action1<List<Permission>>() {
+            .onAnyDenied(new Action1<List<String>>() {
               @Override
-              public void call(List<Permission> arg) {
+              public void call(List<String> arg) {
                 clearPendingAudio();
                 showCannotDownloadWithoutPermissionSnackbar(R.string.action_grant_permission,
                         requestAgain);
               }
             })
-            .onAnyNeverAskAgainDenied(new Action1<List<Permission>>() {
+            .onAnyNeverAskAgainDenied(new Action1<List<String>>() {
               @Override
-              public void call(List<Permission> arg) {
+              public void call(List<String> arg) {
                 clearPendingAudio();
                 showCannotDownloadWithoutPermissionSnackbar(R.string.settings, new View.OnClickListener() {
                   @Override
