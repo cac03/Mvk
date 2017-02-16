@@ -2,6 +2,7 @@ package com.caco3.mvk.network;
 
 import android.content.Context;
 
+import com.caco3.mvk.network.interceptors.NotSuccessfulResponseInterceptor;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -22,7 +23,9 @@ public class NetworkModule {
   @Provides
   @Singleton
   public OkHttpClient provideHttpClient() {
-    return new OkHttpClient();
+    return new OkHttpClient.Builder()
+            .addInterceptor(new NotSuccessfulResponseInterceptor())
+            .build();
   }
 
   @Provides
