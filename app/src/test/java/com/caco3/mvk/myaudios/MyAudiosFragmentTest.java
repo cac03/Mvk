@@ -1,5 +1,6 @@
 package com.caco3.mvk.myaudios;
 
+import android.support.v7.widget.LinearLayoutManager;
 import android.view.View;
 
 import com.caco3.mvk.BuildConfig;
@@ -20,6 +21,7 @@ import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
+import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.robolectric.shadows.support.v4.SupportFragmentTestUtil.startFragment;
 
 @RunWith(RobolectricTestRunner.class)
@@ -98,5 +100,18 @@ public class MyAudiosFragmentTest {
     String expected = fragment.getString(R.string.network_error_occurred);
     String actual = ShadowToast.getTextOfLatestToast();
     assertEquals(expected, actual);
+  }
+
+  @Test
+  public void listScrolledFabClicked_listScrolledTo0Position() {
+    fragment.showAudios(audiosGenerator.generateList(100));
+    fragment.recyclerView.measure(0,0);
+    fragment.recyclerView.layout(0,0,100,100);
+    fragment.recyclerView.scrollToPosition(50);
+    fragment.onFabClick();
+    LinearLayoutManager layoutManager = (LinearLayoutManager)
+            fragment.recyclerView.getLayoutManager();
+    assertThat(layoutManager.findFirstCompletelyVisibleItemPosition())
+            .isEqualTo(0);
   }
 }

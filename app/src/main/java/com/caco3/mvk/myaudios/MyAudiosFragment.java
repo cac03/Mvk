@@ -4,6 +4,7 @@ import android.Manifest;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -39,6 +40,7 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import jp.wasabeef.recyclerview.animators.OvershootInLeftAnimator;
 
 public class MyAudiosFragment extends BaseFragment implements MyAudiosView,
@@ -52,6 +54,8 @@ public class MyAudiosFragment extends BaseFragment implements MyAudiosView,
   RecyclerView recyclerView;
   @BindView(R.id.audios_frag_progress_bar)
   ProgressBar progressBar;
+  @BindView(R.id.audios_frag_fab)
+  FloatingActionButton floatingActionButton;
   View audiosContentView;
   private MyAudiosAdapter audiosAdapter = new MyAudiosAdapter(this);
   /**State of Search view is not saved when orientation changed.
@@ -103,6 +107,12 @@ public class MyAudiosFragment extends BaseFragment implements MyAudiosView,
   private void initSwipeRefreshLayout() {
     swipeRefreshLayout.setOnRefreshListener(this);
   }
+
+  @OnClick(R.id.audios_frag_fab)
+  /*package*/ void onFabClick() {
+    recyclerView.smoothScrollToPosition(0);
+  }
+
 
   @Override
   public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
