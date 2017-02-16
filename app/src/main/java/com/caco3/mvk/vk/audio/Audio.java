@@ -177,4 +177,10 @@ public void setVkPlaylistPosition(Integer vkPlaylistPosition) {
       throw new AssertionError(cannotHappen);
     }
   }
+
+  @Override
+  public String toString() {
+    return artist + " - " + title + " " + durationSeconds + "s. Owner: "
+            + ownerId + ". Download url: " + downloadUrl;
+  }
 }
