@@ -1,5 +1,6 @@
 package com.caco3.mvk.audiodownload;
 
+import android.annotation.SuppressLint;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -50,8 +51,10 @@ public class AudioDownloadNotificationsSender extends AbstractAudioDownloadEvent
 
   private final Context context;
   private final NotificationManager notificationManager;
-  private Map<Audio, Integer> notificationIds = new HashMap<>();
-  private Map<Audio, NotificationCompat.Builder> progressNotifications
+  @SuppressLint("UseSparseArrays")
+  private Map<Long, Integer> notificationIds = new HashMap<>();
+  @SuppressLint("UseSparseArrays")
+  private Map<Long, NotificationCompat.Builder> progressNotifications
           = new HashMap<>();
   private int idCounter = 0;
 
@@ -95,11 +98,11 @@ public class AudioDownloadNotificationsSender extends AbstractAudioDownloadEvent
 
   private int getOrCreateId(Audio audio) {
     int id;
-    if (!notificationIds.containsKey(audio)) {
+    if (!notificationIds.containsKey(audio.getId())) {
       id = idCounter++;
-      notificationIds.put(audio, id);
+      notificationIds.put(audio.getId(), id);
     } else {
-      id = notificationIds.get(audio);
+      id = notificationIds.get(audio.getId());
     }
 
     return id;
@@ -107,9 +110,9 @@ public class AudioDownloadNotificationsSender extends AbstractAudioDownloadEvent
 
   private void fireLastNotification(Audio audio, NotificationCompat.Builder builder) {
     fireNotification(audio, builder);
-    notificationIds.remove(audio);
-    if (progressNotifications.containsKey(audio)) {
-      progressNotifications.remove(audio);
+    notificationIds.remove(audio.getId());
+    if (progressNotifications.containsKey(audio.getId())) {
+      progressNotifications.remove(audio.getId());
     }
   }
 
@@ -140,11 +143,11 @@ public class AudioDownloadNotificationsSender extends AbstractAudioDownloadEvent
 
   private void updateProgress(Audio audio, long bytesDownloaded, long bytesTotal, long nanosElapsed) {
     NotificationCompat.Builder builder;
-    if (progressNotifications.containsKey(audio)) {
-      builder = progressNotifications.get(audio);
+    if (progressNotifications.containsKey(audio.getId())) {
+      builder = progressNotifications.get(audio.getId());
     } else {
       builder = new NotificationCompat.Builder(context);
-      progressNotifications.put(audio, builder);
+      progressNotifications.put(audio.getId(), builder);
     }
     builder.setContentTitle(makeTitle(audio))
             .setContentText(makeProgressContentText(bytesDownloaded, bytesTotal, nanosElapsed))
