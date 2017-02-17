@@ -3,6 +3,7 @@ package com.caco3.mvk.vk;
 import com.caco3.mvk.vk.audio.VkAudioServiceImpl;
 import com.caco3.mvk.vk.audio.VkAudiosService;
 import com.caco3.mvk.vk.auth.UserToken;
+import com.caco3.mvk.vk.interceptors.AppendApiVersionParameterInterceptor;
 import com.caco3.mvk.vk.interceptors.UserTokenInterceptor;
 import com.caco3.mvk.vk.users.VkUsersService;
 import com.caco3.mvk.vk.users.VkUsersServiceImpl;
@@ -16,6 +17,8 @@ import static com.caco3.mvk.util.Preconditions.checkNotNull;
 
 
 /*package*/ class VkImpl implements Vk {
+  private static final String API_VERSION = "5.62";
+
   /*package*/ static final String VK_API_BASE_URL = "https://api.vk.com/";
   private final VkAudiosService vkAudiosService;
   private final VkUsersService vkUsersService;
@@ -33,6 +36,7 @@ import static com.caco3.mvk.util.Preconditions.checkNotNull;
   private OkHttpClient createOkHttpClient(OkHttpClient base, UserToken userToken) {
     return base.newBuilder()
             .addInterceptor(new UserTokenInterceptor(userToken))
+            .addInterceptor(new AppendApiVersionParameterInterceptor(API_VERSION))
             .build();
   }
 
