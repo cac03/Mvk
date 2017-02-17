@@ -109,7 +109,7 @@ public class AudiosRepositoryImpl implements AudiosRepository {
   }
 
   /*package*/ Audio prepareNewEntityForUpdate(Audio oldEntity, Audio newEntity) {
-    newEntity.setDownloaded(oldEntity.isDownloaded());
+    newEntity.setFile(oldEntity.getFile());
     newEntity.setEntityId(oldEntity.getEntityId());
     return newEntity;
   }

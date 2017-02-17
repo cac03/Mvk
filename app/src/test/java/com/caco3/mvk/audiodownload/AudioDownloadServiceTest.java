@@ -194,6 +194,21 @@ public class AudioDownloadServiceTest {
   }
 
   @Test
+  public void audioDownloaded_audioInAudioDownloadedEventHasExistingFileSet() {
+    Audio audio = prepareAudio();
+    mockWebServer.enqueue(new MockResponse().setBody("DummySong"));
+    startForAudio(audio);
+    List<AudioDownloadedEvent> events = getEventsByClass(AudioDownloadedEvent.class);
+
+    assertThat(events)
+            .isNotEmpty();
+    Audio received = events.get(0).getAudio();
+    assertThat(received.getFile())
+            .isNotNull()
+            .exists();
+  }
+
+  @Test
   public void audioAcceptedByService_audioAcceptedEventPosted() {
     Audio audio = prepareAudio();
     startForAudio(audio);

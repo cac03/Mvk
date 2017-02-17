@@ -144,7 +144,7 @@ public class AudioDownloadService extends Service {
         response = okHttpClient.newCall(new Request.Builder().url(url).build()).execute();
         in = response.body().byteStream();
         transfer(audio, in, out, response.body().contentLength());
-        audioFile.restoreAfterDownload();
+        audio.setFile(audioFile.restoreAfterDownload());
         rxBus.post(new AudioDownloadedEvent(audio));
         Timber.d("Audio is '%s' successfully downloaded", audio);
       } catch (IOException e) {

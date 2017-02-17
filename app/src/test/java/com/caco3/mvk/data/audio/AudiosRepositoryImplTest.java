@@ -10,6 +10,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -82,14 +83,15 @@ public class AudiosRepositoryImplTest {
   @Test
   public void entityMustBeUpdated_downloadedAndEntityIdFieldsAreCopiedToNewEntity() {
     Audio oldEntity = audiosGenerator.generateOne();
-    oldEntity.setDownloaded(true);
+    File file = new File("/some/path");
+    oldEntity.setFile(file);
     oldEntity.setEntityId(8201L);
     Audio newEntity = audiosGenerator.generateOne();
     Audio updatedEntity = audiosRepository.prepareNewEntityForUpdate(oldEntity, newEntity);
     assertThat(newEntity.getEntityId())
             .isEqualTo(oldEntity.getEntityId());
-    assertThat(newEntity.getDownloaded())
-            .isEqualTo(oldEntity.getDownloaded());
+    assertThat(newEntity.getFile())
+            .isEqualTo(oldEntity.getFile());
     assertThat(updatedEntity)
             .isSameAs(newEntity);
 

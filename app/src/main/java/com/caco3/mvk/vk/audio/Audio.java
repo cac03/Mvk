@@ -1,12 +1,15 @@
 package com.caco3.mvk.vk.audio;
 
+import com.caco3.mvk.util.greendao.FileConverter;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import org.greenrobot.greendao.annotation.Convert;
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Generated;
 
+import java.io.File;
 import java.io.Serializable;
 
 /**
@@ -34,24 +37,25 @@ public class Audio implements Cloneable, Serializable {
   @SerializedName("owner_id")
   @Expose
   private long ownerId;
-  private boolean downloaded;
   private Integer vkPlaylistPosition;
+  @Convert(columnType = String.class, converter = FileConverter.class)
+  private File file;
 
   private static final long serialVersionUID = 7998765258689575597L;
 
-  @Generated(hash = 529378541)
-public Audio(Long entityId, String artist, String title, int durationSeconds, String downloadUrl, long id, long ownerId,
-        boolean downloaded, Integer vkPlaylistPosition) {
-    this.entityId = entityId;
-    this.artist = artist;
-    this.title = title;
-    this.durationSeconds = durationSeconds;
-    this.downloadUrl = downloadUrl;
-    this.id = id;
-    this.ownerId = ownerId;
-    this.downloaded = downloaded;
-    this.vkPlaylistPosition = vkPlaylistPosition;
-}
+  @Generated(hash = 1069985937)
+  public Audio(Long entityId, String artist, String title, int durationSeconds, String downloadUrl, long id, long ownerId,
+          Integer vkPlaylistPosition, File file) {
+      this.entityId = entityId;
+      this.artist = artist;
+      this.title = title;
+      this.durationSeconds = durationSeconds;
+      this.downloadUrl = downloadUrl;
+      this.id = id;
+      this.ownerId = ownerId;
+      this.vkPlaylistPosition = vkPlaylistPosition;
+      this.file = file;
+  }
 
 @Generated(hash = 1642629471)
   public Audio() {
@@ -74,7 +78,7 @@ public Audio(Long entityId, String artist, String title, int durationSeconds, St
   }
 
   public boolean isDownloaded() {
-    return downloaded;
+    return file != null;
   }
 
   public long getId() {
@@ -101,14 +105,6 @@ public Audio(Long entityId, String artist, String title, int durationSeconds, St
       this.downloadUrl = downloadUrl;
   }
 
-  public boolean getDownloaded() {
-      return this.downloaded;
-  }
-
-  public void setDownloaded(boolean downloaded) {
-      this.downloaded = downloaded;
-  }
-
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
@@ -119,7 +115,7 @@ public Audio(Long entityId, String artist, String title, int durationSeconds, St
     if (durationSeconds != audio.durationSeconds) return false;
     if (id != audio.id) return false;
     if (ownerId != audio.ownerId) return false;
-    if (downloaded != audio.downloaded) return false;
+    if (file != null ? !file.equals(audio.file) : audio.file != null) return false;
     if (artist != null ? !artist.equals(audio.artist) : audio.artist != null) return false;
     if (title != null ? !title.equals(audio.title) : audio.title != null) return false;
     if (downloadUrl != null ? !downloadUrl.equals(audio.downloadUrl) : audio.downloadUrl != null)
@@ -136,7 +132,7 @@ public Audio(Long entityId, String artist, String title, int durationSeconds, St
     result = 31 * result + (downloadUrl != null ? downloadUrl.hashCode() : 0);
     result = 31 * result + (int) (id ^ (id >>> 32));
     result = 31 * result + (int) (ownerId ^ (ownerId >>> 32));
-    result = 31 * result + (downloaded ? 1 : 0);
+    result = 31 * result + (file != null ? file.hashCode() : 0);
     result = 31 * result + (vkPlaylistPosition != null ? vkPlaylistPosition.hashCode() : 0);
     return result;
   }
@@ -182,5 +178,13 @@ public void setVkPlaylistPosition(Integer vkPlaylistPosition) {
   public String toString() {
     return artist + " - " + title + " " + durationSeconds + "s. Owner: "
             + ownerId + ". Download url: " + downloadUrl;
+  }
+
+  public File getFile() {
+      return this.file;
+  }
+
+  public void setFile(File file) {
+      this.file = file;
   }
 }
