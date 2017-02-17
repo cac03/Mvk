@@ -13,7 +13,7 @@ public class VkUser implements Cloneable {
   @Id
   private Long id;
 
-  @SerializedName("uid")
+  @SerializedName("id")
   @Expose
   private long vkUserId;
   @SerializedName("first_name")
