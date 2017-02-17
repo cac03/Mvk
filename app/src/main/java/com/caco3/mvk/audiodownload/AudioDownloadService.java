@@ -16,6 +16,7 @@ import com.caco3.mvk.audiodownload.events.UnableDownloadAudioEvent;
 import com.caco3.mvk.audiodownload.storage.AudioDownloadDirectoryProvider;
 import com.caco3.mvk.audiodownload.storage.MvkAudioFile;
 import com.caco3.mvk.dagger.DaggerComponentsHolder;
+import com.caco3.mvk.data.audio.AudiosRepository;
 import com.caco3.mvk.rxbus.RxBus;
 import com.caco3.mvk.util.io.BytesTransfer;
 import com.caco3.mvk.util.io.Closeables;
@@ -56,6 +57,8 @@ public class AudioDownloadService extends Service {
   AudioDownloadDirectoryProvider directoryProvider;
   @Inject
   RxBus rxBus;
+  @Inject
+  AudiosRepository repository;
   private long lastProgressUpdatedEventPostedTimeMillis;
 
   public static Intent forAudio(Context context, Audio audio) {
@@ -145,6 +148,7 @@ public class AudioDownloadService extends Service {
         in = response.body().byteStream();
         transfer(audio, in, out, response.body().contentLength());
         audio.setFile(audioFile.restoreAfterDownload());
+        repository.update(audio);
         rxBus.post(new AudioDownloadedEvent(audio));
         Timber.d("Audio is '%s' successfully downloaded", audio);
       } catch (IOException e) {

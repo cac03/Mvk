@@ -10,6 +10,7 @@ import com.caco3.mvk.audiodownload.events.AudioDownloadProgressUpdatedEvent;
 import com.caco3.mvk.audiodownload.events.AudioDownloadedEvent;
 import com.caco3.mvk.audiodownload.events.UnableDownloadAudioEvent;
 import com.caco3.mvk.audiodownload.storage.AudioDownloadDirectoryProvider;
+import com.caco3.mvk.data.audio.AudiosRepository;
 import com.caco3.mvk.network.interceptors.NotSuccessfulResponseInterceptor;
 import com.caco3.mvk.rxbus.RxBus;
 import com.caco3.mvk.util.CurrentThreadExecutor;
@@ -24,6 +25,8 @@ import org.junit.rules.TemporaryFolder;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
@@ -33,6 +36,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executor;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import okhttp3.OkHttpClient;
 import okhttp3.mockwebserver.MockResponse;
@@ -42,6 +46,7 @@ import rx.observers.TestSubscriber;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.assertj.core.api.Java6Assertions.fail;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.when;
 
 
@@ -61,6 +66,8 @@ public class AudioDownloadServiceTest {
   public TemporaryFolder temporaryFolder = new TemporaryFolder();
   @Mock
   private AudioDownloadDirectoryProvider directoryProvider;
+  @Mock
+  private AudiosRepository audiosRepository;
   private final RxBus rxBus = RxBus.getInstance();
   private TestSubscriber<Object> eventsListener = new TestSubscriber<>();
 
@@ -78,6 +85,7 @@ public class AudioDownloadServiceTest {
     service.executor = currentThreadExecutor;
     service.okHttpClient = new OkHttpClient.Builder()
             .addInterceptor(new NotSuccessfulResponseInterceptor()).build();
+    service.repository = audiosRepository;
     when(directoryProvider.getDirectory()).thenReturn(temporaryFolder.getRoot());
   }
 
@@ -206,6 +214,23 @@ public class AudioDownloadServiceTest {
     assertThat(received.getFile())
             .isNotNull()
             .exists();
+  }
+
+  @Test
+  public void audioDownloaded_itIsUpdatedInRepository() {
+    Audio audio = prepareAudio();
+    mockWebServer.enqueue(new MockResponse().setBody("DummySong"));
+    final AtomicBoolean updateAudioCalled = new AtomicBoolean(false);
+    doAnswer(new Answer() {
+      @Override
+      public Object answer(InvocationOnMock invocation) throws Throwable {
+        updateAudioCalled.set(true);
+        return null;
+      }
+    }).when(audiosRepository).update(audio);
+    startForAudio(audio);
+    assertThat(updateAudioCalled.get())
+            .isTrue();
   }
 
   @Test
