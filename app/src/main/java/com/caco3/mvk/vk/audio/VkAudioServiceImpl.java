@@ -1,6 +1,8 @@
 package com.caco3.mvk.vk.audio;
 
 import com.caco3.mvk.vk.VkResponse;
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 
 import java.io.IOException;
 import java.util.List;
@@ -22,11 +24,17 @@ public class VkAudioServiceImpl implements VkAudiosService {
   @Override
   public List<Audio> get() throws IOException {
     return retrofitAudiosService.getAll().execute()
-            .body().getResponseOrThrowIfNotSuccessful();
+            .body().getResponseOrThrowIfNotSuccessful().audios;
+  }
+
+  /*package*/ static class AudiosResponse {
+    @SerializedName("items")
+    @Expose
+    List<Audio> audios;
   }
 
   /*package*/ interface RetrofitAudiosService {
     @GET("/method/audio.get")
-    Call<VkResponse<List<Audio>>> getAll();
+    Call<VkResponse<AudiosResponse>> getAll();
   }
 }
