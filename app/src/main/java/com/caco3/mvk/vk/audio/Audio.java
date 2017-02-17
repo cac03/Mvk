@@ -78,7 +78,7 @@ public class Audio implements Cloneable, Serializable {
   }
 
   public boolean isDownloaded() {
-    return file != null;
+    return file != null && file.exists();
   }
 
   public long getId() {
