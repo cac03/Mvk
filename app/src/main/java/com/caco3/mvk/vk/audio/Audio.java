@@ -28,7 +28,7 @@ public class Audio implements Cloneable, Serializable {
   @SerializedName("url")
   @Expose
   private String downloadUrl;
-  @SerializedName("aid")
+  @SerializedName("id")
   @Expose
   private long id;
   @SerializedName("owner_id")
