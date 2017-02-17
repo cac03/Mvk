@@ -7,6 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.caco3.mvk.R;
@@ -84,7 +85,7 @@ public class MyAudiosAdapter extends RecyclerView.Adapter<MyAudiosAdapter.AudioV
     @BindView(R.id.audio_item_duration)
     TextView durationView;
     @BindView(R.id.audio_item_downloaded)
-    TextView downloadedView;
+    ImageView downloadedView;
 
     public AudioViewHolder(View itemView) {
       super(itemView);
@@ -95,7 +96,7 @@ public class MyAudiosAdapter extends RecyclerView.Adapter<MyAudiosAdapter.AudioV
       artistView.setText(audio.getArtist());
       titleView.setText(audio.getTitle());
       durationView.setText(formatDuration(audio.getDurationSeconds()));
-      downloadedView.setText(audio.isDownloaded() ? "Y" : "N");
+      downloadedView.setVisibility(audio.isDownloaded() ? View.VISIBLE : View.GONE);
       itemView.setOnClickListener(new View.OnClickListener() {
         @Override
         public void onClick(View v) {
