@@ -38,4 +38,19 @@ public class AudioTest {
     assertThat(audio.isDownloaded())
             .isTrue();
   }
+
+  @Test
+  public void downloadUrlIsNull_isAvailableForDownloadReturnsFalse() {
+    Audio audio = new Audio();
+    assertThat(audio.isAvailableForDownload())
+            .isFalse();
+  }
+
+  @Test
+  public void downloadUrlNotNull_isAvailableForDownloadReturnsTrue() {
+    Audio audio = new Audio();
+    audio.setDownloadUrl("https://something.com/mp3");
+    assertThat(audio.isAvailableForDownload())
+            .isTrue();
+  }
 }

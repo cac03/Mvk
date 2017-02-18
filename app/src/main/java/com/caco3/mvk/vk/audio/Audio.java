@@ -105,6 +105,10 @@ public class Audio implements Cloneable, Serializable {
       this.downloadUrl = downloadUrl;
   }
 
+  public boolean isAvailableForDownload() {
+    return downloadUrl != null;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;

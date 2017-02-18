@@ -189,6 +189,9 @@ public class MyAudiosFragment extends BaseFragment implements MyAudiosView,
       public boolean onMenuItemClick(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.audio_item_menu_download) {
+          if (!audio.isAvailableForDownload()) {
+            item.setEnabled(false);
+          }
           if (isWriteExternalStoragePermissionGranted()) {
             downloadAudio(audio);
           } else {
