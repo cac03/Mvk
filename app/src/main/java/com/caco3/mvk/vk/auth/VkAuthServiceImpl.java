@@ -7,6 +7,6 @@ public class VkAuthServiceImpl implements VkAuthService {
 
   @Override
   public UserToken getUserToken(Credentials credentials) throws IOException {
-    throw new RuntimeException("Implement this with your own logic");
+    return new AuthorizeMethod(credentials).call();
   }
 }

@@ -55,6 +55,7 @@ public class SyncAudiosServiceTest {
   @Mock private AppUser appUser;
   @Mock private UserToken userToken;
   private AudiosGenerator audiosGenerator = new AudiosGenerator();
+  private AudiosToDownloadExtractor extractor = new AudiosToDownloadExtractor();
 
   @Before public void setUp() throws Exception {
     MockitoAnnotations.initMocks(this);
@@ -120,7 +121,7 @@ public class SyncAudiosServiceTest {
   @Test public void serviceStarted_audiosThatMustBeDownloadedArePostedToDownloader() throws Exception {
     when(mockPolicy.canSync()).thenReturn(true);
     List<Audio> audios = audiosGenerator.generateList(1000);
-    List<Audio> expected = service.extractAudiosToDownload(audios);
+    List<Audio> expected = extractor.extract(audios);
     final List<Audio> actual = new ArrayList<>();
     doAnswer(new Answer() {
       @Override

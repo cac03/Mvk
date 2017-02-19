@@ -11,7 +11,6 @@ import com.caco3.mvk.vk.VkException;
 import com.caco3.mvk.vk.audio.Audio;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -34,6 +33,7 @@ public class SyncAudiosService extends IntentService {
   AudioDownloader audioDownloader;
   @Inject
   List<AudioSyncPolicy> syncPolicies;
+  private AudiosToDownloadExtractor audiosToDownloadExtractor = new AudiosToDownloadExtractor();
 
   public SyncAudiosService() {
     super("SyncAudiosService"); // worker thread name
@@ -65,7 +65,7 @@ public class SyncAudiosService extends IntentService {
           audios.get(i).setVkPlaylistPosition(i);
         }
         audiosRepository.replaceAllByVkUserId(appUser.getUserToken().getVkUserId(), audios);
-        for(Audio audio : extractAudiosToDownload(audios)) {
+        for(Audio audio : audiosToDownloadExtractor.extract(audios)) {
           audioDownloader.post(audio);
         }
       }
@@ -94,18 +94,5 @@ public class SyncAudiosService extends IntentService {
 
   private boolean isRethrowNeeded(Throwable t) {
     return !(t instanceof IOException || t instanceof VkException);
-  }
-
-  // TODO: 2/18/17 Move it to another class?
-  /*package*/ List<Audio> extractAudiosToDownload(List<Audio> audios) {
-    List<Audio> toDownload = new ArrayList<>();
-    int length = audios.size() >= 20 ? 20 : audios.size();
-    for(int i = 0; i < length; i++) {
-      Audio audio = audios.get(i);
-      if (!audio.isDownloaded() && audio.isAvailableForDownload()) {
-        toDownload.add(audio);
-      }
-    }
-    return toDownload;
   }
 }
