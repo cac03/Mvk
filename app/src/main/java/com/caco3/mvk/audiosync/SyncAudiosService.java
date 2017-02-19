@@ -22,7 +22,6 @@ import rx.Subscriber;
 import rx.exceptions.Exceptions;
 import timber.log.Timber;
 
-// TODO: 2/18/17 Better name?
 public class SyncAudiosService extends IntentService {
   @Inject
   Vk vk;
