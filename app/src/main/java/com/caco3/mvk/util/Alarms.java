@@ -33,7 +33,7 @@ public class Alarms {
             nextTriggerAt,
             intervalMillis,
             pendingIntent);
-    Timber.d("Alarm scheduled with %ds interval. Next time it will trigger at: ", intervalMillis / 1000,
+    Timber.d("Alarm scheduled with %ds interval. Next time it will trigger at: %s", intervalMillis / 1000,
             new Date(nextTriggerAt).toString());
   }
 
