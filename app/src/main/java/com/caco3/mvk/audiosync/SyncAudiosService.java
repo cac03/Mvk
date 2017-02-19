@@ -5,6 +5,7 @@ import android.content.Intent;
 
 import com.caco3.mvk.audiodownload.AudioDownloader;
 import com.caco3.mvk.audiosync.receiver.SyncAudiosAlarmReceiver;
+import com.caco3.mvk.dagger.DaggerComponentsHolder;
 import com.caco3.mvk.data.appuser.AppUser;
 import com.caco3.mvk.data.audio.AudiosRepository;
 import com.caco3.mvk.vk.Vk;
@@ -37,6 +38,13 @@ public class SyncAudiosService extends IntentService {
 
   public SyncAudiosService() {
     super("SyncAudiosService"); // worker thread name
+  }
+
+  @Override
+  public void onCreate() {
+    super.onCreate();
+    DaggerComponentsHolder.getInstance()
+            .getLoggedInComponent().inject(this);
   }
 
   @Override

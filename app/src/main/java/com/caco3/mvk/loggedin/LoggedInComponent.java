@@ -2,6 +2,7 @@ package com.caco3.mvk.loggedin;
 
 import com.caco3.mvk.audiodownload.AudioDownloadService;
 import com.caco3.mvk.audios.AudiosModule;
+import com.caco3.mvk.audiosync.SyncAudiosService;
 import com.caco3.mvk.myaudios.MyAudiosComponent;
 import com.caco3.mvk.myaudios.MyAudiosModule;
 import com.caco3.mvk.navdrawer.NavDrawerComponent;
@@ -25,4 +26,5 @@ public interface LoggedInComponent {
   MyAudiosComponent plus(MyAudiosModule myAudiosModule);
   NavDrawerComponent plus(NavDrawerModule navDrawerModule);
   void inject(AudioDownloadService service);
+  void inject(SyncAudiosService syncAudiosService);
 }
