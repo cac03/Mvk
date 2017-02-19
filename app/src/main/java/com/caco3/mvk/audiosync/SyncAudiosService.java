@@ -4,6 +4,7 @@ import android.app.IntentService;
 import android.content.Intent;
 
 import com.caco3.mvk.audiodownload.AudioDownloader;
+import com.caco3.mvk.audiosync.receiver.SyncAudiosAlarmReceiver;
 import com.caco3.mvk.data.appuser.AppUser;
 import com.caco3.mvk.data.audio.AudiosRepository;
 import com.caco3.mvk.vk.Vk;
@@ -40,18 +41,21 @@ public class SyncAudiosService extends IntentService {
   }
 
   @Override
-  protected void onHandleIntent(Intent intent) {
+  protected void onHandleIntent(final Intent intent) {
     Timber.d("Running");
     if (!canSync()) {
+      releaseWakeLock(intent);
       return;
     }
     fetchNewAudios().subscribe(new Subscriber<List<Audio>>() {
       @Override
       public void onCompleted() {
+        releaseWakeLock(intent);
       }
 
       @Override
       public void onError(Throwable e) {
+        releaseWakeLock(intent);
         Timber.e(e, "Unable to fetch new audios");
         if (isRethrowNeeded(e)) {
           throw Exceptions.propagate(e);
@@ -70,6 +74,10 @@ public class SyncAudiosService extends IntentService {
         }
       }
     });
+  }
+
+  private void releaseWakeLock(Intent intent) {
+    SyncAudiosAlarmReceiver.completeWakefulIntent(intent);
   }
 
   private boolean canSync() {
