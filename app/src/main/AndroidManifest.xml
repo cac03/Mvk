@@ -23,6 +23,7 @@
         <activity android:name=".login.LogInActivity" />
         <activity android:name=".myaudios.MyAudiosActivity" />
         <service android:name=".audiodownload.AudioDownloadService" />
+        <receiver android:name=".audiosync.receiver.SyncAudiosAlarmReceiver" />
     </application>
 
 </manifest>
