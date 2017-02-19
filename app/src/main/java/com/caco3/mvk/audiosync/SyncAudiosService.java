@@ -6,7 +6,6 @@ import android.content.Intent;
 import com.caco3.mvk.audiodownload.AudioDownloader;
 import com.caco3.mvk.data.appuser.AppUser;
 import com.caco3.mvk.data.audio.AudiosRepository;
-import com.caco3.mvk.network.NetworkManager;
 import com.caco3.mvk.vk.Vk;
 import com.caco3.mvk.vk.VkException;
 import com.caco3.mvk.vk.audio.Audio;
@@ -33,9 +32,8 @@ public class SyncAudiosService extends IntentService {
   AudiosRepository audiosRepository;
   @Inject
   AudioDownloader audioDownloader;
-  // TODO: 2/18/17 Replace this with SomeAudioSyncNetworkPolicy
   @Inject
-  NetworkManager networkManager;
+  List<AudioSyncPolicy> syncPolicies;
 
   public SyncAudiosService() {
     super("SyncAudiosService"); // worker thread name
@@ -44,9 +42,7 @@ public class SyncAudiosService extends IntentService {
   @Override
   protected void onHandleIntent(Intent intent) {
     Timber.d("Running");
-    // TODO: 2/18/17 someAudioSyncNetworkPolicy.canSync();
-    if (!networkManager.isConnectedWithWiFi()) {
-      Timber.d("Connected not via WiFi. Exiting");
+    if (!canSync()) {
       return;
     }
     fetchNewAudios().subscribe(new Subscriber<List<Audio>>() {
@@ -74,6 +70,17 @@ public class SyncAudiosService extends IntentService {
         }
       }
     });
+  }
+
+  private boolean canSync() {
+    for(AudioSyncPolicy syncPolicy : syncPolicies) {
+      if (!syncPolicy.canSync()) {
+        Timber.d("%s has not allowed to sync", syncPolicy.getClass().getSimpleName());
+        return false;
+      }
+    }
+
+    return true;
   }
 
   private Observable<List<Audio>> fetchNewAudios() {

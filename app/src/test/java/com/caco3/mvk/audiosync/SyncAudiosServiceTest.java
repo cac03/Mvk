@@ -6,7 +6,6 @@ import com.caco3.mvk.BuildConfig;
 import com.caco3.mvk.audiodownload.AudioDownloader;
 import com.caco3.mvk.data.appuser.AppUser;
 import com.caco3.mvk.data.audio.AudiosRepository;
-import com.caco3.mvk.network.NetworkManager;
 import com.caco3.mvk.timber.SystemOutTree;
 import com.caco3.mvk.vk.Vk;
 import com.caco3.mvk.vk.audio.Audio;
@@ -28,6 +27,7 @@ import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -50,7 +50,7 @@ public class SyncAudiosServiceTest {
   @Mock private AudiosRepository repository;
   @Mock private AudioDownloader downloader;
   @Mock private Vk vk;
-  @Mock private NetworkManager networkManager;
+  @Mock private AudioSyncPolicy mockPolicy;
   @Mock private VkAudiosService vkAudiosService;
   @Mock private AppUser appUser;
   @Mock private UserToken userToken;
@@ -61,7 +61,7 @@ public class SyncAudiosServiceTest {
     service = Robolectric.buildService(SyncAudiosService.class).get();
     service.audiosRepository = repository;
     service.audioDownloader = downloader;
-    service.networkManager = networkManager;
+    service.syncPolicies = Arrays.asList(mockPolicy);
     service.vk = vk;
     service.appUser = appUser;
     when(appUser.getUserToken()).thenReturn(userToken);
@@ -69,8 +69,8 @@ public class SyncAudiosServiceTest {
     Timber.plant(new SystemOutTree());
   }
 
-  @Test public void notConnectedViaWifi_noAudiosPostedToDownloader() {
-    when(networkManager.isConnectedWithWiFi()).thenReturn(false);
+  @Test public void syncNotAllowed_noAudiosPostedToDownloader() {
+    when(mockPolicy.canSync()).thenReturn(false);
     final List<Audio> postedToDownloader = new ArrayList<>();
     doAnswer(new Answer() {
       @Override
@@ -86,7 +86,7 @@ public class SyncAudiosServiceTest {
   }
 
   @Test public void serviceStarted_audiosFetchedFromVk() throws Exception {
-    when(networkManager.isConnectedWithWiFi()).thenReturn(true);
+    when(mockPolicy.canSync()).thenReturn(true);
     final AtomicBoolean getAudiosCalled = new AtomicBoolean();
     when(vkAudiosService.get()).thenAnswer(new Answer<List<Audio>>() {
       @Override
@@ -101,7 +101,7 @@ public class SyncAudiosServiceTest {
   }
 
   @Test public void serviceStartedAndAudiosFetched_audiosSavedToRepository() throws Exception {
-    when(networkManager.isConnectedWithWiFi()).thenReturn(true);
+    when(mockPolicy.canSync()).thenReturn(true);
     final AtomicBoolean audiosSavedToRepository = new AtomicBoolean();
     List<Audio> newAudios = audiosGenerator.generateList(100);
     when(vkAudiosService.get()).thenReturn(newAudios);
@@ -118,7 +118,7 @@ public class SyncAudiosServiceTest {
   }
 
   @Test public void serviceStarted_audiosThatMustBeDownloadedArePostedToDownloader() throws Exception {
-    when(networkManager.isConnectedWithWiFi()).thenReturn(true);
+    when(mockPolicy.canSync()).thenReturn(true);
     List<Audio> audios = audiosGenerator.generateList(1000);
     List<Audio> expected = service.extractAudiosToDownload(audios);
     final List<Audio> actual = new ArrayList<>();
