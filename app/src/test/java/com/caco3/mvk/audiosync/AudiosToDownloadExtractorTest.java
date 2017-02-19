@@ -5,13 +5,10 @@ import com.caco3.mvk.vk.audio.AudiosGenerator;
 
 import org.junit.Test;
 
-import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 public class AudiosToDownloadExtractorTest {
   private AudiosGenerator audiosGenerator = new AudiosGenerator();
@@ -24,11 +21,7 @@ public class AudiosToDownloadExtractorTest {
   }
 
   @Test public void alreadyDownloadedAudiosAreNotExtracted() {
-    // TODO: 2/19/17 audiosGenerator.generateDownloaded();
-    Audio notExtracted = audiosGenerator.generateOne();
-    File mockFile = mock(File.class);
-    when(mockFile.exists()).thenReturn(true);
-    notExtracted.setFile(mockFile);
+    Audio notExtracted = audiosGenerator.generateDownloaded();
 
     Audio extracted = audiosGenerator.generateOne();
     List<Audio> extractFrom = Arrays.asList(notExtracted, extracted);

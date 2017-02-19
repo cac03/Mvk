@@ -3,8 +3,12 @@ package com.caco3.mvk.vk.audio;
 
 import com.caco3.mvk.AbstractPojoGenerator;
 
+import java.io.File;
 import java.util.List;
 import java.util.Random;
+
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class AudiosGenerator extends AbstractPojoGenerator<Audio> {
   private static final String[] artists = {
@@ -35,5 +39,14 @@ public class AudiosGenerator extends AbstractPojoGenerator<Audio> {
     }
 
     return audios;
+  }
+
+  public Audio generateDownloaded() {
+    Audio audio = generateOne();
+    File file = mock(File.class);
+    when(file.exists()).thenReturn(true);
+    audio.setFile(file);
+
+    return audio;
   }
 }
