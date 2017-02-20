@@ -41,4 +41,10 @@
     <!-- Permissions -->
     <string name="action_grant_permission">Grant</string>
     <string name="write_external_storage_rational">Access to external storage is required for files downloading</string>
+
+    <!-- audio sync settings -->
+    <string name="audio_sync_settings_title">Audio sync</string>
+    <string name="audio_sync_settings_sync_audios">Sync audios in background</string>
+    <string name="audio_sync_settings_sync_audios_summary">Automatically update list of audios in background and download missing audios</string>
+    <string name="audio_sync_settings_sync_only_via_wifi">Only via WiFi</string>
 </resources>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory
+        android:title="@string/audio_sync_settings_title">
+
+        <SwitchPreference
+            android:key="audio_sync_enabled"
+            android:defaultValue="false"
+            android:title="@string/audio_sync_settings_sync_audios"
+            android:summary="@string/audio_sync_settings_sync_audios_summary" />
+
+        <SwitchPreference
+            android:key="audio_sync_only_via_wifi"
+            android:defaultValue="true"
+            android:title="@string/audio_sync_settings_sync_only_via_wifi"
+            android:dependency="audio_sync_enabled"/>
+
+    </PreferenceCategory>
+
+</PreferenceScreen>
