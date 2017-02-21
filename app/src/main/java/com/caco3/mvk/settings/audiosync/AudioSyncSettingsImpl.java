@@ -8,10 +8,10 @@ import static com.caco3.mvk.util.Preconditions.checkNotNull;
 import static com.caco3.mvk.util.Preconditions.checkState;
 
 public class AudioSyncSettingsImpl implements AudioSyncSettings {
-  private static final String KEY_PREFERENCES_PREFIX = "audio_sync";
-  private static final String SYNC_ENABLED_KEY = KEY_PREFERENCES_PREFIX + "_enabled";
-  private static final String ONLY_VIA_WIFI_KEY = KEY_PREFERENCES_PREFIX + "_only_via_wifi";
-  private static final String INTERVAL_KEY = KEY_PREFERENCES_PREFIX + "_interval";
+  static final String KEY_PREFERENCES_PREFIX = "audio_sync";
+  static final String SYNC_ENABLED_KEY = KEY_PREFERENCES_PREFIX + "_enabled";
+  static final String ONLY_VIA_WIFI_KEY = KEY_PREFERENCES_PREFIX + "_only_via_wifi";
+  static final String INTERVAL_KEY = KEY_PREFERENCES_PREFIX + "_interval";
 
   private final SharedPreferences sharedPreferences;
 
