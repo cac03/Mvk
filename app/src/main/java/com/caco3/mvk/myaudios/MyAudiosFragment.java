@@ -184,14 +184,14 @@ public class MyAudiosFragment extends BaseFragment implements MyAudiosView,
   private void showAudioPopupMenu(final Audio audio, View anchor) {
     PopupMenu popupMenu = new PopupMenu(getContext(), anchor);
     popupMenu.getMenuInflater().inflate(R.menu.audio_popup_menu, popupMenu.getMenu());
+    if (!audio.isAvailableForDownload()) {
+      popupMenu.getMenu().findItem(R.id.audio_item_menu_download).setEnabled(false);
+    }
     popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
       @Override
       public boolean onMenuItemClick(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.audio_item_menu_download) {
-          if (!audio.isAvailableForDownload()) {
-            item.setEnabled(false);
-          }
           if (isWriteExternalStoragePermissionGranted()) {
             downloadAudio(audio);
           } else {
