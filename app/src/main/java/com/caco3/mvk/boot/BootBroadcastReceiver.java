@@ -14,11 +14,10 @@ import javax.inject.Inject;
 public class BootBroadcastReceiver extends BroadcastReceiver {
   @Inject List<BootCommand> commands;
 
-  public BootBroadcastReceiver() {
-    inject();
-  }
-
   @Override public void onReceive(Context context, Intent intent) {
+    if (commands == null) {
+      inject();
+    }
     if (intent.getAction().equals("android.intent.action.BOOT_COMPLETED")) {
       for(BootCommand command : commands) {
         command.execute();
