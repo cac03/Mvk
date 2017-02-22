@@ -107,4 +107,8 @@ public class DaggerComponentsHolder {
   public void releaseNavDrawerComponent() {
     navDrawerComponent = null;
   }
+
+  public ApplicationComponent getApplicationComponent() {
+    return applicationComponent;
+  }
 }

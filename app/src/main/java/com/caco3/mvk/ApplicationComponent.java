@@ -6,6 +6,8 @@ import com.caco3.mvk.loggedin.LoggedInModule;
 import com.caco3.mvk.login.LogInComponent;
 import com.caco3.mvk.login.LogInModule;
 import com.caco3.mvk.network.NetworkModule;
+import com.caco3.mvk.settings.SettingsFragment;
+import com.caco3.mvk.settings.SettingsModule;
 import com.caco3.mvk.splash.SplashComponent;
 import com.caco3.mvk.splash.SplashModule;
 import com.caco3.mvk.storage.StorageModule;
@@ -22,6 +24,7 @@ import dagger.Component;
                 DataModule.class,
                 NetworkModule.class,
                 StorageModule.class,
+                SettingsModule.class,
                 VkAuthModule.class
         }
 )
@@ -29,4 +32,5 @@ public interface ApplicationComponent {
   LogInComponent plus(LogInModule logInModule);
   SplashComponent plus(SplashModule splashModule);
   LoggedInComponent plus(LoggedInModule loggedInModule);
+  void inject(SettingsFragment settingsFragment);
 }
