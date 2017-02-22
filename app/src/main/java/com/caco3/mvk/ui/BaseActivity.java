@@ -18,6 +18,7 @@ import android.view.MenuItem;
 
 import com.caco3.mvk.R;
 import com.caco3.mvk.myaudios.MyAudiosActivity;
+import com.caco3.mvk.settings.SettingsActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -113,6 +114,9 @@ public abstract class BaseActivity extends AppCompatActivity {
             int itemId = item.getItemId();
             if (itemId == R.id.nav_my_audios) {
               startActivity(new Intent(BaseActivity.this, MyAudiosActivity.class));
+              finish();
+            } else if (itemId == R.id.nav_settings) {
+              startActivity(new Intent(BaseActivity.this, SettingsActivity.class));
               finish();
             } else {
               throw new IllegalArgumentException("Unknown item id (" + item + ")");

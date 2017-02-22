@@ -25,6 +25,7 @@
         <service android:name=".audiodownload.AudioDownloadService" />
         <receiver android:name=".audiosync.receiver.SyncAudiosAlarmReceiver" />
         <service android:name=".audiosync.SyncAudiosService" />
+        <activity android:name=".settings.SettingsActivity" />
     </application>
 
 </manifest>
