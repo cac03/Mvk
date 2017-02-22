@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.caco3.mvk.boot.command.BootCommand;
+import com.caco3.mvk.dagger.DaggerComponentsHolder;
 
 import java.util.List;
 
@@ -13,10 +14,11 @@ import javax.inject.Inject;
 public class BootBroadcastReceiver extends BroadcastReceiver {
   @Inject List<BootCommand> commands;
 
-
+  public BootBroadcastReceiver() {
+    inject();
+  }
 
   @Override public void onReceive(Context context, Intent intent) {
-    inject();
     if (intent.getAction().equals("android.intent.action.BOOT_COMPLETED")) {
       for(BootCommand command : commands) {
         command.execute();
@@ -25,6 +27,7 @@ public class BootBroadcastReceiver extends BroadcastReceiver {
   }
 
   private void inject() {
-    // TODO: 2/22/17 inject
+    DaggerComponentsHolder.getInstance()
+            .getApplicationComponent().inject(this);
   }
 }

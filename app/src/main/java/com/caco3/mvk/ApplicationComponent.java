@@ -1,5 +1,7 @@
 package com.caco3.mvk;
 
+import com.caco3.mvk.boot.BootBroadcastReceiver;
+import com.caco3.mvk.boot.BootModule;
 import com.caco3.mvk.data.DataModule;
 import com.caco3.mvk.loggedin.LoggedInComponent;
 import com.caco3.mvk.loggedin.LoggedInModule;
@@ -21,6 +23,7 @@ import dagger.Component;
 @Component(
         modules = {
                 ApplicationModule.class,
+                BootModule.class,
                 DataModule.class,
                 NetworkModule.class,
                 StorageModule.class,
@@ -33,4 +36,5 @@ public interface ApplicationComponent {
   SplashComponent plus(SplashModule splashModule);
   LoggedInComponent plus(LoggedInModule loggedInModule);
   void inject(SettingsFragment settingsFragment);
+  void inject(BootBroadcastReceiver receiver);
 }
