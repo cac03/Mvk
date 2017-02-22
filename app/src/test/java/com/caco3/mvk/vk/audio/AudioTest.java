@@ -53,4 +53,11 @@ public class AudioTest {
     assertThat(audio.isAvailableForDownload())
             .isTrue();
   }
+
+  @Test public void downloadUrlIsEmptyString_isAvailableForDownloadReturnsFalse() {
+    Audio audio = new Audio();
+    audio.setDownloadUrl("");
+    assertThat(audio.isAvailableForDownload())
+            .isFalse();
+  }
 }
