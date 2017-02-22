@@ -11,6 +11,7 @@ import com.caco3.mvk.audiosync.SyncOnlyViaWifiPolicy;
 import com.caco3.mvk.loggedin.LoggedInScope;
 import com.caco3.mvk.network.NetworkManager;
 import com.caco3.mvk.rxbus.RxBus;
+import com.caco3.mvk.settings.audiosync.AudioSyncSettings;
 import com.caco3.mvk.storage.dir.DirectoryProvider;
 
 import java.util.Arrays;
@@ -44,7 +45,7 @@ public class AudiosModule {
 
   @Provides
   @LoggedInScope
-  public List<AudioSyncPolicy> provideAudioSyncPolicies(NetworkManager networkManager) {
-    return Arrays.<AudioSyncPolicy>asList(new SyncOnlyViaWifiPolicy(networkManager));
+  public List<AudioSyncPolicy> provideAudioSyncPolicies(AudioSyncSettings settings, NetworkManager networkManager) {
+    return Arrays.<AudioSyncPolicy>asList(new SyncOnlyViaWifiPolicy(settings, networkManager));
   }
 }
