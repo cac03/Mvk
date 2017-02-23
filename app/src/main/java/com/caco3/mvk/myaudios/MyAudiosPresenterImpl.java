@@ -191,4 +191,14 @@ import timber.log.Timber;
     searchQuery = "";
     showAudios();
   }
+
+  @Override
+  public void onAudioSelected(Audio audio) {
+    // TODO: 2/23/17 implement
+  }
+
+  @Override
+  public void onDownloadSelectedAudiosRequest() {
+    // TODO: 2/23/17 implement
+  }
 }
