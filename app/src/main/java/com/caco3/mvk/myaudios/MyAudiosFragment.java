@@ -26,6 +26,7 @@ import com.caco3.mvk.R;
 import com.caco3.mvk.dagger.DaggerComponentsHolder;
 import com.caco3.mvk.permission.PermissionRequest;
 import com.caco3.mvk.ui.BaseFragment;
+import com.caco3.mvk.ui.SearchViewStateKeeper;
 import com.caco3.mvk.ui.recyclerview.decorator.MarginItemDecorator;
 import com.caco3.mvk.util.Intents;
 import com.caco3.mvk.util.function.Action0;
@@ -58,24 +59,7 @@ public class MyAudiosFragment extends BaseFragment implements MyAudiosView,
   FloatingActionButton floatingActionButton;
   View audiosContentView;
   private MyAudiosAdapter audiosAdapter = new MyAudiosAdapter(this);
-  /**State of Search view is not saved when orientation changed.
-   * So we have to save and restore it manually*/
-  private String lastSearchQuery = null;
-  private boolean isSearchViewExpanded = false;
-  private MenuItemCompat.OnActionExpandListener searchViewOnExpandListener
-          = new MenuItemCompat.OnActionExpandListener() {
-    @Override
-    public boolean onMenuItemActionExpand(MenuItem item) {
-      isSearchViewExpanded = true;
-      return true;
-    }
-
-    @Override
-    public boolean onMenuItemActionCollapse(MenuItem item) {
-      isSearchViewExpanded = false;
-      return true;
-    }
-  };
+  private SearchViewStateKeeper searchViewStateKeeper = new SearchViewStateKeeper();
   private Audio pendingAudio = null;
 
   @Override
@@ -131,6 +115,7 @@ public class MyAudiosFragment extends BaseFragment implements MyAudiosView,
   @Override
   public void onDestroyView() {
     presenter.onViewDetached(this);
+    searchViewStateKeeper.detach();
     super.onDestroyView();
   }
 
@@ -292,15 +277,10 @@ public class MyAudiosFragment extends BaseFragment implements MyAudiosView,
 
   private void initSearchView(Menu menu) {
     MenuItem searchMenuItem = menu.findItem(R.id.my_audios_action_search);
-    MenuItemCompat.setOnActionExpandListener(searchMenuItem, searchViewOnExpandListener);
     SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchMenuItem);
     searchView.setQueryHint(getString(R.string.search_audios_hint));
-    searchView.setOnQueryTextListener(this);
-    final String searchQuery = lastSearchQuery;
-    if (isSearchViewExpanded) {
-      searchMenuItem.expandActionView();
-      searchView.setQuery(searchQuery, false);
-    }
+    searchViewStateKeeper.setOnQueryTextListener(this);
+    searchViewStateKeeper.attach(searchMenuItem, searchView);
   }
 
   @Override
@@ -310,17 +290,12 @@ public class MyAudiosFragment extends BaseFragment implements MyAudiosView,
 
   @Override
   public boolean onQueryTextChange(String newText) {
-    lastSearchQuery = newText;
-    if (isSearching()) {
+    if (!newText.isEmpty()) {
       presenter.onSearch(newText);
     } else {
       presenter.onSearchCanceled();
     }
     recyclerView.scrollToPosition(0);
     return true;
-  }
-
-  private boolean isSearching() {
-    return lastSearchQuery != null && !lastSearchQuery.isEmpty();
   }
 }
