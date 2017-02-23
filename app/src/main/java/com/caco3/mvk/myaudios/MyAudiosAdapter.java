@@ -28,6 +28,7 @@ public class MyAudiosAdapter extends RecyclerView.Adapter<MyAudiosAdapter.AudioV
 
   /*package*/ interface UiEventsListener {
     void onAudioItemClicked(Audio audio, View clickedView);
+    void onAudioLongClick(Audio audio);
   }
 
   private Context context;
@@ -101,6 +102,13 @@ public class MyAudiosAdapter extends RecyclerView.Adapter<MyAudiosAdapter.AudioV
         @Override
         public void onClick(View v) {
           uiEventsListener.onAudioItemClicked(audio, itemView);
+        }
+      });
+      itemView.setOnLongClickListener(new View.OnLongClickListener() {
+        @Override
+        public boolean onLongClick(View v) {
+          uiEventsListener.onAudioLongClick(audio);
+          return true;
         }
       });
     }

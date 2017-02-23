@@ -8,6 +8,8 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.view.ActionMode;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
@@ -25,6 +27,7 @@ import android.widget.Toast;
 import com.caco3.mvk.R;
 import com.caco3.mvk.dagger.DaggerComponentsHolder;
 import com.caco3.mvk.permission.PermissionRequest;
+import com.caco3.mvk.ui.BaseActivity;
 import com.caco3.mvk.ui.BaseFragment;
 import com.caco3.mvk.ui.SearchViewStateKeeper;
 import com.caco3.mvk.ui.recyclerview.decorator.MarginItemDecorator;
@@ -46,7 +49,7 @@ import jp.wasabeef.recyclerview.animators.OvershootInLeftAnimator;
 
 public class MyAudiosFragment extends BaseFragment implements MyAudiosView,
         SwipeRefreshLayout.OnRefreshListener, MyAudiosAdapter.UiEventsListener,
-        SearchView.OnQueryTextListener {
+        SearchView.OnQueryTextListener, ActionMode.Callback {
   @Inject
   MyAudiosPresenter presenter;
   @BindView(R.id.audios_frag_refresh_layout)
@@ -61,6 +64,7 @@ public class MyAudiosFragment extends BaseFragment implements MyAudiosView,
   private MyAudiosAdapter audiosAdapter = new MyAudiosAdapter(this);
   private SearchViewStateKeeper searchViewStateKeeper = new SearchViewStateKeeper();
   private Audio pendingAudio = null;
+  ActionMode actionMode;
 
   @Override
   public View onCreateView(LayoutInflater inflater,
@@ -297,5 +301,30 @@ public class MyAudiosFragment extends BaseFragment implements MyAudiosView,
     }
     recyclerView.scrollToPosition(0);
     return true;
+  }
+
+  @Override public void onDestroyActionMode(ActionMode mode) {
+    actionMode = null;
+  }
+
+  @Override public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+    mode.getMenuInflater().inflate(R.menu.audios_context_menu, menu);
+    return true;
+  }
+
+  @Override public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+    return false;
+  }
+
+  @Override public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+    // TODO: 2/23/17 presenter.downloadSelectedAudios();
+    return false;
+  }
+
+  @Override public void onAudioLongClick(Audio audio) {
+    if (actionMode == null) {
+      actionMode = ((AppCompatActivity)getActivity()).startSupportActionMode(this);
+    }
+    // TODO: 2/23/17 presenter.onAudioSelectedInContextMenu(audio);
   }
 }

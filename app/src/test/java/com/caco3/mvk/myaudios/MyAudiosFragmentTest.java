@@ -4,6 +4,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.view.View;
 
 import com.caco3.mvk.BuildConfig;
+import com.caco3.mvk.SupportFragmentStarter;
 import com.caco3.mvk.R;
 import com.caco3.mvk.vk.audio.Audio;
 import com.caco3.mvk.vk.audio.AudiosGenerator;
@@ -22,7 +23,6 @@ import java.util.List;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
 import static org.assertj.core.api.Java6Assertions.assertThat;
-import static org.robolectric.shadows.support.v4.SupportFragmentTestUtil.startFragment;
 
 @RunWith(RobolectricTestRunner.class)
 @Config(
@@ -40,7 +40,7 @@ public class MyAudiosFragmentTest {
     MockitoAnnotations.initMocks(this);
     fragment = new MyAudiosFragment();
     fragment.presenter = presenter;
-    startFragment(fragment);
+    SupportFragmentStarter.startFragment(fragment);
   }
 
   @Test
@@ -113,5 +113,11 @@ public class MyAudiosFragmentTest {
             fragment.recyclerView.getLayoutManager();
     assertThat(layoutManager.findFirstCompletelyVisibleItemPosition())
             .isEqualTo(0);
+  }
+
+  @Test public void onAudioLongClickCalled_actionModeIsNotNull() {
+    fragment.onAudioLongClick(new Audio());
+    assertThat(fragment.actionMode)
+            .isNotNull();
   }
 }
