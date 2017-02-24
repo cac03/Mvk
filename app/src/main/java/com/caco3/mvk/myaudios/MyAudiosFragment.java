@@ -333,4 +333,14 @@ public class MyAudiosFragment extends BaseFragment implements MyAudiosView,
     }
     presenter.onAudioSelected(audio);
   }
+
+  @Override
+  public void showAudioSelected(Audio audio) {
+    // TODO: 2/24/17 implement
+  }
+
+  @Override
+  public void cancelAudioSelect(Audio audio) {
+    // TODO: 2/24/17 implement
+  }
 }
