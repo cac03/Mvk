@@ -21,12 +21,14 @@ import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowToast;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
 import static org.assertj.core.api.Java6Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doAnswer;
 
 @RunWith(RobolectricTestRunner.class)
@@ -148,5 +150,24 @@ public class MyAudiosFragmentTest {
     fragment.onActionItemClicked(fragment.actionMode, menuItem);
     assertThat(fragment.actionMode)
             .isNull();
+  }
+
+  @Test public void onAudioLongClickCalled_onAudioSelectedCalled() {
+    Audio audio1 = audiosGenerator.generateOne();
+    Audio audio2 = audiosGenerator.generateOne();
+    final List<Audio> collectedWhenOnAudioSelectedCalled = new ArrayList<>();
+    doAnswer(new Answer() {
+      @Override
+      public Object answer(InvocationOnMock invocation) throws Throwable {
+        Audio audio = (Audio)invocation.getArguments()[0];
+        collectedWhenOnAudioSelectedCalled.add(audio);
+        return null;
+      }
+    }).when(presenter).onAudioSelected(any(Audio.class));
+    fragment.onAudioLongClick(audio1);
+    fragment.onAudioLongClick(audio2);
+    assertThat(collectedWhenOnAudioSelectedCalled)
+            .hasSize(2)
+            .contains(audio1, audio2);
   }
 }

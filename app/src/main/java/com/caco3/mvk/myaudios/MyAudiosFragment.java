@@ -331,6 +331,6 @@ public class MyAudiosFragment extends BaseFragment implements MyAudiosView,
     if (actionMode == null) {
       actionMode = ((AppCompatActivity)getActivity()).startSupportActionMode(this);
     }
-    // TODO: 2/23/17 presenter.onAudioSelectedInContextMenu(audio);
+    presenter.onAudioSelected(audio);
   }
 }
