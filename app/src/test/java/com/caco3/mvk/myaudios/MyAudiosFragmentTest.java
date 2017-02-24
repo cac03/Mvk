@@ -1,6 +1,8 @@
 package com.caco3.mvk.myaudios;
 
+import android.Manifest;
 import android.support.v4.view.MenuItemCompat;
+import android.support.v7.view.ActionMode;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,7 +21,10 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.robolectric.RobolectricTestRunner;
+import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
+import org.robolectric.shadows.ShadowAlertDialog;
+import org.robolectric.shadows.ShadowApplication;
 import org.robolectric.shadows.ShadowToast;
 
 import java.util.List;
@@ -31,6 +36,7 @@ import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
+import static org.robolectric.Shadows.shadowOf;
 
 @RunWith(RobolectricTestRunner.class)
 @Config(
@@ -42,12 +48,14 @@ public class MyAudiosFragmentTest {
   private MyAudiosPresenter presenter;
   private MyAudiosFragment fragment;
   private AudiosGenerator audiosGenerator = new AudiosGenerator();
+  private ShadowApplication shadowApplication;
 
   @Before
   public void setUp() {
     MockitoAnnotations.initMocks(this);
     fragment = new MyAudiosFragment();
     fragment.presenter = presenter;
+    shadowApplication = shadowOf(RuntimeEnvironment.application);
     SupportFragmentStarter.startFragment(fragment);
   }
 
@@ -243,5 +251,46 @@ public class MyAudiosFragmentTest {
     fragment.finishSelectMode();
     assertThat(fragment.actionMode)
             .isNull();
+  }
+
+  @Test public void showActionsForAudioCalled_dialogShown() {
+    fragment.showActionsFor(new Audio());
+    ShadowAlertDialog alertDialog = shadowApplication.getLatestAlertDialog();
+    /*assertThat(alertDialog)
+            .isNotNull();*/
+    assertThat(alertDialog.getTitle())
+            .isEqualTo(fragment.getString(R.string.audio_actions_dialog_title));
+    assertThat(alertDialog.getItems())
+            .contains(fragment.getString(R.string.audio_download));
+  }
+
+  @Test public void showActionsForAudioCalledAndDownloadClicked_presentersMethodCalled() {
+    shadowApplication.grantPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+    final AtomicBoolean onDownloadRequestCalled = new AtomicBoolean();
+    doAnswer(new Answer() {
+      @Override
+      public Object answer(InvocationOnMock invocation) throws Throwable {
+        onDownloadRequestCalled.set(true);
+        return null;
+      }
+    }).when(presenter).onDownloadRequest(any(Audio.class));
+    fragment.showActionsFor(new Audio());
+    ShadowAlertDialog alertDialog = shadowApplication.getLatestAlertDialog();
+    alertDialog.clickOnItem(0);
+    assertThat(onDownloadRequestCalled.get())
+            .isTrue();
+  }
+
+  @Test public void onDestroyActionViewCalled_onSelectModeFinishedOnPresenterCalled() {
+    final AtomicBoolean selectModeFinishedCalled = new AtomicBoolean();
+    doAnswer(new Answer() {
+      @Override
+      public Object answer(InvocationOnMock invocation) throws Throwable {
+        selectModeFinishedCalled.set(true);
+        return null;
+      }
+    }).when(presenter).onSelectModeFinished();
+    fragment.onDestroyActionMode(mock(ActionMode.class));
+    assertThat(selectModeFinishedCalled.get()).isTrue();
   }
 }

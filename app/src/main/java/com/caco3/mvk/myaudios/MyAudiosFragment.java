@@ -1,6 +1,8 @@
 package com.caco3.mvk.myaudios;
 
 import android.Manifest;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
@@ -168,32 +170,6 @@ public class MyAudiosFragment extends BaseFragment implements MyAudiosView,
     presenter.onAudioClicked(audio);
   }
 
-  private void showAudioPopupMenu(final Audio audio, View anchor) {
-    PopupMenu popupMenu = new PopupMenu(getContext(), anchor);
-    popupMenu.getMenuInflater().inflate(R.menu.audio_popup_menu, popupMenu.getMenu());
-    if (!audio.isAvailableForDownload()) {
-      popupMenu.getMenu().findItem(R.id.audio_item_menu_download).setEnabled(false);
-    }
-    popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-      @Override
-      public boolean onMenuItemClick(MenuItem item) {
-        int id = item.getItemId();
-        if (id == R.id.audio_item_menu_download) {
-          if (isWriteExternalStoragePermissionGranted()) {
-            downloadAudio(audio);
-          } else {
-            pendingAudio = audio;
-            requestWriteExternalStoragePermission();
-          }
-          return true;
-        } else {
-          return false;
-        }
-      }
-    });
-    popupMenu.show();
-  }
-
   private boolean isWriteExternalStoragePermissionGranted() {
     return permissionManager.isPermissionGranted(Manifest.permission.WRITE_EXTERNAL_STORAGE);
   }
@@ -303,6 +279,7 @@ public class MyAudiosFragment extends BaseFragment implements MyAudiosView,
 
   @Override public void onDestroyActionMode(ActionMode mode) {
     actionMode = null;
+    presenter.onSelectModeFinished();
   }
 
   @Override public boolean onCreateActionMode(ActionMode mode, Menu menu) {
@@ -352,7 +329,21 @@ public class MyAudiosFragment extends BaseFragment implements MyAudiosView,
     actionMode.setTitle(String.valueOf(selectedAudios.size()));
   }
 
-  @Override public void showActionsFor(Audio audio) {
-    // TODO: 2/24/17 someDialog.show();
+  @Override public void showActionsFor(final Audio audio) {
+    new AlertDialog.Builder(getContext())
+            .setItems(R.array.audio_actions, new DialogInterface.OnClickListener() {
+              @Override
+              public void onClick(DialogInterface dialog, int which) {
+                if (isWriteExternalStoragePermissionGranted()) {
+                  downloadAudio(audio);
+                } else {
+                  pendingAudio = audio;
+                  requestWriteExternalStoragePermission();
+                }
+              }
+            })
+            .setTitle(R.string.audio_actions_dialog_title)
+            .create()
+            .show();
   }
 }
