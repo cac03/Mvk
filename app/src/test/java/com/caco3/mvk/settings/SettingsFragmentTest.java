@@ -24,6 +24,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import timber.log.Timber;
 
+import static com.caco3.mvk.Stubbers.setTrue;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.assertj.core.api.Java6Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
@@ -62,13 +63,8 @@ public class SettingsFragmentTest {
 
   @Test public void sharedPreferencesChanged_listenerMethodIsCalled() throws Exception {
     final AtomicBoolean listenerMethodCalled = new AtomicBoolean();
-    doAnswer(new Answer<Object>() {
-      @Override
-      public Object answer(InvocationOnMock invocation) throws Throwable {
-        listenerMethodCalled.set(true);
-        return null;
-      }
-    }).when(dummyListener).onSharedPreferenceChanged(any(SharedPreferences.class), anyString());
+    setTrue(listenerMethodCalled).when(dummyListener)
+            .onSharedPreferenceChanged(any(SharedPreferences.class), anyString());
     sharedPreferences.edit().putString("someKey", "someValue").apply();
     assertThat(listenerMethodCalled.get())
             .isTrue();

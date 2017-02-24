@@ -30,11 +30,11 @@ import org.robolectric.shadows.ShadowToast;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import static com.caco3.mvk.Stubbers.setTrue;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.robolectric.Shadows.shadowOf;
 
@@ -133,13 +133,7 @@ public class MyAudiosFragmentTest {
 
   @Test public void downloadInContextMenuClicked_onDownloadSelectedAudiosRequestCalled() {
     final AtomicBoolean downloadSelectedAudiosCalled = new AtomicBoolean();
-    doAnswer(new Answer<Object>(){
-      @Override
-      public Object answer(InvocationOnMock invocation) throws Throwable {
-        downloadSelectedAudiosCalled.set(true);
-        return null;
-      }
-    }).when(presenter).onDownloadSelectedAudiosRequest();
+    setTrue(downloadSelectedAudiosCalled).when(presenter).onDownloadSelectedAudiosRequest();
     fragment.startSelectMode();
     MenuItem menuItem = fragment.actionMode.getMenu().findItem(R.id.audios_context_menu_download);
     fragment.onActionItemClicked(fragment.actionMode, menuItem);
@@ -157,13 +151,7 @@ public class MyAudiosFragmentTest {
 
   @Test public void onAudioLongClickCalled_onAudioLongClickCalledOnPresenter() {
     final AtomicBoolean onAudioLongClickedCalled = new AtomicBoolean();
-    doAnswer(new Answer() {
-      @Override
-      public Object answer(InvocationOnMock invocation) throws Throwable {
-        onAudioLongClickedCalled.set(true);
-        return null;
-      }
-    }).when(presenter).onAudioLongClicked(any(Audio.class));
+    setTrue(onAudioLongClickedCalled).when(presenter).onAudioLongClicked(any(Audio.class));
     fragment.onAudioLongClick(new Audio());
     assertThat(onAudioLongClickedCalled.get())
             .isTrue();
@@ -171,13 +159,7 @@ public class MyAudiosFragmentTest {
 
   @Test public void onAudioClickCalled_onAudioClickedCalledOnPresenter() {
     final AtomicBoolean onAudioClickedCalled = new AtomicBoolean();
-    doAnswer(new Answer() {
-      @Override
-      public Object answer(InvocationOnMock invocation) throws Throwable {
-        onAudioClickedCalled.set(true);
-        return null;
-      }
-    }).when(presenter).onAudioClicked(any(Audio.class));
+    setTrue(onAudioClickedCalled).when(presenter).onAudioClicked(any(Audio.class));
     fragment.onAudioItemClicked(new Audio(), null);
     assertThat(onAudioClickedCalled.get())
             .isTrue();
@@ -187,13 +169,7 @@ public class MyAudiosFragmentTest {
     MyAudiosAdapter adapter = mock(MyAudiosAdapter.class);
     fragment.audiosAdapter = adapter;
     final AtomicBoolean showSelectedCalled = new AtomicBoolean();
-    doAnswer(new Answer() {
-      @Override
-      public Object answer(InvocationOnMock invocation) throws Throwable {
-        showSelectedCalled.set(true);
-        return null;
-      }
-    }).when(adapter).selectAudio(any(Audio.class));
+    setTrue(showSelectedCalled).when(adapter).selectAudio(any(Audio.class));
     fragment.showAudioSelected(new Audio());
     assertThat(showSelectedCalled.get())
             .isTrue();
@@ -203,13 +179,7 @@ public class MyAudiosFragmentTest {
     MyAudiosAdapter adapter = mock(MyAudiosAdapter.class);
     fragment.audiosAdapter = adapter;
     final AtomicBoolean showSelectedCalled = new AtomicBoolean();
-    doAnswer(new Answer() {
-      @Override
-      public Object answer(InvocationOnMock invocation) throws Throwable {
-        showSelectedCalled.set(true);
-        return null;
-      }
-    }).when(adapter).cancelSelect(any(Audio.class));
+    setTrue(showSelectedCalled).when(adapter).cancelSelect(any(Audio.class));
     Audio audio = new Audio();
     fragment.showAudioSelected(audio);
     fragment.cancelAudioSelect(new Audio());
@@ -267,13 +237,7 @@ public class MyAudiosFragmentTest {
   @Test public void showActionsForAudioCalledAndDownloadClicked_presentersMethodCalled() {
     shadowApplication.grantPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE);
     final AtomicBoolean onDownloadRequestCalled = new AtomicBoolean();
-    doAnswer(new Answer() {
-      @Override
-      public Object answer(InvocationOnMock invocation) throws Throwable {
-        onDownloadRequestCalled.set(true);
-        return null;
-      }
-    }).when(presenter).onDownloadRequest(any(Audio.class));
+    setTrue(onDownloadRequestCalled).when(presenter).onDownloadRequest(any(Audio.class));
     fragment.showActionsFor(new Audio());
     ShadowAlertDialog alertDialog = shadowApplication.getLatestAlertDialog();
     alertDialog.clickOnItem(0);
@@ -283,13 +247,7 @@ public class MyAudiosFragmentTest {
 
   @Test public void onDestroyActionViewCalled_onSelectModeFinishedOnPresenterCalled() {
     final AtomicBoolean selectModeFinishedCalled = new AtomicBoolean();
-    doAnswer(new Answer() {
-      @Override
-      public Object answer(InvocationOnMock invocation) throws Throwable {
-        selectModeFinishedCalled.set(true);
-        return null;
-      }
-    }).when(presenter).onSelectModeFinished();
+    setTrue(selectModeFinishedCalled).when(presenter).onSelectModeFinished();
     fragment.onDestroyActionMode(mock(ActionMode.class));
     assertThat(selectModeFinishedCalled.get()).isTrue();
   }

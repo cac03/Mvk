@@ -20,12 +20,12 @@ import org.robolectric.shadows.ShadowToast;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import static com.caco3.mvk.Stubbers.setTrue;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNull;
 import static junit.framework.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.doAnswer;
 import static org.robolectric.Shadows.shadowOf;
 import static org.robolectric.shadows.support.v4.SupportFragmentTestUtil.startFragment;
 
@@ -124,13 +124,7 @@ public class LogInFragmentTest {
   @Test
   public void logInButtonClicked_attemptToLogInCalled() {
     final AtomicBoolean attemptToLogInCalled = new AtomicBoolean(false);
-    doAnswer(new Answer<Object>(){
-      @Override
-      public Object answer(InvocationOnMock invocation) throws Throwable {
-        attemptToLogInCalled.set(true);
-        return null;
-      }
-    }).when(presenter).attemptToLogIn(anyString(), anyString());
+    setTrue(attemptToLogInCalled).when(presenter).attemptToLogIn(anyString(), anyString());
     fragment.getView().findViewById(R.id.log_in_frag_log_in_btn).performClick();
     assertTrue(attemptToLogInCalled.get());
   }
@@ -138,13 +132,7 @@ public class LogInFragmentTest {
   @Test
   public void loggingInProgressDialogCanceled_cancelLoggingInCalled() {
     final AtomicBoolean cancelLoggingInCalled = new AtomicBoolean(false);
-    doAnswer(new Answer() {
-      @Override
-      public Object answer(InvocationOnMock invocation) throws Throwable {
-        cancelLoggingInCalled.set(true);
-        return null;
-      }
-    }).when(presenter).cancelLoggingIn();
+    setTrue(cancelLoggingInCalled).when(presenter).cancelLoggingIn();
     fragment.showLogInProgress();
     fragment.loggingInProgressDialog.cancel();
   }
@@ -159,13 +147,7 @@ public class LogInFragmentTest {
   @Test
   public void onDestroyViewCalled_fragmentDetachedFromPresenter() {
     final AtomicBoolean fragmentDetached = new AtomicBoolean(false);
-    doAnswer(new Answer() {
-      @Override
-      public Object answer(InvocationOnMock invocation) throws Throwable {
-        fragmentDetached.set(true);
-        return null;
-      }
-    }).when(presenter).onViewDetached(fragment);
+    setTrue(fragmentDetached).when(presenter).onViewDetached(fragment);
     fragment.onDestroyView();
     assertTrue(fragmentDetached.get());
   }

@@ -28,6 +28,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import timber.log.Timber;
 
+import static com.caco3.mvk.Stubbers.setTrue;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
 import static junit.framework.Assert.fail;
@@ -173,13 +174,7 @@ public class NavDrawerPresenterImplTest {
     // no network
     when(vkUsersService.get()).thenThrow(IOException.class);
     final AtomicBoolean showUserCalled = new AtomicBoolean(false);
-    doAnswer(new Answer() {
-      @Override
-      public Object answer(InvocationOnMock invocation) throws Throwable {
-        showUserCalled.set(true);
-        return null;
-      }
-    }).when(view).showVkUser(any(VkUser.class));
+    setTrue(showUserCalled).when(view).showVkUser(any(VkUser.class));
     presenter.onViewAttached(view);
     assertThat(showUserCalled.get())
             .isTrue();

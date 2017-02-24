@@ -20,9 +20,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import static com.caco3.mvk.Stubbers.setTrue;
 import static junit.framework.Assert.fail;
 import static org.assertj.core.api.Java6Assertions.assertThat;
-import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.robolectric.Shadows.shadowOf;
 
@@ -46,13 +46,7 @@ public class BootBroadcastReceiverTest {
   @Test public void bootReceived_commandsExecuted() {
     BootCommand mockCommand = mock(BootCommand.class);
     final AtomicBoolean executeCalled = new AtomicBoolean();
-    doAnswer(new Answer() {
-      @Override
-      public Object answer(InvocationOnMock invocation) throws Throwable {
-        executeCalled.set(true);
-        return null;
-      }
-    }).when(mockCommand).execute();
+    setTrue(executeCalled).when(mockCommand).execute();
     findReceiver().commands = Collections.singletonList(mockCommand);
     shadowApplication.sendBroadcast(new Intent("android.intent.action.BOOT_COMPLETED"));
     assertThat(executeCalled.get())

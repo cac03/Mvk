@@ -34,6 +34,9 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import timber.log.Timber;
 
+import static com.caco3.mvk.Stubbers.appendTo;
+import static com.caco3.mvk.Stubbers.setArg;
+import static com.caco3.mvk.Stubbers.setTrue;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
 import static junit.framework.Assert.fail;
@@ -91,13 +94,7 @@ public class MyAudiosPresenterImplTest {
     final List<Audio> audios = audiosGenerator.generateList(10);
     when(audiosRepository.getAllByVkUserId(anyLong())).thenReturn(audios);
     final AtomicBoolean audiosFromRepositoryShown = new AtomicBoolean(false);
-    doAnswer(new Answer() {
-      @Override
-      public Object answer(InvocationOnMock invocation) throws Throwable {
-        audiosFromRepositoryShown.set(true);
-        return null;
-      }
-    }).when(view).showAudios(audios);
+    setTrue(audiosFromRepositoryShown).when(view).showAudios(audios);
     presenter.onViewAttached(view);
 
     assertTrue(audiosFromRepositoryShown.get());
@@ -106,13 +103,7 @@ public class MyAudiosPresenterImplTest {
   @Test
   public void viewAttached_showGlobalProgressCalled() {
     final AtomicBoolean showGlobalProgressCalled = new AtomicBoolean(false);
-    doAnswer(new Answer() {
-      @Override
-      public Object answer(InvocationOnMock invocation) throws Throwable {
-        showGlobalProgressCalled.set(true);
-        return null;
-      }
-    }).when(view).showGlobalProgress();
+    setTrue(showGlobalProgressCalled).when(view).showGlobalProgress();
     presenter.onViewAttached(view);
 
     assertTrue(showGlobalProgressCalled.get());
@@ -122,13 +113,7 @@ public class MyAudiosPresenterImplTest {
   public void viewAttached_afterShowProgressHideProgressCalled() {
     final AtomicBoolean showGlobalProgressCalled = new AtomicBoolean(false);
     final AtomicBoolean hideProgressCalledAfterShowProgress = new AtomicBoolean(false);
-    doAnswer(new Answer() {
-      @Override
-      public Object answer(InvocationOnMock invocation) throws Throwable {
-        showGlobalProgressCalled.set(true);
-        return null;
-      }
-    }).when(view).showGlobalProgress();
+    setTrue(showGlobalProgressCalled).when(view).showGlobalProgress();
     doAnswer(new Answer() {
       @Override
       public Object answer(InvocationOnMock invocation) throws Throwable {
@@ -146,13 +131,7 @@ public class MyAudiosPresenterImplTest {
   @Test
   public void onRefreshRequestCalled_showRefreshLayoutCalled() {
     final AtomicBoolean showRefreshLayoutCalled = new AtomicBoolean(false);
-    doAnswer(new Answer() {
-      @Override
-      public Object answer(InvocationOnMock invocation) throws Throwable {
-        showRefreshLayoutCalled.set(true);
-        return null;
-      }
-    }).when(view).showRefreshLayout();
+    setTrue(showRefreshLayoutCalled).when(view).showRefreshLayout();
     presenter.onViewAttached(view);
     presenter.onRefreshRequest();
 
@@ -162,13 +141,7 @@ public class MyAudiosPresenterImplTest {
   @Test
   public void onRefreshRequestCalled_hideRefreshLayoutCalledAfterShowRefreshLayout() {
     final AtomicBoolean showRefreshLayoutCalled = new AtomicBoolean(false);
-    doAnswer(new Answer() {
-      @Override
-      public Object answer(InvocationOnMock invocation) throws Throwable {
-        showRefreshLayoutCalled.set(true);
-        return null;
-      }
-    }).when(view).showRefreshLayout();
+    setTrue(showRefreshLayoutCalled).when(view).showRefreshLayout();
     final AtomicBoolean hideRefreshLayoutCalled = new AtomicBoolean(false);
     doAnswer(new Answer() {
       @Override
@@ -189,13 +162,7 @@ public class MyAudiosPresenterImplTest {
   public void ioExceptionThrown_showNetworkErrorOccurredErrorCalled() throws Exception {
     when(audiosService.get()).thenThrow(IOException.class);
     final AtomicBoolean showNetworkErrorOccurredErrorCalled = new AtomicBoolean(false);
-    doAnswer(new Answer() {
-      @Override
-      public Object answer(InvocationOnMock invocation) throws Throwable {
-        showNetworkErrorOccurredErrorCalled.set(true);
-        return null;
-      }
-    }).when(view).showNetworkErrorOccurredError();
+    setTrue(showNetworkErrorOccurredErrorCalled).when(view).showNetworkErrorOccurredError();
     presenter.onViewAttached(view);
     presenter.onRefreshRequest();
 
@@ -206,13 +173,7 @@ public class MyAudiosPresenterImplTest {
   public void errorOccurred_hideRefreshLayoutCalled() throws Exception {
     when(audiosService.get()).thenThrow(IOException.class);
     final AtomicBoolean hideRefreshLayoutCalled = new AtomicBoolean(false);
-    doAnswer(new Answer() {
-      @Override
-      public Object answer(InvocationOnMock invocation) throws Throwable {
-        hideRefreshLayoutCalled.set(true);
-        return null;
-      }
-    }).when(view).hideRefreshLayout();
+    setTrue(hideRefreshLayoutCalled).when(view).hideRefreshLayout();
     presenter.onViewAttached(view);
     presenter.onRefreshRequest();
 
@@ -268,15 +229,7 @@ public class MyAudiosPresenterImplTest {
     when(audiosRepository.getAllByVkUserId(anyLong())).thenReturn(audiosInRepository);
     presenter.onViewAttached(view);
     final AtomicReference<List<Audio>> actual = new AtomicReference<>();
-    doAnswer(new Answer() {
-      @Override
-      public Object answer(InvocationOnMock invocation) throws Throwable {
-        // noinspection unchecked
-        List<Audio> arg = (List<Audio>)invocation.getArguments()[0];
-        actual.set(arg);
-        return null;
-      }
-    }).when(view).showAudios(ArgumentMatchers.<Audio>anyList());
+    setArg(actual).when(view).showAudios(ArgumentMatchers.<Audio>anyList());
     String query = "gs";
     List<Audio> expected = filter.filter(audiosInRepository, query);
     presenter.onSearch(query);
@@ -289,15 +242,7 @@ public class MyAudiosPresenterImplTest {
     when(audiosRepository.getAllByVkUserId(anyLong())).thenReturn(audiosInRepository);
     presenter.onViewAttached(view);
     final AtomicReference<List<Audio>> actual = new AtomicReference<>();
-    doAnswer(new Answer() {
-      @Override
-      public Object answer(InvocationOnMock invocation) throws Throwable {
-        // noinspection unchecked
-        List<Audio> arg = (List<Audio>)invocation.getArguments()[0];
-        actual.set(arg);
-        return null;
-      }
-    }).when(view).showAudios(ArgumentMatchers.<Audio>anyList());
+    setArg(actual).when(view).showAudios(ArgumentMatchers.<Audio>anyList());
     presenter.onSearchCanceled();
     assertEquals(audiosInRepository, actual.get());
   }
@@ -311,14 +256,7 @@ public class MyAudiosPresenterImplTest {
     List<Audio> filtered = audiosFilter.filter(fromRepository, dummyQuery);
     presenter.onViewAttached(view);
     final AtomicReference<List<Audio>> actuallyShown = new AtomicReference<>();
-    doAnswer(new Answer() {
-      @Override
-      public Object answer(InvocationOnMock invocation) throws Throwable {
-        // noinspection unchecked
-        actuallyShown.set((List<Audio>)invocation.getArguments()[0]);
-        return null;
-      }
-    }).when(view).showAudios(any(List.class));
+    setArg(actuallyShown).when(view).showAudios(any(List.class));
     presenter.onSearch(dummyQuery);
     Audio mustBeShown = audiosGenerator.generateOne();
     mustBeShown.setArtist("afoiqwru");
@@ -342,21 +280,13 @@ public class MyAudiosPresenterImplTest {
     when(audiosRepository.getAllByVkUserId(anyLong())).thenReturn(Collections.<Audio>emptyList());
     List<Audio> audios = audiosGenerator.generateList(100);
     when(audiosService.get()).thenReturn(audios);
-    final AtomicBoolean replaceCalled = new AtomicBoolean();
-    doAnswer(new Answer() {
-      @Override
-      public Object answer(InvocationOnMock invocation) throws Throwable {
-        replaceCalled.set(true);
-        List<Audio> toSave = (List<Audio>)invocation.getArguments()[1];
-        assertThat(toSave)
-                .usingElementComparator(MyAudiosPresenterImpl.audioByPositionComparator)
-                .isSorted();
-        return null;
-      }
-    }).when(audiosRepository).replaceAllByVkUserId(anyLong(), ArgumentMatchers.<Audio>anyList());
+    final AtomicReference<List<Audio>> calledWith = new AtomicReference<>();
+    setArg(calledWith, 1).when(audiosRepository)
+            .replaceAllByVkUserId(anyLong(), ArgumentMatchers.<Audio>anyList());
     presenter.onRefreshRequest();
-    assertThat(replaceCalled.get())
-            .isTrue();
+    assertThat(calledWith.get())
+            .usingElementComparator(MyAudiosPresenterImpl.audioByPositionComparator)
+            .isSorted();
   }
 
   @Test
@@ -367,33 +297,20 @@ public class MyAudiosPresenterImplTest {
     }
     Collections.shuffle(fromRepository);
     when(audiosRepository.getAllByVkUserId(anyLong())).thenReturn(fromRepository);
-    final AtomicBoolean showAudiosCalled = new AtomicBoolean();
-    doAnswer(new Answer() {
-      @Override
-      public Object answer(InvocationOnMock invocation) throws Throwable {
-        showAudiosCalled.set(true);
-        assertThat((List<Audio>)invocation.getArguments()[0])
-                .usingElementComparator(MyAudiosPresenterImpl.audioByPositionComparator)
-                .isSorted();
-        return null;
-      }
-    }).when(view).showAudios(fromRepository);
+    AtomicReference<List<Audio>> calledWith = new AtomicReference<>();
+    setArg(calledWith).when(view).showAudios(fromRepository);
     presenter.onViewAttached(view);
-    assertThat(showAudiosCalled.get())
-            .isTrue();
+    assertThat(calledWith.get())
+            .isNotNull()
+            .usingElementComparator(MyAudiosPresenterImpl.audioByPositionComparator)
+            .isSorted();
   }
 
   @Test public void onAudioClickCalledInSelectMode_showAudioSelectedCalled() {
     presenter.onViewAttached(view);
     final AtomicBoolean showAudioSelectedCalled = new AtomicBoolean();
     Audio audio = audiosGenerator.generateOne();
-    doAnswer(new Answer() {
-      @Override
-      public Object answer(InvocationOnMock invocation) throws Throwable {
-        showAudioSelectedCalled.set(true);
-        return null;
-      }
-    }).when(view).showAudioSelected(audio);
+    setTrue(showAudioSelectedCalled).when(view).showAudioSelected(audio);
     presenter.mode = presenter.selectMode;
     presenter.onAudioClicked(audio);
     assertThat(showAudioSelectedCalled.get())
@@ -404,13 +321,7 @@ public class MyAudiosPresenterImplTest {
     presenter.onViewAttached(view);
     final AtomicBoolean cancelAudioSelectCalled = new AtomicBoolean();
     Audio audio = audiosGenerator.generateOne();
-    doAnswer(new Answer() {
-      @Override
-      public Object answer(InvocationOnMock invocation) throws Throwable {
-        cancelAudioSelectCalled.set(true);
-        return null;
-      }
-    }).when(view).cancelAudioSelect(audio);
+    setTrue(cancelAudioSelectCalled).when(view).cancelAudioSelect(audio);
     presenter.mode = presenter.selectMode;
     presenter.onAudioClicked(audio);
     presenter.onAudioClicked(audio);
@@ -421,13 +332,7 @@ public class MyAudiosPresenterImplTest {
   @Test public void audiosClickedInSelectModeAndDownloadSelectedAudiosCalled_audiosPostedToDownloader() {
     presenter.mode = presenter.selectMode;
     final List<Audio> postedToDownloader = new ArrayList<>();
-    doAnswer(new Answer() {
-      @Override
-      public Object answer(InvocationOnMock invocation) throws Throwable {
-        postedToDownloader.add((Audio)invocation.getArguments()[0]);
-        return null;
-      }
-    }).when(downloader).post(any(Audio.class));
+    appendTo(postedToDownloader).when(downloader).post(any(Audio.class));
     List<Audio> audios = audiosGenerator.generateList(100);
     for(Audio audio : audios) {
       presenter.onAudioClicked(audio);
@@ -441,13 +346,7 @@ public class MyAudiosPresenterImplTest {
   @Test public void downloadSelectedAudiosCalled_cancelAudioSelectOnDownloadableAudiosCalled() {
     presenter.onViewAttached(view);
     final List<Audio> calledFor = new ArrayList<>();
-    doAnswer(new Answer() {
-      @Override
-      public Object answer(InvocationOnMock invocation) throws Throwable {
-        calledFor.add((Audio)invocation.getArguments()[0]);
-        return null;
-      }
-    }).when(view).cancelAudioSelect(any(Audio.class));
+    appendTo(calledFor).when(view).cancelAudioSelect(any(Audio.class));
     List<Audio> selected = audiosGenerator.generateList(100);
     presenter.mode = presenter.selectMode;
     for(Audio audio : selected) {
@@ -466,13 +365,7 @@ public class MyAudiosPresenterImplTest {
       presenter.onAudioClicked(audio);
     }
     final List<Audio> calledFor = new ArrayList<>();
-    doAnswer(new Answer() {
-      @Override
-      public Object answer(InvocationOnMock invocation) throws Throwable {
-        calledFor.add((Audio)invocation.getArguments()[0]);
-        return null;
-      }
-    }).when(view).showAudioSelected(any(Audio.class));
+    appendTo(calledFor).when(view).showAudioSelected(any(Audio.class));
     presenter.onViewAttached(view);
     assertThat(calledFor)
             .hasSize(100)
@@ -489,13 +382,7 @@ public class MyAudiosPresenterImplTest {
     presenter.onAudioClicked(canceled);
     presenter.onAudioClicked(canceled);
     final List<Audio> postedToDownloader = new ArrayList<>();
-    doAnswer(new Answer() {
-      @Override
-      public Object answer(InvocationOnMock invocation) throws Throwable {
-        postedToDownloader.add((Audio)invocation.getArguments()[0]);
-        return null;
-      }
-    }).when(downloader).post(any(Audio.class));
+    appendTo(postedToDownloader).when(downloader).post(any(Audio.class));
     presenter.onDownloadSelectedAudiosRequest();
     assertThat(postedToDownloader)
             .hasSize(2)
@@ -512,7 +399,7 @@ public class MyAudiosPresenterImplTest {
   @Test public void audioLongClickedCalledInNormalMode_startSelectModeCalled() {
     presenter.onViewAttached(view);
     final AtomicBoolean startSelectModeCalled = new AtomicBoolean();
-    changeToTrue(startSelectModeCalled).when(view).startSelectMode();
+    setTrue(startSelectModeCalled).when(view).startSelectMode();
     presenter.onAudioLongClicked(new Audio());
     assertThat(startSelectModeCalled.get())
             .isTrue();
@@ -522,7 +409,7 @@ public class MyAudiosPresenterImplTest {
     presenter.onViewAttached(view);
     Audio audio = audiosGenerator.generateOne();
     AtomicBoolean showAudioSelectedCalled = new AtomicBoolean();
-    changeToTrue(showAudioSelectedCalled).when(view).showAudioSelected(audio);
+    setTrue(showAudioSelectedCalled).when(view).showAudioSelected(audio);
     presenter.onAudioLongClicked(audio);
     assertThat(showAudioSelectedCalled.get())
             .isTrue();
@@ -532,7 +419,7 @@ public class MyAudiosPresenterImplTest {
     presenter.onViewAttached(view);
     Audio audio = audiosGenerator.generateOne();
     AtomicBoolean showActionsForAudioCalled = new AtomicBoolean();
-    changeToTrue(showActionsForAudioCalled).when(view).showActionsFor(audio);
+    setTrue(showActionsForAudioCalled).when(view).showActionsFor(audio);
     presenter.onAudioClicked(audio);
     assertThat(showActionsForAudioCalled.get())
             .isTrue();
@@ -577,7 +464,7 @@ public class MyAudiosPresenterImplTest {
 
   @Test public void modeSetToSelectViewAttached_startSelectModeCalled() {
     AtomicBoolean startSelectModeCalled = new AtomicBoolean();
-    changeToTrue(startSelectModeCalled).when(view).startSelectMode();
+    setTrue(startSelectModeCalled).when(view).startSelectMode();
     presenter.mode = presenter.selectMode;
     presenter.onViewAttached(view);
     assertThat(startSelectModeCalled.get())
@@ -586,32 +473,11 @@ public class MyAudiosPresenterImplTest {
 
   @Test public void audioClickedInSelectMode_setSelectModeTitleCalled() {
     AtomicBoolean setSelectModeTitleCalled = new AtomicBoolean();
-    changeToTrue(setSelectModeTitleCalled).when(view)
+    setTrue(setSelectModeTitleCalled).when(view)
             .setSelectModeTitle(ArgumentMatchers.<Audio>anyList());
     presenter.onViewAttached(view);
     presenter.onAudioLongClicked(new Audio());
     assertThat(setSelectModeTitleCalled.get())
             .isTrue();
-  }
-
-  private static Stubber changeToTrue(final AtomicBoolean toChange) {
-    return doAnswer(new Answer() {
-      @Override
-      public Object answer(InvocationOnMock invocation) throws Throwable {
-        toChange.set(true);
-        return null;
-      }
-    });
-  }
-
-  private static <T> Stubber appendTo(final Collection<T> appendTo) {
-    return doAnswer(new Answer() {
-      @Override
-      public Object answer(InvocationOnMock invocation) throws Throwable {
-        // noinspection unchecked
-        appendTo.add((T)invocation.getArguments()[0]);
-        return null;
-      }
-    });
   }
 }

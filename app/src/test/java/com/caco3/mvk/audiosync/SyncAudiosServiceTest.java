@@ -34,10 +34,11 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import timber.log.Timber;
 
+import static com.caco3.mvk.Stubbers.appendTo;
+import static com.caco3.mvk.Stubbers.setTrue;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.when;
 
 @RunWith(RobolectricTestRunner.class)
@@ -73,14 +74,7 @@ public class SyncAudiosServiceTest {
   @Test public void syncNotAllowed_noAudiosPostedToDownloader() {
     when(mockPolicy.canSync()).thenReturn(false);
     final List<Audio> postedToDownloader = new ArrayList<>();
-    doAnswer(new Answer() {
-      @Override
-      public Object answer(InvocationOnMock invocation) throws Throwable {
-        Audio audio = (Audio)invocation.getArguments()[0];
-        postedToDownloader.add(audio);
-        return null;
-      }
-    }).when(downloader).post(any(Audio.class));
+    appendTo(postedToDownloader).when(downloader).post(any(Audio.class));
     startService();
     assertThat(postedToDownloader)
             .isEmpty();
@@ -106,13 +100,8 @@ public class SyncAudiosServiceTest {
     final AtomicBoolean audiosSavedToRepository = new AtomicBoolean();
     List<Audio> newAudios = audiosGenerator.generateList(100);
     when(vkAudiosService.get()).thenReturn(newAudios);
-    doAnswer(new Answer() {
-      @Override
-      public Object answer(InvocationOnMock invocation) throws Throwable {
-        audiosSavedToRepository.set(true);
-        return null;
-      }
-    }).when(repository).replaceAllByVkUserId(anyLong(), ArgumentMatchers.<Audio>anyList());
+    setTrue(audiosSavedToRepository).when(repository)
+            .replaceAllByVkUserId(anyLong(), ArgumentMatchers.<Audio>anyList());
     startService();
     assertThat(audiosSavedToRepository.get())
             .isTrue();
@@ -123,13 +112,7 @@ public class SyncAudiosServiceTest {
     List<Audio> audios = audiosGenerator.generateList(1000);
     List<Audio> expected = extractor.extract(audios);
     final List<Audio> actual = new ArrayList<>();
-    doAnswer(new Answer() {
-      @Override
-      public Object answer(InvocationOnMock invocation) throws Throwable {
-        actual.add((Audio)invocation.getArguments()[0]);
-        return null;
-      }
-    }).when(downloader).post(any(Audio.class));
+    appendTo(actual).when(downloader).post(any(Audio.class));
     when(vkAudiosService.get()).thenReturn(audios);
     startService();
     assertThat(actual)

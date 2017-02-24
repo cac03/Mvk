@@ -25,9 +25,9 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import timber.log.Timber;
 
+import static com.caco3.mvk.Stubbers.setTrue;
 import static junit.framework.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.when;
 
 public class LogInPresenterImplTest {
@@ -64,13 +64,7 @@ public class LogInPresenterImplTest {
   @Test
   public void invalidUsernameProvided_showUsernameInvalidErrorCalled() {
     final AtomicBoolean showUsernameInvalidCalled = new AtomicBoolean(false);
-    doAnswer(new Answer() {
-      @Override
-      public Object answer(InvocationOnMock invocation) throws Throwable {
-        showUsernameInvalidCalled.set(true);
-        return null;
-      }
-    }).when(view).showUsernameIsEmptyStringError();
+    setTrue(showUsernameInvalidCalled).when(view).showUsernameIsEmptyStringError();
     presenter.onViewAttached(view);
     presenter.attemptToLogIn(USERNAME_INVALID, PASSWORD_VALID);
     assertTrue(showUsernameInvalidCalled.get());
@@ -79,13 +73,7 @@ public class LogInPresenterImplTest {
   @Test
   public void invalidPasswordProvided_showInvalidPasswordErrorCalled() {
     final AtomicBoolean showInvalidPasswordErrorCalled = new AtomicBoolean(false);
-    doAnswer(new Answer() {
-      @Override
-      public Object answer(InvocationOnMock invocation) throws Throwable {
-        showInvalidPasswordErrorCalled.set(true);
-        return null;
-      }
-    }).when(view).showPasswordIsEmptyStringError();
+    setTrue(showInvalidPasswordErrorCalled).when(view).showPasswordIsEmptyStringError();
     presenter.onViewAttached(view);
     presenter.attemptToLogIn(USERNAME_VALID, PASSWORD_INVALID);
 
@@ -98,13 +86,8 @@ public class LogInPresenterImplTest {
     final AtomicBoolean showIncorrectUsernameOrPasswordErrorCalled = new AtomicBoolean(false);
     when(authService.getUserToken(any(Credentials.class)))
             .thenThrow(UsernameOrPasswordIncorrectException.class);
-    doAnswer(new Answer() {
-      @Override
-      public Object answer(InvocationOnMock invocation) throws Throwable {
-        showIncorrectUsernameOrPasswordErrorCalled.set(true);
-        return null;
-      }
-    }).when(view).showUsernameOrPasswordIncorrectError();
+    setTrue(showIncorrectUsernameOrPasswordErrorCalled)
+            .when(view).showUsernameOrPasswordIncorrectError();
     presenter.onViewAttached(view);
     presenter.attemptToLogIn(USERNAME_VALID, PASSWORD_VALID);
 
@@ -115,29 +98,11 @@ public class LogInPresenterImplTest {
   public void everythingIsOk_accountCreatedAndSaved() throws Exception {
     when(authService.getUserToken(any(Credentials.class))).thenReturn(new UserToken("asdfasdf"));
     final AtomicBoolean accountSaved = new AtomicBoolean(false);
-    doAnswer(new Answer() {
-      @Override
-      public Object answer(InvocationOnMock invocation) throws Throwable {
-        accountSaved.set(true);
-        return null;
-      }
-    }).when(repository).save(any(AppUser.class));
+    setTrue(accountSaved).when(repository).save(any(AppUser.class));
     final AtomicBoolean accountSetAsActive = new AtomicBoolean(false);
-    doAnswer(new Answer() {
-      @Override
-      public Object answer(InvocationOnMock invocation) throws Throwable {
-        accountSetAsActive.set(true);
-        return null;
-      }
-    }).when(repository).setAsActive(any(AppUser.class));
+    setTrue(accountSetAsActive).when(repository).setAsActive(any(AppUser.class));
     final AtomicBoolean userTokenSaved = new AtomicBoolean(false);
-    doAnswer(new Answer() {
-      @Override
-      public Object answer(InvocationOnMock invocation) throws Throwable {
-        userTokenSaved.set(true);
-        return null;
-      }
-    }).when(userTokenRepository).save(any(UserToken.class));
+    setTrue(userTokenSaved).when(userTokenRepository).save(any(UserToken.class));
 
     presenter.onViewAttached(view);
     presenter.attemptToLogIn(USERNAME_VALID, PASSWORD_VALID);
@@ -153,13 +118,7 @@ public class LogInPresenterImplTest {
     when(authService.getUserToken(any(Credentials.class)))
             .thenThrow(IOException.class);
     final AtomicBoolean showNetworkErrorOccurredErrorCalled = new AtomicBoolean(false);
-    doAnswer(new Answer() {
-      @Override
-      public Object answer(InvocationOnMock invocation) throws Throwable {
-        showNetworkErrorOccurredErrorCalled.set(true);
-        return null;
-      }
-    }).when(view).showNetworkErrorOccurredError();
+    setTrue(showNetworkErrorOccurredErrorCalled).when(view).showNetworkErrorOccurredError();
     presenter.onViewAttached(view);
     presenter.attemptToLogIn(USERNAME_VALID, PASSWORD_VALID);
 

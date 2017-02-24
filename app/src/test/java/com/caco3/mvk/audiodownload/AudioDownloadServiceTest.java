@@ -44,9 +44,9 @@ import okhttp3.mockwebserver.MockWebServer;
 import okio.Okio;
 import rx.observers.TestSubscriber;
 
+import static com.caco3.mvk.Stubbers.setTrue;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.assertj.core.api.Java6Assertions.fail;
-import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.when;
 
 
@@ -221,13 +221,7 @@ public class AudioDownloadServiceTest {
     Audio audio = prepareAudio();
     mockWebServer.enqueue(new MockResponse().setBody("DummySong"));
     final AtomicBoolean updateAudioCalled = new AtomicBoolean(false);
-    doAnswer(new Answer() {
-      @Override
-      public Object answer(InvocationOnMock invocation) throws Throwable {
-        updateAudioCalled.set(true);
-        return null;
-      }
-    }).when(audiosRepository).update(audio);
+    setTrue(updateAudioCalled).when(audiosRepository).update(audio);
     startForAudio(audio);
     assertThat(updateAudioCalled.get())
             .isTrue();
