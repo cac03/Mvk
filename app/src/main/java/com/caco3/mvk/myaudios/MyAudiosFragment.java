@@ -117,7 +117,6 @@ public class MyAudiosFragment extends BaseFragment implements MyAudiosView,
   @Override
   public void onDestroyView() {
     presenter.onViewDetached(this);
-    actionMode.finish();
     searchViewStateKeeper.detach();
     super.onDestroyView();
   }
@@ -328,12 +327,6 @@ public class MyAudiosFragment extends BaseFragment implements MyAudiosView,
 
   @Override public void onAudioLongClick(Audio audio) {
     presenter.onAudioLongClicked(audio);
-  }
-
-  private void startActionModeIfNecessary() {
-    if (actionMode == null) {
-      actionMode = ((AppCompatActivity)getActivity()).startSupportActionMode(this);
-    }
   }
 
   @Override public void showAudioSelected(Audio audio) {
