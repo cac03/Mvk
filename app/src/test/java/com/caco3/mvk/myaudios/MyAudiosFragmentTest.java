@@ -241,4 +241,20 @@ public class MyAudiosFragmentTest {
     assertThat(fragment.audiosSelectedInActionModeCount)
             .isEqualTo(0);
   }
+
+  @Test public void onDestroyViewCalled_actionModeIsNull() {
+    fragment.showAudioSelected(new Audio());
+    fragment.showAudioSelected(new Audio());
+    try {
+      fragment.onDestroyView();
+    } catch (NullPointerException ignore) {
+      /**
+       * Robolectric issues
+       * Npe thrown when {@link android.support.v4.view.MenuItemCompat#setOnActionExpandListener(MenuItem, MenuItemCompat.OnActionExpandListener)}
+       * called.
+       */
+    }
+    assertThat(fragment.actionMode)
+            .isNull();
+  }
 }
