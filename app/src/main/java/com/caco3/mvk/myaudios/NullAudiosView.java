@@ -34,4 +34,12 @@ import java.util.List;
   @Override
   public void showNetworkErrorOccurredError() {
   }
+
+  @Override
+  public void showAudioSelected(Audio audio) {
+  }
+
+  @Override
+  public void cancelAudioSelect(Audio audio) {
+  }
 }
