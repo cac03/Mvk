@@ -209,41 +209,6 @@ public class MyAudiosFragmentTest {
             .isTrue();
   }
 
-  @Test public void showAudioSelectedCalledActionModeIsNull_actionModeIsNotNull() {
-    fragment.showAudioSelected(new Audio());
-    assertThat(fragment.actionMode)
-            .isNotNull();
-  }
-
-  @Test public void showAudioSelectedAndCancelCalled_actionModeTitleIsChanged() {
-    Audio audio1 = new Audio();
-    Audio audio2 = new Audio();
-    Audio audio3 = new Audio();
-    fragment.showAudioSelected(audio1);
-    assertThat(fragment.actionMode.getTitle()).isEqualTo("1");
-    fragment.showAudioSelected(audio2);
-    assertThat(fragment.actionMode.getTitle()).isEqualTo("2");
-    fragment.showAudioSelected(audio3);
-    assertThat(fragment.actionMode.getTitle()).isEqualTo("3");
-    fragment.cancelAudioSelect(audio1);
-    assertThat(fragment.actionMode.getTitle()).isEqualTo("2");
-  }
-
-  @Test public void showAudiosCalledViewDestroyed_selectedAudiosCountIsZero() {
-    fragment.showAudioSelected(new Audio());
-    try {
-      fragment.onDestroyView();
-    } catch (NullPointerException ignore) {
-      /**
-       * Robolectric issues
-       * Npe thrown when {@link android.support.v4.view.MenuItemCompat#setOnActionExpandListener(MenuItem, MenuItemCompat.OnActionExpandListener)}
-       * called.
-       */
-    }
-    assertThat(fragment.audiosSelectedInActionModeCount)
-            .isEqualTo(0);
-  }
-
   @Test public void onDestroyViewCalled_actionModeIsNull() {
     fragment.showAudioSelected(new Audio());
     fragment.showAudioSelected(new Audio());
