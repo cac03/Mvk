@@ -43,6 +43,8 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import jp.wasabeef.recyclerview.animators.OvershootInLeftAnimator;
 
+import static com.caco3.mvk.util.Preconditions.checkState;
+
 public class MyAudiosFragment extends BaseFragment implements MyAudiosView,
         SwipeRefreshLayout.OnRefreshListener, MyAudiosAdapter.UiEventsListener,
         SearchView.OnQueryTextListener, ActionMode.Callback {
@@ -352,5 +354,20 @@ public class MyAudiosFragment extends BaseFragment implements MyAudiosView,
     audiosAdapter.cancelSelect(audio);
     audiosSelectedInActionModeCount--;
     updateActionModeTitle();
+  }
+
+  @Override public void startSelectMode() {
+    checkState(actionMode == null, "Attempt to start select mode. But actionMode is not null");
+    actionMode = ((AppCompatActivity)getActivity()).startSupportActionMode(this);
+  }
+
+  @Override public void finishSelectMode() {
+    checkState(actionMode != null, "Attempt to finish select mode. But actionMode is null");
+    actionMode.finish();
+  }
+
+  @Override public void setSelectModeTitle(List<Audio> selectedAudios) {
+    checkState(actionMode != null, "Attempt to set title to select mode. But actionMode is null");
+    actionMode.setTitle(String.valueOf(selectedAudios.size()));
   }
 }

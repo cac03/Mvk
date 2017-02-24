@@ -257,4 +257,24 @@ public class MyAudiosFragmentTest {
     assertThat(fragment.actionMode)
             .isNull();
   }
+
+  @Test public void startSelectModeCalled_actionModeIsNotNull() {
+    fragment.startSelectMode();
+    assertThat(fragment.actionMode)
+            .isNotNull();
+  }
+
+  @Test public void selectModeStartedAndSetSelectModeTitleCalled_actionModeTitleIsChanged() {
+    fragment.startSelectMode();
+    fragment.setSelectModeTitle(audiosGenerator.generateList(10));
+    assertThat(fragment.actionMode.getTitle())
+            .isEqualTo("10");
+  }
+
+  @Test public void selectModeStartedAndThenFinishSelectModeCalled_actionModeIsNull() {
+    fragment.startSelectMode();
+    fragment.finishSelectMode();
+    assertThat(fragment.actionMode)
+            .isNull();
+  }
 }

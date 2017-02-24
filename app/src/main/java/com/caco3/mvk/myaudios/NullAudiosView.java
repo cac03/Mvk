@@ -42,4 +42,13 @@ import java.util.List;
   @Override
   public void cancelAudioSelect(Audio audio) {
   }
+
+  @Override public void startSelectMode() {
+  }
+
+  @Override public void finishSelectMode() {
+  }
+
+  @Override public void setSelectModeTitle(List<Audio> selectedAudios) {
+  }
 }

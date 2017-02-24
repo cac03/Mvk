@@ -16,4 +16,7 @@ public interface MyAudiosView extends BaseView<MyAudiosPresenter> {
   void showNetworkErrorOccurredError();
   void showAudioSelected(Audio audio);
   void cancelAudioSelect(Audio audio);
+  void startSelectMode();
+  void finishSelectMode();
+  void setSelectModeTitle(List<Audio> selectedAudios);
 }
