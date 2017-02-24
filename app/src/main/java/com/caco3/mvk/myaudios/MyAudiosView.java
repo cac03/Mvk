@@ -19,4 +19,5 @@ public interface MyAudiosView extends BaseView<MyAudiosPresenter> {
   void startSelectMode();
   void finishSelectMode();
   void setSelectModeTitle(List<Audio> selectedAudios);
+  void showActionsFor(Audio audio);
 }

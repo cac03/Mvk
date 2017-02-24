@@ -51,4 +51,7 @@ import java.util.List;
 
   @Override public void setSelectModeTitle(List<Audio> selectedAudios) {
   }
+
+  @Override public void showActionsFor(Audio audio) {
+  }
 }

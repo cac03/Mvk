@@ -358,4 +358,8 @@ public class MyAudiosFragment extends BaseFragment implements MyAudiosView,
     checkState(actionMode != null, "Attempt to set title to select mode. But actionMode is null");
     actionMode.setTitle(String.valueOf(selectedAudios.size()));
   }
+
+  @Override public void showActionsFor(Audio audio) {
+    // TODO: 2/24/17 someDialog.show();
+  }
 }
