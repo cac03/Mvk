@@ -216,4 +216,20 @@ import timber.log.Timber;
     }
     selectedInActionMode.clear();
   }
+
+  @Override public void onSelectModeStarted() {
+    // TODO: 2/24/17 view.showSelectMode();
+  }
+
+  @Override public void onSelectModeFinished() {
+    // TODO: 2/24/17 view.finishSelectMode();
+  }
+
+  @Override public void onAudioClicked(Audio audio) {
+    // TODO: 2/24/17 mode.onAudioClicked(audio);
+  }
+
+  @Override public void onAudioLongClicked(Audio audio) {
+    // TODO: 2/24/17 mode.onAudioLongClicked();
+  }
 }
