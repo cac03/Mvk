@@ -49,7 +49,7 @@ public class MyAudiosAdapter extends RecyclerView.Adapter<MyAudiosAdapter.AudioV
     void onAudioItemClicked(Audio audio, View clickedView);
     void onAudioLongClick(Audio audio);
   }
-  private static final int GRAY_COLOR = Color.parseColor("#CCCCCC");
+  private static final int GRAY_COLOR = Color.parseColor("#DDDDDD");
 
   private Context context;
   private UiEventsListener uiEventsListener;
