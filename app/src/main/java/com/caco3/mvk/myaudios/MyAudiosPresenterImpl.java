@@ -34,6 +34,8 @@ import timber.log.Timber;
       return Integers.compare(o1.getVkPlaylistPosition(), o2.getVkPlaylistPosition());
     }
   };
+  final Mode selectMode = new SelectMode();
+  final Mode normalMode = new NormalMode();
 
   private MyAudiosView view = NullAudiosView.INSTANCE;
   private AppUser currentAppUser;
@@ -44,7 +46,8 @@ import timber.log.Timber;
   private DataSetFilter<Audio> audiosFilter = new AudiosFilter();
   private List<Audio> cachedAudios;
   private String searchQuery = "";
-  private List<Audio> selectedInActionMode = new ArrayList<>();
+  final List<Audio> selectedInActionMode = new ArrayList<>();
+  Mode mode = normalMode;
 
   @Inject
   /*package*/ MyAudiosPresenterImpl(AppUser appUser, AudiosRepository audiosRepository,
@@ -67,6 +70,9 @@ import timber.log.Timber;
       view.showRefreshLayout();
     }
     showAudios();
+    if (mode == selectMode) {
+      view.startSelectMode();
+    }
   }
 
   private boolean areAudiosLoadingFromVk() {
@@ -198,17 +204,6 @@ import timber.log.Timber;
   }
 
   @Override
-  public void onAudioSelected(Audio audio) {
-    if (selectedInActionMode.contains(audio)) {
-      selectedInActionMode.remove(audio);
-      view.cancelAudioSelect(audio);
-    } else {
-      selectedInActionMode.add(audio);
-      view.showAudioSelected(audio);
-    }
-  }
-
-  @Override
   public void onDownloadSelectedAudiosRequest() {
     for(Audio audio : selectedInActionMode) {
       audioDownloader.post(audio);
@@ -218,18 +213,56 @@ import timber.log.Timber;
   }
 
   @Override public void onSelectModeStarted() {
-    // TODO: 2/24/17 view.showSelectMode();
+    view.startSelectMode();
+    mode = selectMode;
   }
 
   @Override public void onSelectModeFinished() {
-    // TODO: 2/24/17 view.finishSelectMode();
+    view.finishSelectMode();
+    for(Audio audio : selectedInActionMode) {
+      view.cancelAudioSelect(audio);
+    }
+    selectedInActionMode.clear();
   }
 
   @Override public void onAudioClicked(Audio audio) {
-    // TODO: 2/24/17 mode.onAudioClicked(audio);
+    mode.onAudioClicked(audio);
   }
 
   @Override public void onAudioLongClicked(Audio audio) {
-    // TODO: 2/24/17 mode.onAudioLongClicked();
+    mode.onAudioLongClicked(audio);
+  }
+
+  private interface Mode {
+    void onAudioClicked(Audio audio);
+    void onAudioLongClicked(Audio audio);
+  }
+
+  private class SelectMode implements Mode {
+    @Override public void onAudioClicked(Audio audio) {
+      if (selectedInActionMode.contains(audio)) {
+        selectedInActionMode.remove(audio);
+        view.cancelAudioSelect(audio);
+      } else {
+        selectedInActionMode.add(audio);
+        view.showAudioSelected(audio);
+      }
+    }
+
+    @Override public void onAudioLongClicked(Audio audio) {
+      onAudioClicked(audio);
+    }
+  }
+
+  private class NormalMode implements Mode {
+    @Override public void onAudioClicked(Audio audio) {
+      view.showActionsFor(audio);
+    }
+
+    @Override public void onAudioLongClicked(Audio audio) {
+      selectedInActionMode.add(audio);
+      view.showAudioSelected(audio);
+      onSelectModeStarted();
+    }
   }
 }

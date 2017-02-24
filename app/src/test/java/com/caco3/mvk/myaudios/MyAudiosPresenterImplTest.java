@@ -21,9 +21,11 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
+import org.mockito.stubbing.Stubber;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -36,6 +38,7 @@ import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
 import static junit.framework.Assert.fail;
 import static org.assertj.core.api.Java6Assertions.assertThat;
+import static org.assertj.core.api.Java6Assertions.in;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.doAnswer;
@@ -55,7 +58,7 @@ public class MyAudiosPresenterImplTest {
   @Mock
   private MyAudiosView view;
   @Mock private AudioDownloader downloader;
-  private MyAudiosPresenter presenter;
+  private MyAudiosPresenterImpl presenter;
   private AudiosGenerator audiosGenerator = new AudiosGenerator();
 
   @Before
@@ -380,7 +383,7 @@ public class MyAudiosPresenterImplTest {
             .isTrue();
   }
 
-  @Test public void onAudioSelectedCalled_showAudioSelectedCalled() {
+  @Test public void onAudioClickCalledInSelectMode_showAudioSelectedCalled() {
     presenter.onViewAttached(view);
     final AtomicBoolean showAudioSelectedCalled = new AtomicBoolean();
     Audio audio = audiosGenerator.generateOne();
@@ -391,12 +394,13 @@ public class MyAudiosPresenterImplTest {
         return null;
       }
     }).when(view).showAudioSelected(audio);
-    presenter.onAudioSelected(audio);
+    presenter.mode = presenter.selectMode;
+    presenter.onAudioClicked(audio);
     assertThat(showAudioSelectedCalled.get())
             .isTrue();
   }
 
-  @Test public void onAudioSelectedCalledTwiceWithSameAudio_cancelAudioSelectCalled() {
+  @Test public void onAudioClickCalledTwiceWithSameAudioInSelectMode_cancelAudioSelectCalled() {
     presenter.onViewAttached(view);
     final AtomicBoolean cancelAudioSelectCalled = new AtomicBoolean();
     Audio audio = audiosGenerator.generateOne();
@@ -407,13 +411,15 @@ public class MyAudiosPresenterImplTest {
         return null;
       }
     }).when(view).cancelAudioSelect(audio);
-    presenter.onAudioSelected(audio);
-    presenter.onAudioSelected(audio);
+    presenter.mode = presenter.selectMode;
+    presenter.onAudioClicked(audio);
+    presenter.onAudioClicked(audio);
     assertThat(cancelAudioSelectCalled.get())
             .isTrue();
   }
 
-  @Test public void audiosSelectedDownloadSelectedAudiosCalled_audiosPostedToDownloader() {
+  @Test public void audiosClickedInSelectModeAndDownloadSelectedAudiosCalled_audiosPostedToDownloader() {
+    presenter.mode = presenter.selectMode;
     final List<Audio> postedToDownloader = new ArrayList<>();
     doAnswer(new Answer() {
       @Override
@@ -424,7 +430,7 @@ public class MyAudiosPresenterImplTest {
     }).when(downloader).post(any(Audio.class));
     List<Audio> audios = audiosGenerator.generateList(100);
     for(Audio audio : audios) {
-      presenter.onAudioSelected(audio);
+      presenter.onAudioClicked(audio);
     }
     presenter.onDownloadSelectedAudiosRequest();
     assertThat(postedToDownloader)
@@ -443,8 +449,9 @@ public class MyAudiosPresenterImplTest {
       }
     }).when(view).cancelAudioSelect(any(Audio.class));
     List<Audio> selected = audiosGenerator.generateList(100);
+    presenter.mode = presenter.selectMode;
     for(Audio audio : selected) {
-      presenter.onAudioSelected(audio);
+      presenter.onAudioClicked(audio);
     }
     presenter.onDownloadSelectedAudiosRequest();
     assertThat(calledFor)
@@ -452,10 +459,11 @@ public class MyAudiosPresenterImplTest {
             .containsAll(selected);
   }
 
-  @Test public void someAudiosSelected_viewReattachedShowAudioSelectedOnSelectedAudiosCalled() {
+  @Test public void someAudiosClickedInSelectMode_viewReattachedShowAudioSelectedOnSelectedAudiosCalled() {
     List<Audio> selected = audiosGenerator.generateList(100);
+    presenter.mode = presenter.selectMode;
     for(Audio audio : selected) {
-      presenter.onAudioSelected(audio);
+      presenter.onAudioClicked(audio);
     }
     final List<Audio> calledFor = new ArrayList<>();
     doAnswer(new Answer() {
@@ -472,13 +480,14 @@ public class MyAudiosPresenterImplTest {
   }
 
   @Test public void someAudiosSelectedAndThenSomeCanceledDownloadCalled_selectedPostedToDownloader() {
+    presenter.mode = presenter.selectMode;
     Audio selected1 = audiosGenerator.generateOne();
     Audio selected2 = audiosGenerator.generateOne();
     Audio canceled = audiosGenerator.generateOne();
-    presenter.onAudioSelected(selected1);
-    presenter.onAudioSelected(selected2);
-    presenter.onAudioSelected(canceled);
-    presenter.onAudioSelected(canceled);
+    presenter.onAudioClicked(selected1);
+    presenter.onAudioClicked(selected2);
+    presenter.onAudioClicked(canceled);
+    presenter.onAudioClicked(canceled);
     final List<Audio> postedToDownloader = new ArrayList<>();
     doAnswer(new Answer() {
       @Override
@@ -492,5 +501,107 @@ public class MyAudiosPresenterImplTest {
             .hasSize(2)
             .contains(selected1, selected2)
             .doesNotContain(canceled);
+  }
+
+  @Test public void audioLongClickedCalledInNormalMode_modeChangedToSelect() {
+    presenter.onAudioLongClicked(new Audio());
+    assertThat(presenter.mode)
+            .isSameAs(presenter.selectMode);
+  }
+
+  @Test public void audioLongClickedCalledInNormalMode_startSelectModeCalled() {
+    presenter.onViewAttached(view);
+    final AtomicBoolean startSelectModeCalled = new AtomicBoolean();
+    changeToTrue(startSelectModeCalled).when(view).startSelectMode();
+    presenter.onAudioLongClicked(new Audio());
+    assertThat(startSelectModeCalled.get())
+            .isTrue();
+  }
+
+  @Test public void audioLongClickedCalledInNormalMode_showAudioSelectedCalled() {
+    presenter.onViewAttached(view);
+    Audio audio = audiosGenerator.generateOne();
+    AtomicBoolean showAudioSelectedCalled = new AtomicBoolean();
+    changeToTrue(showAudioSelectedCalled).when(view).showAudioSelected(audio);
+    presenter.onAudioLongClicked(audio);
+    assertThat(showAudioSelectedCalled.get())
+            .isTrue();
+  }
+
+  @Test public void audioClickedCalledInNormalMode_showActionsForAudioCalled() {
+    presenter.onViewAttached(view);
+    Audio audio = audiosGenerator.generateOne();
+    AtomicBoolean showActionsForAudioCalled = new AtomicBoolean();
+    changeToTrue(showActionsForAudioCalled).when(view).showActionsFor(audio);
+    presenter.onAudioClicked(audio);
+    assertThat(showActionsForAudioCalled.get())
+            .isTrue();
+  }
+
+  @Test public void someAudiosSelectedAndThenDownloadSelectedCalled_cancelAudioSelectCalledForAll() {
+    presenter.onViewAttached(view);
+    List<Audio> selected = audiosGenerator.generateList(100);
+    List<Audio> calledFor = new ArrayList<>();
+    appendTo(calledFor).when(view).cancelAudioSelect(any(Audio.class));
+    for(Audio audio : selected) {
+      presenter.onAudioLongClicked(audio);
+    }
+    presenter.onDownloadSelectedAudiosRequest();
+    assertThat(calledFor)
+            .hasSize(100)
+            .containsAll(selected);
+  }
+
+  @Test public void onSelectModeFinishedCalled_cancelSelectCalledForAllSelectedAudios() {
+    presenter.onViewAttached(view);
+    List<Audio> selected = audiosGenerator.generateList(100);
+    presenter.selectedInActionMode.addAll(selected);
+    List<Audio> calledFor = new ArrayList<>();
+    appendTo(calledFor).when(view).cancelAudioSelect(any(Audio.class));
+    presenter.onSelectModeFinished();
+    assertThat(calledFor)
+            .hasSize(100)
+            .containsAll(selected);
+  }
+
+  @Test public void someAudioSelectedViewReattached_showAudioSelectedForAllSelectedAudios() {
+    List<Audio> calledFor = new ArrayList<>();
+    appendTo(calledFor).when(view).showAudioSelected(any(Audio.class));
+    List<Audio> selected = audiosGenerator.generateList(100);
+    presenter.selectedInActionMode.addAll(selected);
+    presenter.onViewAttached(view);
+    assertThat(calledFor)
+            .hasSize(100)
+            .containsAll(selected);
+  }
+
+  @Test public void modeSetToSelectViewAttached_startSelectModeCalled() {
+    AtomicBoolean startSelectModeCalled = new AtomicBoolean();
+    changeToTrue(startSelectModeCalled).when(view).startSelectMode();
+    presenter.mode = presenter.selectMode;
+    presenter.onViewAttached(view);
+    assertThat(startSelectModeCalled.get())
+            .isTrue();
+  }
+
+  private static Stubber changeToTrue(final AtomicBoolean toChange) {
+    return doAnswer(new Answer() {
+      @Override
+      public Object answer(InvocationOnMock invocation) throws Throwable {
+        toChange.set(true);
+        return null;
+      }
+    });
+  }
+
+  private static <T> Stubber appendTo(final Collection<T> appendTo) {
+    return doAnswer(new Answer() {
+      @Override
+      public Object answer(InvocationOnMock invocation) throws Throwable {
+        // noinspection unchecked
+        appendTo.add((T)invocation.getArguments()[0]);
+        return null;
+      }
+    });
   }
 }

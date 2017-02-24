@@ -8,7 +8,6 @@ public interface MyAudiosPresenter extends BasePresenter<MyAudiosView> {
   void onRefreshRequest();
   void onSearch(String query);
   void onSearchCanceled();
-  void onAudioSelected(Audio audio);
   void onDownloadSelectedAudiosRequest();
   void onSelectModeStarted();
   void onSelectModeFinished();
