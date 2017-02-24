@@ -584,6 +584,16 @@ public class MyAudiosPresenterImplTest {
             .isTrue();
   }
 
+  @Test public void audioClickedInSelectMode_setSelectModeTitleCalled() {
+    AtomicBoolean setSelectModeTitleCalled = new AtomicBoolean();
+    changeToTrue(setSelectModeTitleCalled).when(view)
+            .setSelectModeTitle(ArgumentMatchers.<Audio>anyList());
+    presenter.onViewAttached(view);
+    presenter.onAudioLongClicked(new Audio());
+    assertThat(setSelectModeTitleCalled.get())
+            .isTrue();
+  }
+
   private static Stubber changeToTrue(final AtomicBoolean toChange) {
     return doAnswer(new Answer() {
       @Override

@@ -247,6 +247,7 @@ import timber.log.Timber;
         selectedInActionMode.add(audio);
         view.showAudioSelected(audio);
       }
+      view.setSelectModeTitle(Collections.unmodifiableList(selectedInActionMode));
     }
 
     @Override public void onAudioLongClicked(Audio audio) {
@@ -262,6 +263,7 @@ import timber.log.Timber;
     @Override public void onAudioLongClicked(Audio audio) {
       selectedInActionMode.add(audio);
       view.showAudioSelected(audio);
+      view.setSelectModeTitle(Collections.unmodifiableList(selectedInActionMode));
       onSelectModeStarted();
     }
   }
