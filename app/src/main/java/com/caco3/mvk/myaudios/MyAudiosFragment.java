@@ -61,6 +61,7 @@ public class MyAudiosFragment extends BaseFragment implements MyAudiosView,
   private SearchViewStateKeeper searchViewStateKeeper = new SearchViewStateKeeper();
   private Audio pendingAudio = null;
   ActionMode actionMode;
+  int audiosSelectedInActionModeCount = 0;
 
   @Override
   public View onCreateView(LayoutInflater inflater,
@@ -115,6 +116,7 @@ public class MyAudiosFragment extends BaseFragment implements MyAudiosView,
   @Override
   public void onDestroyView() {
     presenter.onViewDetached(this);
+    audiosSelectedInActionModeCount = 0;
     searchViewStateKeeper.detach();
     super.onDestroyView();
   }
@@ -337,9 +339,17 @@ public class MyAudiosFragment extends BaseFragment implements MyAudiosView,
   @Override public void showAudioSelected(Audio audio) {
     startActionModeIfNecessary();
     audiosAdapter.selectAudio(audio);
+    audiosSelectedInActionModeCount++;
+    updateActionModeTitle();
+  }
+
+  private void updateActionModeTitle() {
+    actionMode.setTitle(String.valueOf(audiosSelectedInActionModeCount));
   }
 
   @Override public void cancelAudioSelect(Audio audio) {
     audiosAdapter.cancelSelect(audio);
+    audiosSelectedInActionModeCount--;
+    updateActionModeTitle();
   }
 }
