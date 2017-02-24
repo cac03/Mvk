@@ -10,6 +10,7 @@ import com.caco3.mvk.vk.VkException;
 import com.caco3.mvk.vk.audio.Audio;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -43,6 +44,7 @@ import timber.log.Timber;
   private DataSetFilter<Audio> audiosFilter = new AudiosFilter();
   private List<Audio> cachedAudios;
   private String searchQuery = "";
+  private List<Audio> selectedInActionMode = new ArrayList<>();
 
   @Inject
   /*package*/ MyAudiosPresenterImpl(AppUser appUser, AudiosRepository audiosRepository,
@@ -79,6 +81,9 @@ import timber.log.Timber;
         view.showAudios(cachedAudios);
       }
       view.hideGlobalProgress();
+      for(Audio selected : selectedInActionMode) {
+        view.showAudioSelected(selected);
+      }
     } else {
       loadAudiosFromRepository();
     }
@@ -194,11 +199,20 @@ import timber.log.Timber;
 
   @Override
   public void onAudioSelected(Audio audio) {
-    // TODO: 2/23/17 implement
+    if (selectedInActionMode.contains(audio)) {
+      view.cancelAudioSelect(audio);
+    } else {
+      selectedInActionMode.add(audio);
+      view.showAudioSelected(audio);
+    }
   }
 
   @Override
   public void onDownloadSelectedAudiosRequest() {
-    // TODO: 2/23/17 implement
+    for(Audio audio : selectedInActionMode) {
+      audioDownloader.post(audio);
+      view.cancelAudioSelect(audio);
+    }
+    selectedInActionMode.clear();
   }
 }

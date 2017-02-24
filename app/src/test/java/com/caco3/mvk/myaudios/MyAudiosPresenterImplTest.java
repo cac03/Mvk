@@ -1,6 +1,7 @@
 package com.caco3.mvk.myaudios;
 
 import com.caco3.mvk.Rxs;
+import com.caco3.mvk.audiodownload.AudioDownloader;
 import com.caco3.mvk.data.appuser.AppUser;
 import com.caco3.mvk.data.audio.AudiosRepository;
 import com.caco3.mvk.timber.SystemOutTree;
@@ -53,6 +54,7 @@ public class MyAudiosPresenterImplTest {
   private AudiosRepository audiosRepository;
   @Mock
   private MyAudiosView view;
+  @Mock private AudioDownloader downloader;
   private MyAudiosPresenter presenter;
   private AudiosGenerator audiosGenerator = new AudiosGenerator();
 
@@ -61,7 +63,7 @@ public class MyAudiosPresenterImplTest {
     MockitoAnnotations.initMocks(this);
     initAppUser();
     initVk();
-    presenter = new MyAudiosPresenterImpl(appUser, audiosRepository, vk, null);
+    presenter = new MyAudiosPresenterImpl(appUser, audiosRepository, vk, downloader);
     Rxs.setUpRx();
     Timber.plant(new SystemOutTree());
     when(appUser.getVkUser()).thenReturn(vkUser);
@@ -376,5 +378,96 @@ public class MyAudiosPresenterImplTest {
     presenter.onViewAttached(view);
     assertThat(showAudiosCalled.get())
             .isTrue();
+  }
+
+  @Test public void onAudioSelectedCalled_showAudioSelectedCalled() {
+    presenter.onViewAttached(view);
+    final AtomicBoolean showAudioSelectedCalled = new AtomicBoolean();
+    Audio audio = audiosGenerator.generateOne();
+    doAnswer(new Answer() {
+      @Override
+      public Object answer(InvocationOnMock invocation) throws Throwable {
+        showAudioSelectedCalled.set(true);
+        return null;
+      }
+    }).when(view).showAudioSelected(audio);
+    presenter.onAudioSelected(audio);
+    assertThat(showAudioSelectedCalled.get())
+            .isTrue();
+  }
+
+  @Test public void onAudioSelectedCalledTwiceWithSameAudio_cancelAudioSelectCalled() {
+    presenter.onViewAttached(view);
+    final AtomicBoolean cancelAudioSelectCalled = new AtomicBoolean();
+    Audio audio = audiosGenerator.generateOne();
+    doAnswer(new Answer() {
+      @Override
+      public Object answer(InvocationOnMock invocation) throws Throwable {
+        cancelAudioSelectCalled.set(true);
+        return null;
+      }
+    }).when(view).cancelAudioSelect(audio);
+    presenter.onAudioSelected(audio);
+    presenter.onAudioSelected(audio);
+    assertThat(cancelAudioSelectCalled.get())
+            .isTrue();
+  }
+
+  @Test public void audiosSelectedDownloadSelectedAudiosCalled_audiosPostedToDownloader() {
+    final List<Audio> postedToDownloader = new ArrayList<>();
+    doAnswer(new Answer() {
+      @Override
+      public Object answer(InvocationOnMock invocation) throws Throwable {
+        postedToDownloader.add((Audio)invocation.getArguments()[0]);
+        return null;
+      }
+    }).when(downloader).post(any(Audio.class));
+    List<Audio> audios = audiosGenerator.generateList(100);
+    for(Audio audio : audios) {
+      presenter.onAudioSelected(audio);
+    }
+    presenter.onDownloadSelectedAudiosRequest();
+    assertThat(postedToDownloader)
+            .hasSize(100)
+            .containsAll(audios);
+  }
+
+  @Test public void downloadSelectedAudiosCalled_cancelAudioSelectOnDownloadableAudiosCalled() {
+    presenter.onViewAttached(view);
+    final List<Audio> calledFor = new ArrayList<>();
+    doAnswer(new Answer() {
+      @Override
+      public Object answer(InvocationOnMock invocation) throws Throwable {
+        calledFor.add((Audio)invocation.getArguments()[0]);
+        return null;
+      }
+    }).when(view).cancelAudioSelect(any(Audio.class));
+    List<Audio> selected = audiosGenerator.generateList(100);
+    for(Audio audio : selected) {
+      presenter.onAudioSelected(audio);
+    }
+    presenter.onDownloadSelectedAudiosRequest();
+    assertThat(calledFor)
+            .hasSize(100)
+            .containsAll(selected);
+  }
+
+  @Test public void someAudiosSelected_viewReattachedShowAudioSelectedOnSelectedAudiosCalled() {
+    List<Audio> selected = audiosGenerator.generateList(100);
+    for(Audio audio : selected) {
+      presenter.onAudioSelected(audio);
+    }
+    final List<Audio> calledFor = new ArrayList<>();
+    doAnswer(new Answer() {
+      @Override
+      public Object answer(InvocationOnMock invocation) throws Throwable {
+        calledFor.add((Audio)invocation.getArguments()[0]);
+        return null;
+      }
+    }).when(view).showAudioSelected(any(Audio.class));
+    presenter.onViewAttached(view);
+    assertThat(calledFor)
+            .hasSize(100)
+            .containsAll(selected);
   }
 }
