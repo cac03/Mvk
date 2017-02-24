@@ -200,6 +200,7 @@ import timber.log.Timber;
   @Override
   public void onAudioSelected(Audio audio) {
     if (selectedInActionMode.contains(audio)) {
+      selectedInActionMode.remove(audio);
       view.cancelAudioSelect(audio);
     } else {
       selectedInActionMode.add(audio);

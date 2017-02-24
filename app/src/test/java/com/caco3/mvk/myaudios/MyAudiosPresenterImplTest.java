@@ -470,4 +470,27 @@ public class MyAudiosPresenterImplTest {
             .hasSize(100)
             .containsAll(selected);
   }
+
+  @Test public void someAudiosSelectedAndThenSomeCanceledDownloadCalled_selectedPostedToDownloader() {
+    Audio selected1 = audiosGenerator.generateOne();
+    Audio selected2 = audiosGenerator.generateOne();
+    Audio canceled = audiosGenerator.generateOne();
+    presenter.onAudioSelected(selected1);
+    presenter.onAudioSelected(selected2);
+    presenter.onAudioSelected(canceled);
+    presenter.onAudioSelected(canceled);
+    final List<Audio> postedToDownloader = new ArrayList<>();
+    doAnswer(new Answer() {
+      @Override
+      public Object answer(InvocationOnMock invocation) throws Throwable {
+        postedToDownloader.add((Audio)invocation.getArguments()[0]);
+        return null;
+      }
+    }).when(downloader).post(any(Audio.class));
+    presenter.onDownloadSelectedAudiosRequest();
+    assertThat(postedToDownloader)
+            .hasSize(2)
+            .contains(selected1, selected2)
+            .doesNotContain(canceled);
+  }
 }
