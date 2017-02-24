@@ -168,7 +168,7 @@ public class MyAudiosFragment extends BaseFragment implements MyAudiosView,
 
   @Override
   public void onAudioItemClicked(Audio audio, View clickedView) {
-    showAudioPopupMenu(audio, clickedView);
+    presenter.onAudioClicked(audio);
   }
 
   private void showAudioPopupMenu(final Audio audio, View anchor) {
@@ -329,8 +329,7 @@ public class MyAudiosFragment extends BaseFragment implements MyAudiosView,
   }
 
   @Override public void onAudioLongClick(Audio audio) {
-    startActionModeIfNecessary();
-    presenter.onAudioSelected(audio);
+    presenter.onAudioLongClicked(audio);
   }
 
   private void startActionModeIfNecessary() {

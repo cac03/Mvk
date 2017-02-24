@@ -22,7 +22,6 @@ import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowToast;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -124,12 +123,6 @@ public class MyAudiosFragmentTest {
             .isEqualTo(0);
   }
 
-  @Test public void onAudioLongClickCalled_actionModeIsNotNull() {
-    fragment.onAudioLongClick(new Audio());
-    assertThat(fragment.actionMode)
-            .isNotNull();
-  }
-
   @Test public void downloadInContextMenuClicked_onDownloadSelectedAudiosRequestCalled() {
     final AtomicBoolean downloadSelectedAudiosCalled = new AtomicBoolean();
     doAnswer(new Answer<Object>(){
@@ -139,7 +132,7 @@ public class MyAudiosFragmentTest {
         return null;
       }
     }).when(presenter).onDownloadSelectedAudiosRequest();
-    fragment.onAudioLongClick(new Audio());
+    fragment.startSelectMode();
     MenuItem menuItem = fragment.actionMode.getMenu().findItem(R.id.audios_context_menu_download);
     fragment.onActionItemClicked(fragment.actionMode, menuItem);
     assertThat(downloadSelectedAudiosCalled.get())
@@ -147,30 +140,39 @@ public class MyAudiosFragmentTest {
   }
 
   @Test public void downloadInContextMenuClicked_actionModeIsNull() {
-    fragment.onAudioLongClick(new Audio());
+    fragment.startSelectMode();
     MenuItem menuItem = fragment.actionMode.getMenu().findItem(R.id.audios_context_menu_download);
     fragment.onActionItemClicked(fragment.actionMode, menuItem);
     assertThat(fragment.actionMode)
             .isNull();
   }
 
-  @Test public void onAudioLongClickCalled_onAudioSelectedCalled() {
-    Audio audio1 = audiosGenerator.generateOne();
-    Audio audio2 = audiosGenerator.generateOne();
-    final List<Audio> collectedWhenOnAudioSelectedCalled = new ArrayList<>();
+  @Test public void onAudioLongClickCalled_onAudioLongClickCalledOnPresenter() {
+    final AtomicBoolean onAudioLongClickedCalled = new AtomicBoolean();
     doAnswer(new Answer() {
       @Override
       public Object answer(InvocationOnMock invocation) throws Throwable {
-        Audio audio = (Audio)invocation.getArguments()[0];
-        collectedWhenOnAudioSelectedCalled.add(audio);
+        onAudioLongClickedCalled.set(true);
         return null;
       }
-    }).when(presenter).onAudioSelected(any(Audio.class));
-    fragment.onAudioLongClick(audio1);
-    fragment.onAudioLongClick(audio2);
-    assertThat(collectedWhenOnAudioSelectedCalled)
-            .hasSize(2)
-            .contains(audio1, audio2);
+    }).when(presenter).onAudioLongClicked(any(Audio.class));
+    fragment.onAudioLongClick(new Audio());
+    assertThat(onAudioLongClickedCalled.get())
+            .isTrue();
+  }
+
+  @Test public void onAudioClickCalled_onAudioClickedCalledOnPresenter() {
+    final AtomicBoolean onAudioClickedCalled = new AtomicBoolean();
+    doAnswer(new Answer() {
+      @Override
+      public Object answer(InvocationOnMock invocation) throws Throwable {
+        onAudioClickedCalled.set(true);
+        return null;
+      }
+    }).when(presenter).onAudioClicked(any(Audio.class));
+    fragment.onAudioItemClicked(new Audio(), null);
+    assertThat(onAudioClickedCalled.get())
+            .isTrue();
   }
 
   @Test public void showAudioSelectedCalled_showSelectedOnAdapterCalled() {
