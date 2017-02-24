@@ -1,6 +1,7 @@
 package com.caco3.mvk.myaudios;
 
 import android.support.v7.widget.LinearLayoutManager;
+import android.view.MenuItem;
 import android.view.View;
 
 import com.caco3.mvk.BuildConfig;
@@ -14,15 +15,19 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowToast;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
 import static org.assertj.core.api.Java6Assertions.assertThat;
+import static org.mockito.Mockito.doAnswer;
 
 @RunWith(RobolectricTestRunner.class)
 @Config(
@@ -119,5 +124,29 @@ public class MyAudiosFragmentTest {
     fragment.onAudioLongClick(new Audio());
     assertThat(fragment.actionMode)
             .isNotNull();
+  }
+
+  @Test public void downloadInContextMenuClicked_onDownloadSelectedAudiosRequestCalled() {
+    final AtomicBoolean downloadSelectedAudiosCalled = new AtomicBoolean();
+    doAnswer(new Answer<Object>(){
+      @Override
+      public Object answer(InvocationOnMock invocation) throws Throwable {
+        downloadSelectedAudiosCalled.set(true);
+        return null;
+      }
+    }).when(presenter).onDownloadSelectedAudiosRequest();
+    fragment.onAudioLongClick(new Audio());
+    MenuItem menuItem = fragment.actionMode.getMenu().findItem(R.id.audios_context_menu_download);
+    fragment.onActionItemClicked(fragment.actionMode, menuItem);
+    assertThat(downloadSelectedAudiosCalled.get())
+            .isTrue();
+  }
+
+  @Test public void downloadInContextMenuClicked_actionModeIsNull() {
+    fragment.onAudioLongClick(new Audio());
+    MenuItem menuItem = fragment.actionMode.getMenu().findItem(R.id.audios_context_menu_download);
+    fragment.onActionItemClicked(fragment.actionMode, menuItem);
+    assertThat(fragment.actionMode)
+            .isNull();
   }
 }

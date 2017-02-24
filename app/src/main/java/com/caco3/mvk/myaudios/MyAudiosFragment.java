@@ -317,7 +317,13 @@ public class MyAudiosFragment extends BaseFragment implements MyAudiosView,
   }
 
   @Override public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-    // TODO: 2/23/17 presenter.downloadSelectedAudios();
+    int id = item.getItemId();
+    if (id == R.id.audios_context_menu_download) {
+      presenter.onDownloadSelectedAudiosRequest();
+      mode.finish();
+    } else {
+      throw new IllegalArgumentException("Unknown menu item id: " + id);
+    }
     return false;
   }
 
