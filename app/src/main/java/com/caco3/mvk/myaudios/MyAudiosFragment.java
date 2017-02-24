@@ -10,8 +10,6 @@ import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.view.ActionMode;
-import android.support.v7.widget.DividerItemDecoration;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
@@ -27,7 +25,6 @@ import android.widget.Toast;
 import com.caco3.mvk.R;
 import com.caco3.mvk.dagger.DaggerComponentsHolder;
 import com.caco3.mvk.permission.PermissionRequest;
-import com.caco3.mvk.ui.BaseActivity;
 import com.caco3.mvk.ui.BaseFragment;
 import com.caco3.mvk.ui.SearchViewStateKeeper;
 import com.caco3.mvk.ui.recyclerview.decorator.MarginItemDecorator;
@@ -36,7 +33,6 @@ import com.caco3.mvk.util.function.Action0;
 import com.caco3.mvk.util.function.Action1;
 import com.caco3.mvk.vk.audio.Audio;
 
-import java.util.Comparator;
 import java.util.List;
 
 
@@ -61,7 +57,7 @@ public class MyAudiosFragment extends BaseFragment implements MyAudiosView,
   @BindView(R.id.audios_frag_fab)
   FloatingActionButton floatingActionButton;
   View audiosContentView;
-  private MyAudiosAdapter audiosAdapter = new MyAudiosAdapter(this);
+  MyAudiosAdapter audiosAdapter = new MyAudiosAdapter(this);
   private SearchViewStateKeeper searchViewStateKeeper = new SearchViewStateKeeper();
   private Audio pendingAudio = null;
   ActionMode actionMode;
@@ -328,19 +324,22 @@ public class MyAudiosFragment extends BaseFragment implements MyAudiosView,
   }
 
   @Override public void onAudioLongClick(Audio audio) {
-    if (actionMode == null) {
-      actionMode = ((AppCompatActivity)getActivity()).startSupportActionMode(this);
-    }
+    startActionModeIfNecessary();
     presenter.onAudioSelected(audio);
   }
 
-  @Override
-  public void showAudioSelected(Audio audio) {
-    // TODO: 2/24/17 implement
+  private void startActionModeIfNecessary() {
+    if (actionMode == null) {
+      actionMode = ((AppCompatActivity)getActivity()).startSupportActionMode(this);
+    }
   }
 
-  @Override
-  public void cancelAudioSelect(Audio audio) {
-    // TODO: 2/24/17 implement
+  @Override public void showAudioSelected(Audio audio) {
+    startActionModeIfNecessary();
+    audiosAdapter.selectAudio(audio);
+  }
+
+  @Override public void cancelAudioSelect(Audio audio) {
+    audiosAdapter.cancelSelect(audio);
   }
 }

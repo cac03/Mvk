@@ -30,6 +30,7 @@ import static junit.framework.Assert.assertTrue;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.mock;
 
 @RunWith(RobolectricTestRunner.class)
 @Config(
@@ -169,5 +170,43 @@ public class MyAudiosFragmentTest {
     assertThat(collectedWhenOnAudioSelectedCalled)
             .hasSize(2)
             .contains(audio1, audio2);
+  }
+
+  @Test public void showAudioSelectedCalled_showSelectedOnAdapterCalled() {
+    MyAudiosAdapter adapter = mock(MyAudiosAdapter.class);
+    fragment.audiosAdapter = adapter;
+    final AtomicBoolean showSelectedCalled = new AtomicBoolean();
+    doAnswer(new Answer() {
+      @Override
+      public Object answer(InvocationOnMock invocation) throws Throwable {
+        showSelectedCalled.set(true);
+        return null;
+      }
+    }).when(adapter).selectAudio(any(Audio.class));
+    fragment.showAudioSelected(new Audio());
+    assertThat(showSelectedCalled.get())
+            .isTrue();
+  }
+
+  @Test public void cancelAudioSelectCalled_cancelSelectOnAdapterCalled() {
+    MyAudiosAdapter adapter = mock(MyAudiosAdapter.class);
+    fragment.audiosAdapter = adapter;
+    final AtomicBoolean showSelectedCalled = new AtomicBoolean();
+    doAnswer(new Answer() {
+      @Override
+      public Object answer(InvocationOnMock invocation) throws Throwable {
+        showSelectedCalled.set(true);
+        return null;
+      }
+    }).when(adapter).cancelSelect(any(Audio.class));
+    fragment.cancelAudioSelect(new Audio());
+    assertThat(showSelectedCalled.get())
+            .isTrue();
+  }
+
+  @Test public void showAudioSelectedCalledActionModeIsNull_actionModeIsNotNull() {
+    fragment.showAudioSelected(new Audio());
+    assertThat(fragment.actionMode)
+            .isNotNull();
   }
 }
