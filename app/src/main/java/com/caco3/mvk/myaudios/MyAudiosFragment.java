@@ -119,6 +119,9 @@ public class MyAudiosFragment extends BaseFragment implements MyAudiosView,
   @Override
   public void onDestroyView() {
     presenter.onViewDetached(this);
+    if (actionMode != null) {
+      finishSelectMode();
+    }
     searchViewStateKeeper.detach();
     super.onDestroyView();
   }

@@ -2,6 +2,7 @@ package com.caco3.mvk.myaudios;
 
 import android.Manifest;
 import android.support.v4.view.MenuItemCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.view.ActionMode;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.MenuItem;
@@ -187,9 +188,8 @@ public class MyAudiosFragmentTest {
             .isTrue();
   }
 
-  @Test public void onDestroyViewCalled_actionModeIsNull() {
-    fragment.showAudioSelected(new Audio());
-    fragment.showAudioSelected(new Audio());
+  @Test public void actionModeIsNotNullAndOnDestroyViewCalled_actionModeIsNull() {
+    fragment.actionMode = ((AppCompatActivity)fragment.getActivity()).startSupportActionMode(fragment);
     try {
       fragment.onDestroyView();
     } catch (NullPointerException ignore) {
