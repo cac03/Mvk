@@ -480,4 +480,16 @@ public class MyAudiosPresenterImplTest {
     assertThat(setSelectModeTitleCalled.get())
             .isTrue();
   }
+
+  @Test public void onAudioClickedCalledWithLastSelectedItemInSelectMode_finishSelectModeCalled() {
+    Audio audio = audiosGenerator.generateOne();
+    presenter.onViewAttached(view);
+    presenter.mode = presenter.selectMode;
+    presenter.selectedInActionMode.add(audio);
+    AtomicBoolean finishSelectModeCalled = new AtomicBoolean();
+    setTrue(finishSelectModeCalled).when(view).finishSelectMode();
+    presenter.onAudioClicked(audio);
+    assertThat(finishSelectModeCalled.get())
+            .isTrue();
+  }
 }

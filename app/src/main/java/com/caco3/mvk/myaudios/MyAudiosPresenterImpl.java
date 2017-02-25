@@ -261,6 +261,18 @@ import timber.log.Timber;
     selectedInActionMode.remove(audio);
     view.cancelAudioSelect(audio);
     updateSelectModeTitle();
+    if (needToFinishSelectMode()) {
+      view.finishSelectMode();
+      startNormalMode();
+    }
+  }
+
+  private boolean needToFinishSelectMode() {
+    return selectedInActionMode.isEmpty();
+  }
+
+  private void startNormalMode() {
+    this.mode = normalMode;
   }
 
   private void updateSelectModeTitle() {
