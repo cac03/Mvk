@@ -82,7 +82,7 @@ public class AudioSyncPreferencesChangeListenerTest {
 
   @Test public void syncIntervalChanged_alarmRescheduled() {
     final long interval = TimeUnit.HOURS.toMillis(12);
-    sharedPreferences.edit().putLong("audio_sync_interval", TimeUnit.HOURS.toMillis(12)).apply();
+    sharedPreferences.edit().putString("audio_sync_interval", String.valueOf(interval)).apply();
     ShadowAlarmManager.ScheduledAlarm scheduledAlarm = shadowAlarmManager.getNextScheduledAlarm();
     ShadowPendingIntent pendingIntent = shadowOf(scheduledAlarm.operation);
     assertThat(pendingIntent)

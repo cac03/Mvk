@@ -31,8 +31,15 @@ public class AudioSyncSettingsImpl implements AudioSyncSettings {
 
   @Override
   public long getSyncIntervalMillis() {
-    long value = sharedPreferences.getLong(INTERVAL_KEY, TimeUnit.HOURS.toMillis(8));
-    checkState(value > 0, String.format("interval value is too small (%d)", value));
-    return value;
+    String asString = sharedPreferences.getString(INTERVAL_KEY, "28800000");
+    try {
+      long value = Long.parseLong(asString);
+      checkState(value > 0, String.format("interval value is too small (%d)", value));
+
+      return value;
+    } catch (NumberFormatException e) {
+      throw new IllegalStateException(String
+              .format("Unable to get sync interval. String is not parcelable: '%s'", asString), e);
+    }
   }
 }

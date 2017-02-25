@@ -76,7 +76,7 @@ public class AudioSyncSettingsImplTest {
   }
 
   @Test public void intervalValueChangedToIllegalValue_getSyncIntervalMillisThrowsIse() {
-    preferences.edit().putLong("audio_sync_interval", 0).apply();
+    preferences.edit().putString("audio_sync_interval", String.valueOf(0L)).apply();
     try {
       new AudioSyncSettingsImpl(preferences).getSyncIntervalMillis();
       fail("IllegalStateException was not thrown");
@@ -88,8 +88,20 @@ public class AudioSyncSettingsImplTest {
 
   @Test public void intervalValueChangedTo4Hours_getSyncIntervalMillisReturns4HoursInMillis() {
     long expected = TimeUnit.HOURS.toMillis(4);
-    preferences.edit().putLong("audio_sync_interval", expected).apply();
+    preferences.edit().putString("audio_sync_interval", String.valueOf(expected)).apply();
     assertThat(syncSettings.getSyncIntervalMillis())
             .isEqualTo(expected);
+  }
+
+  @Test public void intervalValueStringIsNotParcelable_iseThrown() {
+    preferences.edit().putString("audio_sync_interval", "I cannot be parsed as Long").apply();
+    try {
+      syncSettings.getSyncIntervalMillis();
+      fail("ise was not thrown");
+    } catch (IllegalStateException expected) {
+      assertThat(expected)
+              .hasMessage("Unable to get sync interval. " +
+                      "String is not parcelable: 'I cannot be parsed as Long'");
+    }
   }
 }

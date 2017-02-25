@@ -51,4 +51,18 @@
     <string name="audio_sync_settings_sync_audios">Sync audios in background</string>
     <string name="audio_sync_settings_sync_audios_summary">Automatically update list of audios in background and download missing audios</string>
     <string name="audio_sync_settings_sync_only_via_wifi">Only via WiFi</string>
+    <string name="audio_sync_settings_interval_title">Interval</string>
+    <string name="audio_sync_settings_interval_dialog_title">Select interval</string>
+    <string-array name="audio_sync_settings_interval_entries">
+        <item>1h</item>
+        <item>2h</item>
+        <item>4h</item>
+        <item>8h</item>
+    </string-array>
+    <string-array name="audio_sync_settings_interval_entry_values">
+        <item>3600000</item> <!-- 1 * 60 * 60 * 1000 -->
+        <item>7200000</item> <!-- 2 * 60 * 60 * 1000 -->
+        <item>14400000</item> <!-- 4 * 60 * 60 * 1000 -->
+        <item>28800000</item> <!-- 8 * 60 * 60 * 1000 -->
+    </string-array>
 </resources>

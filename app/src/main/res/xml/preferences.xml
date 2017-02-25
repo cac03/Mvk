@@ -17,6 +17,16 @@
             android:title="@string/audio_sync_settings_sync_only_via_wifi"
             android:dependency="audio_sync_enabled"/>
 
+        <ListPreference
+            android:dialogTitle="@string/audio_sync_settings_interval_dialog_title"
+            android:key="audio_sync_interval"
+            android:title="@string/audio_sync_settings_interval_title"
+            android:entries="@array/audio_sync_settings_interval_entries"
+            android:dependency="audio_sync_enabled"
+            android:defaultValue="28800000"
+            android:entryValues="@array/audio_sync_settings_interval_entry_values"
+            android:summary="%s"/>
+
     </PreferenceCategory>
 
 </PreferenceScreen>
