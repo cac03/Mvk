@@ -492,4 +492,11 @@ public class MyAudiosPresenterImplTest {
     assertThat(finishSelectModeCalled.get())
             .isTrue();
   }
+
+  @Test public void onSelectModeFinishedCalled_modeSetToNormal() {
+    presenter.mode = presenter.selectMode;
+    presenter.onSelectModeFinished();
+    assertThat(presenter.mode)
+            .isSameAs(presenter.normalMode);
+  }
 }
