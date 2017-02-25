@@ -212,7 +212,7 @@ import timber.log.Timber;
     selectedInActionMode.clear();
   }
 
-  @Override public void onSelectModeStarted() {
+  private void onSelectModeStarted() {
     view.startSelectMode();
     mode = selectMode;
   }
