@@ -212,11 +212,6 @@ import timber.log.Timber;
     selectedInActionMode.clear();
   }
 
-  private void onSelectModeStarted() {
-    view.startSelectMode();
-    mode = selectMode;
-  }
-
   @Override public void onSelectModeFinished() {
     view.finishSelectMode();
     for(Audio audio : selectedInActionMode) {
@@ -240,19 +235,36 @@ import timber.log.Timber;
 
   private class SelectMode implements Mode {
     @Override public void onAudioClicked(Audio audio) {
-      if (selectedInActionMode.contains(audio)) {
-        selectedInActionMode.remove(audio);
-        view.cancelAudioSelect(audio);
+      if (shouldBeSelected(audio)) {
+        onAudioSelected(audio);
       } else {
-        selectedInActionMode.add(audio);
-        view.showAudioSelected(audio);
+        onAudioSelectCanceled(audio);
       }
-      view.setSelectModeTitle(Collections.unmodifiableList(selectedInActionMode));
     }
 
     @Override public void onAudioLongClicked(Audio audio) {
       onAudioClicked(audio);
     }
+  }
+
+  private boolean shouldBeSelected(Audio audio) {
+    return !selectedInActionMode.contains(audio);
+  }
+
+  private void onAudioSelected(Audio audio) {
+    selectedInActionMode.add(audio);
+    view.showAudioSelected(audio);
+    updateSelectModeTitle();
+  }
+
+  private void onAudioSelectCanceled(Audio audio) {
+    selectedInActionMode.remove(audio);
+    view.cancelAudioSelect(audio);
+    updateSelectModeTitle();
+  }
+
+  private void updateSelectModeTitle() {
+    view.setSelectModeTitle(Collections.unmodifiableList(selectedInActionMode));
   }
 
   private class NormalMode implements Mode {
@@ -261,10 +273,17 @@ import timber.log.Timber;
     }
 
     @Override public void onAudioLongClicked(Audio audio) {
-      selectedInActionMode.add(audio);
-      view.showAudioSelected(audio);
-      view.setSelectModeTitle(Collections.unmodifiableList(selectedInActionMode));
-      onSelectModeStarted();
+      startSelectModeWith(audio);
     }
+  }
+
+  private void startSelectModeWith(Audio audio) {
+    startSelectMode();
+    onAudioSelected(audio);
+  }
+
+  private void startSelectMode() {
+    mode = selectMode;
+    view.startSelectMode();
   }
 }
