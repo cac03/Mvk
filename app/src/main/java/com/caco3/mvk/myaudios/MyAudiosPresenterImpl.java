@@ -213,7 +213,6 @@ import timber.log.Timber;
   }
 
   @Override public void onSelectModeFinished() {
-    view.finishSelectMode();
     for(Audio audio : selectedInActionMode) {
       view.cancelAudioSelect(audio);
     }
